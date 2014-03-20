@@ -6,7 +6,7 @@ interactive job submissions on a single machine or batch submissions to a
 queuing system (here tested with Torque) of a compute cluster.
 
 ### Usage
-Instructions for running _systemPipe.R_ are given in *analysis.R*. The expected
+Instructions for running _systemPipe.R_ are given in _analysis.R_. The expected
 format to define the RNA-Seq samples (e.g. FASTQ files) and their labels
-is given in *targets.txt*.
+is given in _targets.txt_.
  
