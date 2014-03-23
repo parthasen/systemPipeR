@@ -12,11 +12,11 @@ tophatargs <- list(modules = c("bowtie2/2.1.0", "tophat/2.0.8b"),
 			# -p: number of threads to use for alignment step
 			# -i/-I: min/max intron lengths (50, 500000 are defaults)
 			# --segment-length: length of split reads (25 is default)
-                 reference = "~/Projects/IlhemMessaoudi/RNA-Seq/data/bowtie2index/Macaca_mulatta.fa", 
-                 gff = "-G ~/Projects/IlhemMessaoudi/RNA-Seq/data/Macaca_mulatta.MMUL_1.73.gtf", # assign empty string if GFF/GTF is not needed
-                 outpath = "~/Projects/IlhemMessaoudi/RNA-Seq/results/", 
-                 infile1 = as.character(read.delim("~/Projects/IlhemMessaoudi/RNA-Seq/targets_run.txt", comment.char = "#")$FileName),
-		 infile2 = rep("", length(read.delim("~/Projects/IlhemMessaoudi/RNA-Seq/targets_run.txt", comment.char = "#")$FileName)))
+                 reference = "~/Projects/project_name/RNA-Seq/data/bowtie2index/mygenome.fa", 
+                 gff = "-G ~/Projects/project_name/RNA-Seq/data/mygenome.gtf", # assign empty string if GFF/GTF is not needed
+                 outpath = "~/Projects/project_name/RNA-Seq/results/", 
+                 infile1 = as.character(read.delim("~/Projects/project_name/RNA-Seq/targets_run.txt", comment.char = "#")$FileName),
+		 infile2 = rep("", length(read.delim("~/Projects/project_name/RNA-Seq/targets_run.txt", comment.char = "#")$FileName)))
 
 ## Function to run Bowtie2/Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
