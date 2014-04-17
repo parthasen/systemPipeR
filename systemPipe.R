@@ -88,7 +88,7 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	if(fqgz==TRUE) {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("zcat", x, "| wc -l | cut -d' ' -f1"), intern=TRUE))/4)
 	} else {
-		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("| wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
+		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
 	bfl <- BamFileList(bampaths, yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
