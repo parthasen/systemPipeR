@@ -1,22 +1,25 @@
 #########################################################
 ## Functions to Run Tophat on cluster or interactively ##
 #########################################################
-## Author: Thomas Girke
-## Last update: 14-Mar-14
-
 ## Bowtie2/Tophat2 arguments
-tophatargs <- list(modules = c("bowtie2/2.1.0", "tophat/2.0.8b"),
-                 args = c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 50", I="-I 500000"),
-                	# -G: supply GFF with transcript model info (preferred!)
-			# -g: ignore all alginments with >g matches
-			# -p: number of threads to use for alignment step
-			# -i/-I: min/max intron lengths (50, 500000 are defaults)
-			# --segment-length: length of split reads (25 is default)
-                 reference = "~/Projects/project_name/RNA-Seq/data/bowtie2index/mygenome.fa", 
-                 gff = "-G ~/Projects/project_name/RNA-Seq/data/mygenome.gtf", # assign empty string if GFF/GTF is not needed
-                 outpath = "~/Projects/project_name/RNA-Seq/results/", 
-                 infile1 = as.character(read.delim("~/Projects/project_name/RNA-Seq/targets_run.txt", comment.char = "#")$FileName),
-		 infile2 = rep("", length(read.delim("~/Projects/project_name/RNA-Seq/targets_run.txt", comment.char = "#")$FileName)))
+systemArgs <- function(mydir, myref, mygff, mytargets) {
+	tophatargs <- list(modules = c("bowtie2/2.1.0", "tophat/2.0.8b"),
+        	         args = c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000"),
+                		# -G: supply GFF with transcript model info (preferred!)
+				# -g: ignore all alginments with >g matches
+				# -p: number of threads to use for alignment step
+				# -i/-I: min/max intron lengths (50, 500000 are defaults)
+				# --segment-length: length of split reads (25 is default)
+                 	reference = paste(mydir, "/data/", myref, sep=""), 
+                 	#gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
+                 	gff = "", # assign empty string if GFF/GTF is not needed
+                 	outpath = paste(mydir, "/results/", sep=""), 
+                 	infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName)))
+	return(tophatargs)
+}
+## Usage:
+# tophatargs <- systemArgs(mydir=getwd(), myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
 
 ## Function to run Bowtie2/Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
@@ -27,7 +30,8 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 	for(i in seq(along=tophatargs$infile1)) {
 		## Run alignmets only for samples for which no BAM file is available.
 		bamexists <- names(bam_paths)[i]
-		if(file.exists(bamexists)) {
+		bam_paths[i] <- file.exists(bamexists)
+		if(as.logical(bam_paths[i])) {
 			next()
 		} else {
         		tophat_command <- paste(paste(tophatargs$args, collapse=" "), " ", tophatargs$gff, " -o ", tophatargs$outpath, gsub("^.*/", "", tophatargs$infile1[i]), ".tophat ", tophatargs$reference, " ", tophatargs$infile1[i], " ", tophatargs$infile2[i], sep="")
@@ -47,12 +51,17 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 # runTophat(tophatargs=tophatargs, runid="01")
 
 ## qsub arguments
-qsubargs <- list(software="qsub", 
-                 queue="batch", 
-                 Nnodes="nodes=1", 
-                 cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), 
-                 memory="mem=10gb", 
-                 time="walltime=20:00:00")
+getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00") {
+	qsubargs <- list(software=software, 
+			queue=queue, 
+                	Nnodes=Nnodes, 
+                 	cores=cores, 
+                 	memory=memory, 
+                 	time=time)
+	return(qsubargs)
+}
+## Usage:
+# qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 
 ## Function to submit runTophat (or similar) to cluster
 qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R") {
@@ -90,13 +99,13 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	} else {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
-	bfl <- BamFileList(bampaths, yieldSize=50000, index=character())
+	bfl <- BamFileList(names(bampaths), yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
 	statsDF <- data.frame(FileName=names(Nreads), Nreads=Nreads, Nalign=Nalign$records, Perc_Aligned=Nalign$records/Nreads*100)
 	return(statsDF)
 }
 ## Usage:
-#read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=names(bampaths), fqgz=TRUE) 
+#read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
 
 ## RPKM Normalization
 returnRPKM <- function(counts, gffsub) {
@@ -106,6 +115,9 @@ returnRPKM <- function(counts, gffsub) {
         rpkm <- rpm/geneLengthsInKB # RPKM: reads per kilobase of exon model per million mapped reads.
         return(rpkm)
 }
+
+## Usage:
+#countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
 ## Usage:
 #countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
