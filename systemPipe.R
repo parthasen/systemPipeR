@@ -123,6 +123,4 @@ returnRPKM <- function(counts, gffsub) {
 ## Usage:
 #countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
-## Usage:
-#countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
