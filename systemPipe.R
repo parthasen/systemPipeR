@@ -2,7 +2,7 @@
 ## Functions to Run Tophat on cluster or interactively ##
 #########################################################
 ## Bowtie2/Tophat2 arguments
-systemArgs <- function(mymodules, mydir, args, myref, mygff, mytargets) {
+systemArgs <- function(mymodules, mydir, args, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
 	tophatargs <- list(modules = mymodules,
         	           args = args,
 				# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
@@ -11,9 +11,9 @@ systemArgs <- function(mymodules, mydir, args, myref, mygff, mytargets) {
 				# -p: number of threads to use for alignment step
 				# -i/-I: min/max intron lengths (50, 500000 are defaults)
 				# --segment-length: length of split reads (25 is default)
-                 	   reference = paste(mydir, "/data/", myref, sep=""), 
-                 	   gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
-                 	   outpath = paste(mydir, "/results/", sep=""), 
+                 	   reference = paste(mydir, myindir, myref, sep=""), 
+                 	   gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string if GFF/GTF is not needed
+                 	   outpath = paste(mydir, myoutdir, sep=""), 
                  	   infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
 		 	   infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
 		 	)
