@@ -2,9 +2,9 @@
 ## Functions to Run Tophat on cluster or interactively ##
 #########################################################
 ## Bowtie2/Tophat2 arguments
-systemArgs <- function(mymodules, mydir, args, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
+systemArgs <- function(mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
 	tophatargs <- list(modules = mymodules,
-        	           args = args,
+        	           args = myargs,
 				# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
                 		# -G: supply GFF with transcript model info (preferred!)
 				# -g: ignore all alginments with >g matches
@@ -23,7 +23,7 @@ systemArgs <- function(mymodules, mydir, args, myref, mygff, mytargets, myindir=
 ## Usage:
 # mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 # myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-# tophatargs <- systemArgs(mymodules=mymodules, mydir=getwd(), args=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+# tophatargs <- systemArgs(mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
 
 ## Function to run Bowtie2/Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
