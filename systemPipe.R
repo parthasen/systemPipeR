@@ -12,8 +12,7 @@ systemArgs <- function(mydir, args, myref, mygff, mytargets) {
 				# -i/-I: min/max intron lengths (50, 500000 are defaults)
 				# --segment-length: length of split reads (25 is default)
                  	reference = paste(mydir, "/data/", myref, sep=""), 
-                 	#gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
-                 	gff = "", # assign empty string if GFF/GTF is not needed
+                 	gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
                  	outpath = paste(mydir, "/results/", sep=""), 
                  	infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
 		 	infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName)))
