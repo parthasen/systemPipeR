@@ -7,7 +7,7 @@ systemArgs <- function(mymodules, mydir, myargs, myref, mygff, mytargets, myindi
         	           args = myargs,
 				# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
                 		# -G: supply GFF with transcript model info (preferred!)
-				# -g: ignore all alginments with >g matches
+				# -g: ignore all alignments with >g matches
 				# -p: number of threads to use for alignment step
 				# -i/-I: min/max intron lengths (50, 500000 are defaults)
 				# --segment-length: length of split reads (25 is default)
