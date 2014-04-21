@@ -10,7 +10,8 @@ write.table(targets[1,], "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\
 
 ## Run as single process without submitting to cluster, e.g. in interactive session on owl or with qsub -I
 source("systemPipe.R")
-tophatargs <- systemArgs(mydir=getwd(), myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
+tophatargs <- systemArgs(mydir=getwd(), args=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
 bampaths <- runTophat(tophatargs=tophatargs, runid="01")
 
 ## Submit to compute nodes
