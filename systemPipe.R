@@ -4,18 +4,20 @@
 ## Bowtie2/Tophat2 arguments
 systemArgs <- function(mydir, args, myref, mygff, mytargets) {
 	tophatargs <- list(modules = c("bowtie2/2.1.0", "tophat/2.0.8b"),
-        	         args = args,
+        	           args = args,
 				# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
                 		# -G: supply GFF with transcript model info (preferred!)
 				# -g: ignore all alginments with >g matches
 				# -p: number of threads to use for alignment step
 				# -i/-I: min/max intron lengths (50, 500000 are defaults)
 				# --segment-length: length of split reads (25 is default)
-                 	reference = paste(mydir, "/data/", myref, sep=""), 
-                 	gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
-                 	outpath = paste(mydir, "/results/", sep=""), 
-                 	infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName)))
+                 	   reference = paste(mydir, "/data/", myref, sep=""), 
+                 	   gff = paste("-G ", mydir, "/data/", mygff, sep=""), # assign empty string if GFF/GTF is not needed
+                 	   outpath = paste(mydir, "/results/", sep=""), 
+                 	   infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	   infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+		 	)
+	if(nchar(mygff)==0) tophatargs[["gff"]] <- "" # removes "-G" if GFF/GTF is not needed
 	return(tophatargs)
 }
 ## Usage:
