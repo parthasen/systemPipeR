@@ -1,5 +1,5 @@
 #########################################################
-## Functions to Run Tophat on cluster or interactively ##
+## Functions to Run Tophat on Cluster or Interactively ##
 #########################################################
 ## Bowtie2/Tophat2 arguments
 systemArgs <- function(mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
