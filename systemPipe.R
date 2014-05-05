@@ -2,30 +2,52 @@
 ## Functions to Run Tophat on Cluster or Interactively ##
 #########################################################
 ## Bowtie2/Tophat2 arguments
-systemArgs <- function(mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
-	tophatargs <- list(modules = mymodules,
-        	           args = myargs,
-				# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-                		# -G: supply GFF with transcript model info (preferred!)
-				# -g: ignore all alignments with >g matches
-				# -p: number of threads to use for alignment step
-				# -i/-I: min/max intron lengths (50, 500000 are defaults)
-				# --segment-length: length of split reads (25 is default)
-                 	   reference = paste(mydir, myindir, myref, sep=""), 
-                 	   gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
-                 	   outpath = paste(mydir, myoutdir, sep=""), 
-                 	   infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	   infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
-		 	)
-	if(nchar(mygff)==0) tophatargs[["gff"]] <- "" # removes "-G" if GFF/GTF is not needed
-	return(tophatargs)
+systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
+	## Tophat2
+	if(app=="tophat2") {
+		tophatargs <- list(modules = mymodules,
+        		           args = myargs,
+					# sample args: c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
+                			# -G: supply GFF with transcript model info (preferred!)
+					# -g: ignore all alignments with >g matches
+					# -p: number of threads to use for alignment step
+					# -i/-I: min/max intron lengths (50, 500000 are defaults)
+					# --segment-length: length of split reads (25 is default)
+                 	   	reference = paste(mydir, myindir, myref, sep=""), 
+                 	   	gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
+                 	   	outpath = paste(mydir, myoutdir, sep=""), 
+                 	   	infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	   	infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+		 		)
+		if(nchar(mygff)==0) tophatargs[["gff"]] <- "" # removes "-G" if GFF/GTF is not needed
+		return(tophatargs)
+	}
+	
+	## Bowtie2
+	if(app=="bowtie2") {
+		bowtie2args <- list(modules = mymodules,
+        		           args = myargs,
+				        # sample args: c(software="bowtie2" p="-p 4" k="-k 50", other="--non-deterministic", ")
+                			# -a: report all alignments for each read
+					# -k: report at most k alignments for each read 
+					# --non-deterministic: more approporiat for samples with many identical reads
+					# -p: number of threads to use for alignment step
+					reference = paste(mydir, myindir, myref, sep=""), 
+					outpath = paste(mydir, myoutdir, sep=""), 
+					infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	   		infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+		 		)
+		return(bowtie2args)
+	}
 }
 ## Usage:
 # mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 # myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-# tophatargs <- systemArgs(mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+# tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+# myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
+# bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
 
-## Function to run Bowtie2/Tophat2 including sorting and indexing of BAM files
+## Function to run Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
 	library(modules); library(Rsamtools)
 	moduleload(tophatargs$modules[1]); moduleload(tophatargs$modules[2]) # loads bowtie2/tophat2 from module system
@@ -53,6 +75,35 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 }
 ## How to run in interactive session, e.g. on owl or with qsub -I
 # runTophat(tophatargs=tophatargs, runid="01")
+
+## Function to run Bowtie2 including sorting and indexing of BAM files
+runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
+	library(modules); library(Rsamtools)
+	moduleload(bowtieargs$modules[1]) # loads bowtie2 from module system
+	tmp <- paste(bowtieargs$outpath, gsub("^.*/", "", bowtieargs$infile1), ".bam", sep="")
+	bam_paths <- rep(FALSE, length(tmp)); names(bam_paths) <- tmp
+	for(i in seq(along=bowtieargs$infile1)) {
+		## Run alignmets only for samples for which no BAM file is available.
+		bamexists <- names(bam_paths)[i]
+		bam_paths[i] <- file.exists(bamexists)
+		if(as.logical(bam_paths[i])) {
+			next()
+		} else {
+         		bowtie_command <- paste(paste(bowtieargs$args, collapse=" "), " -x ", bowtieargs$reference, " -U ", bowtieargs$infile1[i], " -S ", bowtieargs$infile1[i], ".sam", sep="")
+			## Create submitrunID_log file
+			cat(bowtie_command, file=paste(bowtieargs$outpath, "/submitargs", runid, "_log", sep=""), sep = "\n", append=TRUE)
+        		## Run bowtie 
+			system(bowtie_command)
+			asBam(file=paste(bowtieargs$outpath, gsub("^.*/", "", bowtieargs$infile1[i]), ".sam", sep=""), destination=paste(bowtieargs$outpath, gsub("^.*/", "", bowtieargs$infile1[i]), sep=""), overwrite=TRUE, indexDestination=TRUE)
+			unlink(paste(bowtieargs$outpath, gsub("^.*/", "", bowtieargs$infile1[i]), ".sam", sep=""))
+		}
+	}
+	cat("Missing alignment results (bam files):", sum(!bam_paths), "\n"); cat("Existing alignment results (bam files):", sum(bam_paths), "\n")
+	bam_paths[1:length(bam_paths)] <- file.exists(names(bam_paths))
+	return(bam_paths)
+}
+## How to run in interactive session, e.g. on owl or with qsub -I
+# runBowtie(bowtieargs=bowtieargs, runid="01")
 
 ## qsub arguments
 getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00") {
@@ -92,6 +143,7 @@ qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsub
 }
 ## Usage:
 # qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R")
+# qsubRun(appfct="runBowtie(appargs, runid)", appargs=bowtieargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R"))
 
 ## Alignment Stats
 alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
