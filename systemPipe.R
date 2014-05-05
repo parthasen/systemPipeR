@@ -73,7 +73,7 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 	bam_paths[1:length(bam_paths)] <- file.exists(names(bam_paths))
 	return(bam_paths)
 }
-## How to run in interactive session, e.g. on owl or with qsub -I
+## How to run in interactive session, e.g. via qsub -I
 # runTophat(tophatargs=tophatargs, runid="01")
 
 ## Function to run Bowtie2 including sorting and indexing of BAM files
@@ -102,7 +102,7 @@ runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
 	bam_paths[1:length(bam_paths)] <- file.exists(names(bam_paths))
 	return(bam_paths)
 }
-## How to run in interactive session, e.g. on owl or with qsub -I
+## How to run in interactive session, e.g. via qsub -I
 # runBowtie(bowtieargs=bowtieargs, runid="01")
 
 ## qsub arguments
