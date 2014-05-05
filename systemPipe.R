@@ -143,7 +143,7 @@ qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsub
 }
 ## Usage:
 # qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R")
-# qsubRun(appfct="runBowtie(appargs, runid)", appargs=bowtieargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R"))
+# qsubRun(appfct="runBowtie(appargs, runid)", appargs=bowtieargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R")
 
 ## Alignment Stats
 alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
