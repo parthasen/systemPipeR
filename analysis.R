@@ -27,11 +27,6 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 ############################
 ## Alignment with Bowtie2 ##
 ############################
-
-## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
-targets <- read.delim("targets.txt", comment.char = "#")
-write.table(targets[1,], "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
-
 ## Run as single process without submitting to cluster, e.g. in interactive session on owl or with qsub -I
 source("systemPipe.R")
 mymodules <- c("bowtie2/2.1.0")
