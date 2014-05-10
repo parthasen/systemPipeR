@@ -3,9 +3,12 @@
 #########################################################
 ## Bowtie2/Tophat2 arguments
 systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
+	## Preprocessing of targets input
 	mytargets <- read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")
-	names(mytargets)[1] <- "FileName1"
+	colnames(mytargets)[1] <- "FileName1" # To support FileName column for SE data
+	## Insert empty FileName2 column if not present
 	if(length(mytargets$FileName2)==0) mytargets <- data.frame(FileName1=mytargets$FileName1, FileName2="", mytargets[,!colnames(mytargets) %in% "FileName1"])
+	
 	## Tophat2
 	if(app=="tophat2") {
 		tophatargs <- list(modules = mymodules,
