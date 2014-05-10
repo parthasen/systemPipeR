@@ -156,7 +156,7 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	} else {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
-	## Obtain total number alignments from BAM files
+	## Obtain total number of alignments from BAM files
 	bfl <- BamFileList(names(bampaths), yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
 	## Obtain number of primary alignments from BAM files
