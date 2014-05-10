@@ -6,7 +6,7 @@ system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 
 ## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
 targets <- read.delim("targets.txt", comment.char = "#")
-write.table(targets[1,], "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
 
 ## Run as single process without submitting to cluster, e.g. via qsub -I
 source("systemPipe.R")
