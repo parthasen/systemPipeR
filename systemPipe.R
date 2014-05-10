@@ -3,6 +3,9 @@
 #########################################################
 ## Bowtie2/Tophat2 arguments
 systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
+	mytargets <- read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")
+	names(mytargets)[1] <- "FileName1"
+	if(length(mytargets$FileName2)==0) mytargets <- data.frame(FileName1=mytargets$FileName1, FileName2="", mytargets[,!colnames(mytargets) %in% "FileName1"])
 	## Tophat2
 	if(app=="tophat2") {
 		tophatargs <- list(modules = mymodules,
@@ -16,8 +19,8 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
                  	   	   reference = paste(mydir, myindir, myref, sep=""), 
                  	   	   gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
                  	   	   outpath = paste(mydir, myoutdir, sep=""), 
-                 	   	   infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	   	   infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+                 	   	   infile1 = as.character(mytargets$FileName1),
+		 	   	   infile2 = as.character(mytargets$FileName2)
 		 		)
 		if(nchar(mygff)==0) tophatargs[["gff"]] <- "" # removes "-G" if GFF/GTF is not needed
 		return(tophatargs)
@@ -34,8 +37,8 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 					# -p: number of threads to use for alignment step
 				   reference = paste(mydir, myindir, myref, sep=""), 
 			           outpath = paste(mydir, myoutdir, sep=""), 
-			           infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	           infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+                 	   	   infile1 = as.character(mytargets$FileName1),
+		 	   	   infile2 = as.character(mytargets$FileName2)
 		 		)
 		return(bowtie2args)
 	}
@@ -43,9 +46,9 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 ## Usage:
 # mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 # myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-# tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+# tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
 # myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
-# bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt")
+# bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
 
 ## Function to run Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
