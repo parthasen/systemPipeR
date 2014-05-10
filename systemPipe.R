@@ -150,13 +150,16 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	library(ShortRead); library(Rsamtools)
 	fqpaths <- fqpaths[as.logical(bampaths)]
 	bampaths <- bampaths[as.logical(bampaths)]
+	## Obtain total read number from FASTQ files
 	if(fqgz==TRUE) {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("zcat", x, "| wc -l | cut -d' ' -f1"), intern=TRUE))/4)
 	} else {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
+	## Obtain total number alignments from BAM files
 	bfl <- BamFileList(names(bampaths), yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
+	## Obtain number of primary alignments from BAM files
 	param <- ScanBamParam(flag=scanBamFlag(isNotPrimaryRead=FALSE, isUnmappedQuery=FALSE))
 	Nalignprim <- countBam(bfl, param=param)
 	statsDF <- data.frame(FileName=names(Nreads), 
