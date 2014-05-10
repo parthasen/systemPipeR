@@ -10,6 +10,7 @@ Instructions for running _systemPipe.R_ are given in _analysis.R_. The expected
 format to define the RNA-Seq samples (e.g. FASTQ files) and their labels
 is given in _targets.txt_. Currently, supported command-line software includes:
 
- *Bowtie 2
- *TopHat 2 
+ - Bowtie 2
+ 
+ - TopHat 2 
  
