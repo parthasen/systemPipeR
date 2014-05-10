@@ -19,7 +19,7 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 					# -p: number of threads to use for alignment step
 					# -i/-I: min/max intron lengths (50, 500000 are defaults)
 					# --segment-length: length of split reads (25 is default)
-                 	   	   reference = paste(mydir, myindir, myref, sep=""), 
+                 	   	   reference = myref, 
                  	   	   gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
                  	   	   outpath = paste(mydir, myoutdir, sep=""), 
                  	   	   infile1 = as.character(mytargets$FileName1),
@@ -38,7 +38,7 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 					# -k: report at most k alignments for each read 
 					# --non-deterministic: more approporiat for samples with many identical reads
 					# -p: number of threads to use for alignment step
-				   reference = paste(mydir, myindir, myref, sep=""), 
+				   reference = myref, 
 			           outpath = paste(mydir, myoutdir, sep=""), 
                  	   	   infile1 = as.character(mytargets$FileName1),
 		 	   	   infile2 = as.character(mytargets$FileName2)
@@ -49,9 +49,9 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 ## Usage:
 # mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 # myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-# tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
+# tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="./data/TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
 # myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
-# bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="TAIR10_chr_all.fas", mygff="TAIR10_GFF3_genes.gff", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
+# bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="./data/TAIR10_chr_all.fas", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
 
 ## Function to run Tophat2 including sorting and indexing of BAM files
 runTophat <- function(tophatargs=tophatargs, runid="01") {
