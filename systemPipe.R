@@ -95,7 +95,12 @@ runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
 		if(as.logical(bam_paths[i])) {
 			next()
 		} else {
-         		bowtie_command <- paste(paste(bowtieargs$args, collapse=" "), " -x ", bowtieargs$reference, " -U ", bowtieargs$infile1[i], " -S ", bowtieargs$infile1[i], ".sam", sep="")
+			## SE and PE require different execution syntax in Bowtie2
+			if(nchar(bowtieargs$infile2[i]) == 0) { 
+         			bowtie_command <- paste(paste(bowtieargs$args, collapse=" "), " -x ", bowtieargs$reference, " -U ", bowtieargs$infile1[i], " -S ", bowtieargs$infile1[i], ".sam", sep="")
+			} else {
+         			bowtie_command <- paste(paste(bowtieargs$args, collapse=" "), " -x ", bowtieargs$reference, " -1 ", bowtieargs$infile1[i], " -2 ", bowtieargs$infile2[i], " -S ", bowtieargs$infile1[i], ".sam", sep="")
+			}
 			## Create submitrunID_log file
 			cat(bowtie_command, file=paste(bowtieargs$outpath, "/submitargs", runid, "_log", sep=""), sep = "\n", append=TRUE)
         		## Run bowtie 
