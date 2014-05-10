@@ -157,7 +157,19 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	}
 	bfl <- BamFileList(names(bampaths), yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
-	statsDF <- data.frame(FileName=names(Nreads), Nreads=Nreads, Nalign=Nalign$records, Perc_Aligned=Nalign$records/Nreads*100)
+	param <- ScanBamParam(flag=scanBamFlag(isNotPrimaryRead=FALSE, isUnmappedQuery=FALSE))
+	Nalignprim <- countBam(bfl, param=param)
+	param <- ScanBamParam(flag=scanBamFlag(isNotPrimaryRead=TRUE, isUnmappedQuery=FALSE))
+	Nalignsec <- countBam(bfl, param=param)
+	statsDF <- data.frame(FileName=names(Nreads), 
+                              Nreads=Nreads, 
+                              Nalign=Nalign$records, 
+                              Perc_Aligned=Nalign$records/Nreads*100, 
+                              Nalign_Primary=Nalignprim$records, 
+                              Perc_Aligned_Primary=Nalignprim$records/Nreads*100)
+                              Nalign_Secondary=Nalignsec$records, 
+                              Perc_Aligned_Secondary=Nalignsec$records/Nreads*100
+	)
 	return(statsDF)
 }
 ## Usage:
