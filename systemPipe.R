@@ -13,11 +13,11 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 					# -p: number of threads to use for alignment step
 					# -i/-I: min/max intron lengths (50, 500000 are defaults)
 					# --segment-length: length of split reads (25 is default)
-                 	   	reference = paste(mydir, myindir, myref, sep=""), 
-                 	   	gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
-                 	   	outpath = paste(mydir, myoutdir, sep=""), 
-                 	   	infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	   	infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+                 	   	   reference = paste(mydir, myindir, myref, sep=""), 
+                 	   	   gff = paste("-G ", mydir, myindir, mygff, sep=""), # assign empty string to 'mygff' if GFF/GTF is not needed
+                 	   	   outpath = paste(mydir, myoutdir, sep=""), 
+                 	   	   infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	   	   infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
 		 		)
 		if(nchar(mygff)==0) tophatargs[["gff"]] <- "" # removes "-G" if GFF/GTF is not needed
 		return(tophatargs)
@@ -32,10 +32,10 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 					# -k: report at most k alignments for each read 
 					# --non-deterministic: more approporiat for samples with many identical reads
 					# -p: number of threads to use for alignment step
-					reference = paste(mydir, myindir, myref, sep=""), 
-					outpath = paste(mydir, myoutdir, sep=""), 
-					infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
-		 	   		infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
+				   reference = paste(mydir, myindir, myref, sep=""), 
+			           outpath = paste(mydir, myoutdir, sep=""), 
+			           infile1 = as.character(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName),
+		 	           infile2 = rep("", length(read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")$FileName))
 		 		)
 		return(bowtie2args)
 	}
