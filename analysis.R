@@ -25,9 +25,9 @@ read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=T
 read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 
-############################
-## Alignment with Bowtie2 ##
-############################
+##################################################################
+## Alignment with Bowtie2 (here for miRNA profiling experiment) ##
+##################################################################
 ## Run as single process without submitting to cluster, e.g. via qsub -I
 source("systemPipe.R")
 mymodules <- c("bowtie2/2.1.0")
