@@ -37,7 +37,7 @@ bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myar
 bampaths <- runBowtie(bowtieargs=bowtieargs, runid="01")
 
 ## Submit to compute nodes
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", bowtieargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
 
 ##################################################
