@@ -56,9 +56,9 @@ rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg
 write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 
-########################################
-## Correlation analysis among samples ##
-########################################
+#####################################
+## Correlation analysis of samples ##
+#####################################
 library(ape)
 rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
 rpkmDFeByg <- rpkmDFeByg[rowMeans(rpkmDFeByg) > 50,]
