@@ -51,7 +51,7 @@ txdb <- loadDb("./data/My_species.sqlite")
 eByg <- exonsBy(txdb, by="gene")
 bams <- names(bampaths); names(bams) <- targets$SampleName
 bfl <- BamFileList(bams, yieldSize=50000, index=character())
-countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE, inter.feature=TRUE) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE'
+countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
 rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
