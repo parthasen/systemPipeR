@@ -39,3 +39,32 @@ bampaths <- runBowtie(bowtieargs=bowtieargs, runid="01")
 ## Submit to compute nodes
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+
+###################
+## Read counting ##
+###################
+## Create txdb (do only once)
+txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
+saveDb(txdb, file="./data/My_species.sqlite")
+## Read counting with summarizeOverlaps
+txdb <- loadDb("./data/My_species.sqlite")
+eByg <- exonsBy(txdb, by="gene")
+bams <- names(bampaths); names(bams) <- targets$SampleName
+bfl <- BamFileList(bams, yieldSize=50000, index=character())
+countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE)
+rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
+write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+
+########################################
+## Correlation analysis among samples ##
+########################################
+library(ape)
+rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
+rpkmDFeByg <- rpkmDFeByg[rowMeans(rpkmDFeByg) > 50,]
+d <- cor(rpkmDFeByg, method="spearman")
+hc <- hclust(as.dist(1-d))
+plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
+
+
+
