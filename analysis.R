@@ -1,15 +1,22 @@
+##########################
+## Environment Settings ##
+##########################
+
+## Load packages and functions
+library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel)
+source("systemPipe.R")
+
+## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
+targets <- read.delim("targets.txt", comment.char = "#")
+write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+
 ############################
 ## Alignment with Tophat2 ##
 ############################
 ## Build Bowtie2 Index
 system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 
-## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
-targets <- read.delim("targets.txt", comment.char = "#")
-write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
-
 ## Run as single process without submitting to cluster, e.g. via qsub -I
-source("systemPipe.R")
 mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
 myref <- "./data/My_genome.fasta"
@@ -29,7 +36,6 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 ## Alignment with Bowtie2 (here for miRNA profiling experiment) ##
 ##################################################################
 ## Run as single process without submitting to cluster, e.g. via qsub -I
-source("systemPipe.R")
 mymodules <- c("bowtie2/2.1.0")
 myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
 myref <- "./data/My_genome.fasta"
