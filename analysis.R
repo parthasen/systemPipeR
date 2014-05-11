@@ -60,7 +60,7 @@ write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep
 ## Read counting for miRNA profiling experiments ##
 ###################################################
 ## Download miRNA genes from miRBase
-system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_specis.gff3 -P ./data/")
+system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
 gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
 gff <- split(gff, elementMetadata(gff)$ID)
 bams <- names(bampaths); names(bams) <- targets$SampleName
