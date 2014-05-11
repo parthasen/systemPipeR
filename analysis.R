@@ -40,9 +40,9 @@ bampaths <- runBowtie(bowtieargs=bowtieargs, runid="01")
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
 
-###################
-## Read counting ##
-###################
+##################################################
+## Read counting for mRNA profiling experiments ##
+##################################################
 ## Create txdb (do only once)
 txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
 saveDb(txdb, file="./data/My_species.sqlite")
@@ -51,10 +51,24 @@ txdb <- loadDb("./data/My_species.sqlite")
 eByg <- exonsBy(txdb, by="gene")
 bams <- names(bampaths); names(bams) <- targets$SampleName
 bfl <- BamFileList(bams, yieldSize=50000, index=character())
-countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE)
+countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE, inter.feature=TRUE) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE'
 rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+
+###################################################
+## Read counting for miRNA profiling experiments ##
+###################################################
+## Download miRNA genes from miRBase
+system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_specis.gff3 -P ./data/")
+gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
+gff <- split(gff, elementMetadata(gff)$ID)
+bams <- names(bampaths); names(bams) <- targets$SampleName
+bfl <- BamFileList(bams, yieldSize=50000, index=character())
+countDFmiR <- summarizeOverlaps(gff, bfl, mode="Union", ignore.strand=FALSE, inter.feature=FALSE) # Note: inter.feature=FALSE important since pre and mature miRNA ranges overlap
+rpkmDFmiR <- apply(countDFmiR, 2, function(x) returnRPKM(counts=x, gffsub=gff))
+write.table(assays(countDFmiR)$counts, "results/countDFmiR.xls", col.names=NA, quote=FALSE, sep="\t")
+write.table(rpkmDFmiR, "results/rpkmDFmiR.xls", col.names=NA, quote=FALSE, sep="\t")
 
 #####################################
 ## Correlation analysis of samples ##
