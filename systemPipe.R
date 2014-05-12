@@ -233,7 +233,7 @@ readComp <- function(myfile, format="vector", delim="-") {
 			if(delim != "-") comp <- gsub("-", delim, comp)
 			return(comp)
 		}
-		if(format == "matrix") return(do.call("rbind", strsplit(comp, delim)))
+		if(format == "matrix") return(do.call("rbind", strsplit(comp, "-")))
 	}
 }
 ## Usage:
