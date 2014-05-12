@@ -1,9 +1,11 @@
+# Project ID: My Experiment Name
+# <COMP> C-B, C-D, C-E
 FileName1	FileName2	SampleName	Factor	SampleLong	Experiment	Date
-/shared/genomics/206/flowcell206_lane8_CGATGT1.fastq.gz	/shared/genomics/206/flowcell206_lane8_CGATGT2.fastq.gz	C1	C	Control	1	11-Oct-13
-/shared/genomics/206/flowcell206_lane8_TTAGGC1.fastq.gz	/shared/genomics/206/flowcell206_lane8_TTAGGC2.fastq.gz	C2	C	Control	1	11-Oct-13
-/shared/genomics/206/flowcell206_lane8_ACTTGA1.fastq.gz	/shared/genomics/206/flowcell206_lane8_ACTTGA2.fastq.gz	C3	C	Control	1	11-Oct-13
-/shared/genomics/218/flowcell218_lane8_GCCAAT1.fastq.gz	/shared/genomics/218/flowcell218_lane8_GCCAAT2.fastq.gz	C4	C	Control	1	03-Mar-14
-/shared/genomics/218/flowcell218_lane8_CGATGT1.fastq.gz	/shared/genomics/218/flowcell218_lane8_CGATGT2.fastq.gz	M1	M	Moderate	1	03-Mar-14
-/shared/genomics/218/flowcell218_lane6_TTAGGC1.fastq.gz	/shared/genomics/218/flowcell218_lane6_TTAGGC2.fastq.gz	M2	M	Moderate	1	03-Mar-14
-/shared/genomics/218/flowcell218_lane8_TGACCA1.fastq.gz	/shared/genomics/218/flowcell218_lane8_TGACCA2.fastq.gz	M3	M	Moderate	1	03-Mar-14
-/shared/genomics/218/flowcell218_lane7_ACAGTG1.fastq.gz	/shared/genomics/218/flowcell218_lane7_ACAGTG2.fastq.gz	M4	M	Moderate	1	03-Mar-14
+/shared/genomics/206/flowcell206_lane8_CGATGT1.fastq.gz	/shared/genomics/206/flowcell206_lane8_CGATGT2.fastq.gz	C1	C	Control1	11-Oct-13
+/shared/genomics/206/flowcell206_lane8_TTAGGC1.fastq.gz	/shared/genomics/206/flowcell206_lane8_TTAGGC2.fastq.gz	C2	C	Control1	11-Oct-13
+/shared/genomics/206/flowcell206_lane8_ACTTGA1.fastq.gz	/shared/genomics/206/flowcell206_lane8_ACTTGA2.fastq.gz	B1	B	Treatment1	1	11-Oct-13
+/shared/genomics/218/flowcell218_lane8_GCCAAT1.fastq.gz	/shared/genomics/218/flowcell218_lane8_GCCAAT2.fastq.gz	B2	B	Treatment1	1	03-Mar-14
+/shared/genomics/218/flowcell218_lane8_CGATGT1.fastq.gz	/shared/genomics/218/flowcell218_lane8_CGATGT2.fastq.gz	D1	D	Treatment2	1	03-Mar-14
+/shared/genomics/218/flowcell218_lane6_TTAGGC1.fastq.gz	/shared/genomics/218/flowcell218_lane6_TTAGGC2.fastq.gz	D2	D	Treatment2	1	03-Mar-14
+/shared/genomics/218/flowcell218_lane8_TGACCA1.fastq.gz	/shared/genomics/218/flowcell218_lane8_TGACCA2.fastq.gz	E1	E	Treatment3	1	03-Mar-14
+/shared/genomics/218/flowcell218_lane7_ACAGTG1.fastq.gz	/shared/genomics/218/flowcell218_lane7_ACAGTG2.fastq.gz	E2	E	Treatment3	1	03-Mar-14
