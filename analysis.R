@@ -61,6 +61,7 @@ bfl <- BamFileList(bams, yieldSize=50000, index=character())
 multicoreParam <- MulticoreParam(workers=4); register(multicoreParam); registered()
 countDFeByg <- bplapply(bfl, function(x) summarizeOverlaps(gff, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
 countDFeByg <- as.data.frame(row.names=names(rowData(countDFeByg[[1]])), sapply(seq(along=countDFeByg), function(x) assays(countDFeByg[[x]])$counts))
+colnames(countDFeByg) <- names(bfl)
 rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
