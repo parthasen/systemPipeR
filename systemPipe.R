@@ -197,7 +197,9 @@ returnRPKM <- function(counts, gffsub) {
 ## Usage:
 # countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
-## Read Sample Comparisons from targets file
+## Read Sample Comparisons from Targets File
+## Parses sample comparisons from <COMP> line in targets.txt file. If the following
+## states 'All', then all possible comparisons are returned.
 readComp <- function(myfile, format="vector", delim="-") {
 	if(!format %in% c("vector", "matrix")) stop("Argument format can only be vector or matrix!")
 	comp <- readLines(myfile)

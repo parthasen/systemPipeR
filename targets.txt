@@ -1,4 +1,5 @@
 # Project ID: My Experiment Name
+# The following line specifies the sample comparisons for DEG analysis
 # <COMP> C-B, C-D, C-E
 FileName	SampleName	Factor	SampleLong	Experiment	Date
 /shared/genomics/206/flowcell206_lane8_CGATGT.fastq.gz	C1	C	Control1	1	11-Oct-13
