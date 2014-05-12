@@ -195,6 +195,27 @@ returnRPKM <- function(counts, gffsub) {
 }
 
 ## Usage:
-#countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
+# countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
-
+## Read Sample Comparisons from targets file
+readComp <- function(myfile, format="vector", delim="-") {
+	if(!format %in% c("vector", "matrix")) stop("Argument format can only be vector or matrix!")
+	comp <- readLines(myfile)
+	comp <- comp[grepl("<COMP>", comp)]
+	comp <- unlist(strsplit(gsub("#.*<COMP>", "", comp), " "))
+	comp <- gsub(" |,", "", comp)
+	comp <- comp[nchar(comp) > 0]
+	if(length(comp)==1 & comp[1]=="ALL") {
+		all <- unique(as.character(read.delim(myfile, comment.char = "#")$Factor))
+		if(format == "vector") return(combn(all, m=2, FUN=paste, collapse=delim))
+		if(format == "matrix") return(t(combn(all, m=2))) 
+	} else {
+		if(format == "vector") {
+			if(delim != "-") comp <- gsub("-", delim, comp)
+			return(comp)
+		}
+		if(format == "matrix") return(do.call("rbind", strsplit(comp, delim)))
+	}
+}
+## Usage:
+# cmp <- readComp(myfile="targets.txt", format="vector", delim="-")

@@ -90,5 +90,8 @@ d <- cor(rpkmDFeByg, method="spearman")
 hc <- hclust(as.dist(1-d))
 plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
 
-
+#################################################
+## Obtain sample comparisons from targets file ##
+#################################################
+cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
 
