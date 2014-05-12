@@ -3,7 +3,7 @@
 ##########################
 
 ## Load packages and functions
-library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel)
+library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
 source("systemPipe.R")
 
 ## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
@@ -52,12 +52,15 @@ qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("
 ## Create txdb (do only once)
 txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
 saveDb(txdb, file="./data/My_species.sqlite")
-## Read counting with summarizeOverlaps
+## Read counting with summarizeOverlaps in parallel mode with multiple cores
+library(BiocParallel)
 txdb <- loadDb("./data/My_species.sqlite")
 eByg <- exonsBy(txdb, by="gene")
 bams <- names(bampaths); names(bams) <- targets$SampleName
 bfl <- BamFileList(bams, yieldSize=50000, index=character())
-countDFeByg <- summarizeOverlaps(eByg, bfl, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
+multicoreParam <- MulticoreParam(workers=4); register(multicoreParam); registered()
+countDFeByg <- bplapply(bfl, function(x) summarizeOverlaps(gff, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
+countDFeByg <- as.data.frame(row.names=names(rowData(countDFeByg[[1]])), sapply(seq(along=countDFeByg), function(x) assays(countDFeByg[[x]])$counts))
 rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
