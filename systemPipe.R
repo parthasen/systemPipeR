@@ -1,7 +1,10 @@
-#########################################################
-## Functions to Run Tophat on Cluster or Interactively ##
-#########################################################
-## Bowtie2/Tophat2 arguments
+###############################################################
+## Functions to Run NGS Aligners on Cluster or Interactively ##
+###############################################################
+
+########################################
+## Specify Arguments for NGS Aligners ##
+########################################
 systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, mytargets, myindir="/data/", myoutdir="/results/") {
 	## Preprocessing of targets input
 	mytargets <- read.delim(paste(mydir, "/", mytargets, sep=""), comment.char = "#")
@@ -53,7 +56,9 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 # myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
 # bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref="./data/My_genome.fasta", mytargets="targets_run.txt", myindir="/data/", myoutdir="/results/")
 
-## Function to run Tophat2 including sorting and indexing of BAM files
+#########################################################################
+## Function to run Tophat2 including sorting and indexing of BAM files ##
+#########################################################################
 runTophat <- function(tophatargs=tophatargs, runid="01") {
 	library(modules); library(Rsamtools)
 	moduleload(tophatargs$modules[1]); moduleload(tophatargs$modules[2]) # loads bowtie2/tophat2 from module system
@@ -82,7 +87,9 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 ## How to run in interactive session, e.g. via qsub -I
 # runTophat(tophatargs=tophatargs, runid="01")
 
-## Function to run Bowtie2 including sorting and indexing of BAM files
+######################################################################### 
+## Function to run Bowtie2 including sorting and indexing of BAM files ##
+#########################################################################
 runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
 	library(modules); library(Rsamtools)
 	moduleload(bowtieargs$modules[1]) # loads bowtie2 from module system
@@ -116,7 +123,9 @@ runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
 ## How to run in interactive session, e.g. via qsub -I
 # runBowtie(bowtieargs=bowtieargs, runid="01")
 
-## qsub arguments
+####################
+## qsub Arguments ##
+####################
 getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00") {
 	qsubargs <- list(software=software, 
 			queue=queue, 
@@ -129,7 +138,9 @@ getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=
 ## Usage:
 # qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 
-## Function to submit runTophat (or similar) to cluster
+##########################################################################
+## Function to submit to job to the cluster (e.g. runTophat or similar) ##
+##########################################################################
 qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R") {
 	mydir <- getwd()
 	setwd(submitdir)
@@ -156,7 +167,9 @@ qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsub
 # qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R")
 # qsubRun(appfct="runBowtie(appargs, runid)", appargs=bowtieargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R")
 
-## Alignment Stats
+#####################
+## Alignment Stats ##
+#####################
 alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	library(ShortRead); library(Rsamtools)
 	fqpaths <- fqpaths[as.logical(bampaths)]
@@ -185,7 +198,9 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 ## Usage:
 #read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
 
-## RPKM Normalization
+########################
+## RPKM Normalization ##
+########################
 returnRPKM <- function(counts, gffsub) {
         geneLengthsInKB <- sum(width(reduce(gffsub)))/1000 # Length of exon union per gene in kbp
         millionsMapped <- sum(counts)/1e+06 # Factor for converting to million of mapped reads.
@@ -197,7 +212,9 @@ returnRPKM <- function(counts, gffsub) {
 ## Usage:
 # countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
 
-## Read Sample Comparisons from Targets File
+###############################################
+## Read Sample Comparisons from Targets File ##
+###############################################
 ## Parses sample comparisons from <COMP> line in targets.txt file. If it states
 ## 'All', then all possible comparisons will be returned.
 readComp <- function(myfile, format="vector", delim="-") {
