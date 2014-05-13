@@ -228,7 +228,7 @@ readComp <- function(myfile, format="vector", delim="-") {
 	names(comp) <- lapply(seq(along=comp), function(x) comp[[x]][1])	
 	comp <- sapply(names(comp), function(x) comp[[x]][-1], simplify=FALSE)	
 	
-	## Check whether all samples are present Factor column of targets file
+	## Check whether all samples are present in Factor column of targets file
 	checkvalues <- unique(unlist(strsplit(unlist(comp), "-")))
 	all <- unique(as.character(read.delim(myfile, comment.char = "#")$Factor))
 	if(any(!checkvalues %in% all) & comp[[1]][1]!="ALL") stop(paste("The following samples are not present in Factor column of targets file:", paste(checkvalues[!checkvalues %in% all], collapse=", ")))	
