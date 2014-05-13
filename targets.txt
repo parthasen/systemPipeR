@@ -1,5 +1,5 @@
 # Project ID: My Experiment Name
-# The following line(s) allow to specify the contrasts needed for comparative analyses, such as DEG identification. All possible comparisons can be specified with 'CMPset: All'.
+# The following line(s) allow to specify the contrasts needed for comparative analyses, such as DEG identification. All possible comparisons can be specified with 'CMPset: ALL'.
 # <CMP> CMPset1: C-B, C-D, C-E
 # <CMP> CMPset2: B-D, D-E
 FileName	SampleName	Factor	SampleLong	Experiment	Date
