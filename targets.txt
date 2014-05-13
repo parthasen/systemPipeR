@@ -1,6 +1,6 @@
 # Project ID: My Experiment Name
 # The following line allows to specify the contrasts needed for comparative analyses such as DEG identification
-# <COMP> C-B, C-D, C-E
+# <CMP> CMPset1: C-B, C-D, C-E; CMPset2: B-D, D-E
 FileName	SampleName	Factor	SampleLong	Experiment	Date
 /shared/genomics/206/flowcell206_lane8_CGATGT.fastq.gz	C1	C	Control1	1	11-Oct-13
 /shared/genomics/206/flowcell206_lane8_TTAGGC.fastq.gz	C2	C	Control1	1	11-Oct-13
