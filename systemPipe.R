@@ -216,7 +216,7 @@ returnRPKM <- function(counts, gffsub) {
 ## Read Sample Comparisons from Targets File ##
 ###############################################
 ## Parses sample comparisons from <COMP> line in targets.txt file. All possible
-## comparisons will be specified with 'CMPset: All'.
+## comparisons can be specified with 'CMPset: All'.
 readComp <- function(myfile, format="vector", delim="-") {
 	if(!format %in% c("vector", "matrix")) stop("Argument format can only be vector or matrix!")
 	## Parse <CMP> line
