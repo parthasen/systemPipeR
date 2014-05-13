@@ -215,35 +215,30 @@ returnRPKM <- function(counts, gffsub) {
 ###############################################
 ## Read Sample Comparisons from Targets File ##
 ###############################################
-## Parses sample comparisons from <COMP> line in targets.txt file. If it states
-## 'CMPset: All', then all possible comparisons will be returned.
+## Parses sample comparisons from <COMP> line in targets.txt file. All possible
+## comparisons will be specified with 'CMPset: All'.
 readComp <- function(myfile, format="vector", delim="-") {
 	if(!format %in% c("vector", "matrix")) stop("Argument format can only be vector or matrix!")
 	## Parse <CMP> line
 	comp <- readLines(myfile)
 	comp <- comp[grepl("<CMP>", comp)]
 	comp <- gsub("#.*<CMP>| {1,}", "", comp)
-	comp <- unlist(strsplit(comp, ";"))
 	comp <- strsplit(comp, ":|,")
 	names(comp) <- lapply(seq(along=comp), function(x) comp[[x]][1])	
 	comp <- sapply(names(comp), function(x) comp[[x]][-1], simplify=FALSE)	
 	
 	## Check whether all samples are present in Factor column of targets file
 	checkvalues <- unique(unlist(strsplit(unlist(comp), "-")))
+	checkvalues <- checkvalues[checkvalues!="ALL"]
 	all <- unique(as.character(read.delim(myfile, comment.char = "#")$Factor))
-	if(any(!checkvalues %in% all) & comp[[1]][1]!="ALL") stop(paste("The following samples are not present in Factor column of targets file:", paste(checkvalues[!checkvalues %in% all], collapse=", ")))	
-	
+	if(any(!checkvalues %in% all)) stop(paste("The following samples are not present in Factor column of targets file:", paste(checkvalues[!checkvalues %in% all], collapse=", ")))	
+
 	## Generate outputs 
-	if(length(comp)==1 & comp[[1]][1]=="ALL") {
-		if(format == "vector") return(list(CMPset=combn(all, m=2, FUN=paste, collapse=delim)))
-		if(format == "matrix") return(list(CMPset=t(combn(all, m=2)))) 
-	} else {
-		if(format == "vector") {
-			if(delim != "-") comp <- sapply(names(comp), function(x) gsub("-", delim, comp[[x]]), simplify=FALSE)
-			return(comp)
-		}
-		if(format == "matrix") return(sapply(names(comp), function(x) do.call("rbind", strsplit(comp[[x]], "-")), simplify=FALSE))
-	}
+	allindex <- sapply(names(comp), function(x) any(grepl("ALL", comp[[x]])))
+	if(any(allindex)) for(i in which(allindex)) comp[[i]] <- combn(all, m=2, FUN=paste, collapse=delim)
+	if(format == "vector" & delim != "-") comp <- sapply(names(comp), function(x) gsub("-", delim, comp[[x]]), simplify=FALSE)
+	if(format == "vector") return(comp)
+	if(format == "matrix") return(sapply(names(comp), function(x) do.call("rbind", strsplit(comp[[x]], "-")), simplify=FALSE))
 }
 ## Usage:
 # cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
