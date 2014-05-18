@@ -1,0 +1,13 @@
+# Project ID: My Experiment Name
+# The following line(s) allow to specify the contrasts needed for comparative analyses, such as DEG identification. All possible comparisons can be specified with 'CMPset: ALL'.
+# <CMP> CMPset1: C-B, C-D, C-E
+# <CMP> CMPset2: B-D, D-E
+FileName1	FileName2	SampleName	Factor	SampleLong	Experiment	Date
+/my/path/CGA1.fq.gz	/my/path/CGA2.fq.gz	C1	C	Ctrl1	11-Oct-13
+/my/path/TTA1.fq.gz	/my/path/TTA2.fq.gz	C2	C	Ctrl1	11-Oct-13
+/my/path/ACT1.fq.gz	/my/path/ACT2.fq.gz	B1	B	Treat1	1	11-Oct-13
+/my/path/GCC1.fq.gz	/my/path/GCC2.fq.gz	B2	B	Treat1	1	03-Mar-14
+/my/path/CGA1.fq.gz	/my/path/CGA2.fq.gz	D1	D	Treat2	1	03-Mar-14
+/my/path/TTA1.fq.gz	/my/path/TTA2.fq.gz	D2	D	Treat2	1	03-Mar-14
+/my/path/TGA1.fq.gz	/my/path/TGA2.fq.gz	E1	E	Treat3	1	03-Mar-14
+/my/path/ACA1.fq.gz	/my/path/ACA2.fq.gz	E2	E	Treat3	1	03-Mar-14

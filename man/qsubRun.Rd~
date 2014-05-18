@@ -1,0 +1,73 @@
+\name{qsubRun}
+\alias{qsubRun}
+\title{
+Submit command-line tools to cluster
+}
+\description{
+Submits command-line tools to queue (e.g. Torque) of compute cluster using run specifications defined by \code{runX} and \code{getQsubargs} functions. 
+}
+\usage{
+qsubRun(appfct, appargs, qsubargs = qsubargs, Nqsubs = 1, submitdir = "results", myfct = "systemPipeR")
+}
+\arguments{
+  \item{appfct}{
+	Accpets runX functions, such as \code{appfct="runTophat(appargs, runid)"}
+}
+  \item{appargs}{
+	Argument list returned by \code{systemArgs()}.
+}
+  \item{qsubargs}{
+	Argument list returned by \code{getQsubargs()}.
+}
+  \item{Nqsubs}{
+	Interger defining the number of qsub processes. Note: the function will not assign more qsub processes than there are FASTQ files. E.g. if there are 10 FASTQ files and \code{Nqsubs=20} then the function will generate only 10 qsub processes. To increase the number of CPU cores used by each process, one can increase the \code{p} value under \code{systemArgs()}.
+}
+  \item{submitdir}{
+	Directory from where qsub jobs should be submitted. Default is set to \code{results}.
+}
+  \item{myfct}{
+	Package to load. Name provided as character vector of length one. Default is \code{sytemPipeR}.
+}
+}
+\value{
+Returns list where list components contain FASTQ file names and their names are the qsub process IDs assiged by the queuing system. In addition, three files will be generated for each qsub submission process: \code{submitargs0X} (R object containing appargs), \code{submitargs0X.R} (R script using appargs) and \code{submitargs0X.sh} (shell submission script). In addition, the chosen \code{runX} function will output a \code{submitargs0X_log} file for each qsub process containing the executable commands processed by each qsub instance.
+}
+\references{
+...
+}
+\author{
+Thomas Girke
+}
+\seealso{
+...
+}
+\examples{
+\dontrun{
+## Generate input targets file. Note: for \code{qsubRun()} the file targets_run.txt 
+## needs to contain absolute paths to FASTQ files in "FileName' column.
+library(systemPipeR)
+targets <- read.delim("targets.txt", comment.char = "#")
+write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+
+## Build Bowtie 2 index
+system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
+
+## Run as single process without submitting to cluster, e.g. via qsub -I
+mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
+myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
+myref <- "./data/My_genome.fasta"
+tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mygff="My_specie.gff", mytargets="targets_run.txt")
+bampaths <- runTophat(tophatargs=tophatargs, runid="01")
+
+## Submit to compute nodes
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+
+## Alignment stats
+read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
+read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
+write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
+
+}
+}
+\keyword{ utilities }

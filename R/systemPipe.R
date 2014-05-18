@@ -59,7 +59,7 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 #########################################################################
 ## Function to run Tophat2 including sorting and indexing of BAM files ##
 #########################################################################
-runTophat <- function(tophatargs=tophatargs, runid="01") {
+runTophat <- function(tophatargs, runid="01") {
 	library(modules); library(Rsamtools)
 	moduleload(tophatargs$modules[1]); moduleload(tophatargs$modules[2]) # loads bowtie2/tophat2 from module system
 	tmp <- paste(tophatargs$outpath, gsub("^.*/", "", tophatargs$infile1), ".tophat/accepted_hits.bam", sep="")
@@ -90,7 +90,7 @@ runTophat <- function(tophatargs=tophatargs, runid="01") {
 ######################################################################### 
 ## Function to run Bowtie2 including sorting and indexing of BAM files ##
 #########################################################################
-runBowtie <- function(bowtieargs=bowtieargs, runid="01") {
+runBowtie <- function(bowtieargs, runid="01") {
 	library(modules); library(Rsamtools)
 	moduleload(bowtieargs$modules[1]) # loads bowtie2 from module system
 	tmp <- paste(bowtieargs$outpath, gsub("^.*/", "", bowtieargs$infile1), ".bam", sep="")
@@ -138,22 +138,24 @@ getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=
 ## Usage:
 # qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 
-##########################################################################
-## Function to submit to job to the cluster (e.g. runTophat or similar) ##
-##########################################################################
-qsubRun <- function(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipe.R") {
+########################################################################
+## Function to submit jobs to the cluster (e.g. runTophat or similar) ##
+########################################################################
+qsubRun <- function(appfct, appargs, qsubargs, Nqsubs=1, submitdir="results", myfct="systemPipeR") {
 	mydir <- getwd()
 	setwd(submitdir)
 	splitvector <- sort(rep_len(1:Nqsubs, length.out=length(appargs$infile1)))
 	filesets <- split(appargs$infile1, splitvector)
+	filesets2 <- split(appargs$infile2, splitvector)
 	qsub_command <- paste(qsubargs$software, " -q ", qsubargs$queue, " -l ", qsubargs$Nnodes, ":ppn=", qsubargs$cores, ",", qsubargs$memory, ",", qsubargs$time, sep="")	
 	jobids <- NULL
 	for(i in 1:Nqsubs) {
 		appargs[["infile1"]] <- filesets[[i]]
+		appargs[["infile2"]] <- filesets2[[i]]
 		counter <- formatC(i, width = 2, format = "d", flag = "0")
 		appfct <- gsub("runid.*)", paste("runid=", "'", counter, "'", ")", sep=""), appfct) # Passes on proper runid
 		save(list=c("appargs"), file=paste("submitargs", counter, sep="")) 
-		rscript <- c(paste("source('", myfct, "')", sep=""), paste("load('submitargs", counter, "')", sep=""), appfct)
+		rscript <- c(paste("library('", myfct, "')", sep=""), paste("load('submitargs", counter, "')", sep=""), appfct)
 		writeLines(rscript, paste("submitargs", counter, ".R", sep=""))
 		writeLines(c("#!/bin/bash", "cd $PBS_O_WORKDIR", paste("Rscript --verbose submitargs", counter, ".R", sep="")), paste("submitargs", counter, ".sh", sep=""))
 		myqsub <- paste(qsub_command, paste("submitargs", counter, ".sh", sep=""))
@@ -201,8 +203,8 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 ########################
 ## RPKM Normalization ##
 ########################
-returnRPKM <- function(counts, gffsub) {
-        geneLengthsInKB <- sum(width(reduce(gffsub)))/1000 # Length of exon union per gene in kbp
+returnRPKM <- function(counts, ranges) {
+        geneLengthsInKB <- sum(width(reduce(ranges)))/1000 # Length of exon union per gene in kbp
         millionsMapped <- sum(counts)/1e+06 # Factor for converting to million of mapped reads.
         rpm <- counts/millionsMapped # RPK: reads per kilobase of exon model.
         rpkm <- rpm/geneLengthsInKB # RPKM: reads per kilobase of exon model per million mapped reads.
@@ -210,17 +212,17 @@ returnRPKM <- function(counts, gffsub) {
 }
 
 ## Usage:
-# countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
+# countDFrpkm <- apply(countDF, 2, function(x) returnRPKM(counts=x, ranges=eByg))
 
 ###############################################
 ## Read Sample Comparisons from Targets File ##
 ###############################################
 ## Parses sample comparisons from <CMP> line(s) in targets.txt file. All possible
 ## comparisons can be specified with 'CMPset: ALL'.
-readComp <- function(myfile, format="vector", delim="-") {
+readComp <- function(file, format="vector", delim="-") {
 	if(!format %in% c("vector", "matrix")) stop("Argument format can only be assigned: vector or matrix!")
 	## Parse <CMP> line
-	comp <- readLines(myfile)
+	comp <- readLines(file)
 	comp <- comp[grepl("<CMP>", comp)]
 	comp <- gsub("#.*<CMP>| {1,}", "", comp)
 	comp <- strsplit(comp, ":|,")
@@ -230,7 +232,7 @@ readComp <- function(myfile, format="vector", delim="-") {
 	## Check whether all samples are present in Factor column of targets file
 	checkvalues <- unique(unlist(strsplit(unlist(comp), "-")))
 	checkvalues <- checkvalues[checkvalues!="ALL"]
-	all <- unique(as.character(read.delim(myfile, comment.char = "#")$Factor))
+	all <- unique(as.character(read.delim(file, comment.char = "#")$Factor))
 	if(any(!checkvalues %in% all)) stop(paste("The following samples are not present in Factor column of targets file:", paste(checkvalues[!checkvalues %in% all], collapse=", ")))	
 
 	## Generate outputs 
@@ -241,4 +243,4 @@ readComp <- function(myfile, format="vector", delim="-") {
 	if(format == "matrix") return(sapply(names(comp), function(x) do.call("rbind", strsplit(comp[[x]], "-")), simplify=FALSE))
 }
 ## Usage:
-# cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
+# cmp <- readComp(file="targets.txt", format="vector", delim="-")

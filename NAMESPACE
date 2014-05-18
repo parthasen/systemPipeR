@@ -1,0 +1,30 @@
+## IMPORTS
+import(Rsamtools, ShortRead)
+
+## EXPORTS
+## S4 Classes
+#exportClasses(
+#   "..."
+#)
+
+## Methods
+#exportMethods(
+#   "..."
+#)
+
+## Functions
+# exportPattern("^[[:alpha:]]+")
+export(
+    ## Data sets
+    ## Source: ./data/
+#    "targets", "targetsPE",
+
+    ## Import/exports
+    ## Source: systemPipe.R
+    "readComp",
+
+    ## Utilities
+    ## Source: systemPipe.R
+    "alignStats", "getQsubargs", "qsubRun", "returnRPKM", 
+    "runBowtie", "runTophat", "systemArgs"
+) 
