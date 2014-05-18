@@ -10,7 +10,8 @@ job submissions or batch submissions to queuing systems of clusters
 Instructions for running [_systemPipeR_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/analysis.R)
 are given in _./vignettes/analysis.R_. The expected
 format to define the RNA-Seq samples (e.g. FASTQ files) and their labels
-are given in _./inst/extdata/targets.txt_ and _./inst/extdata/targetsPE.txt_ (latter is for PE reads). Currently, 
+are given in [_targets.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targets.txt) 
+and [_targetsPE.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targetsPE.txt) (latter is for PE reads). Currently, 
 supported command-line software includes:
 
  - Bowtie 2
