@@ -3,8 +3,8 @@
 ##########################
 
 ## Load packages and functions
+library(systemPipeR)
 library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
-source("systemPipe.R")
 
 ## Generate input targets file. Note: for 'qsubRun()' the file targets_run.txt needs to contain absolute paths to FASTQ files in the "FileName' column.
 targets <- read.delim("targets.txt", comment.char = "#")
