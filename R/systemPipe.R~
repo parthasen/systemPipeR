@@ -60,7 +60,7 @@ systemArgs <- function(app="tophat2", mymodules, mydir, myargs, myref, mygff, my
 ## Function to run Tophat2 including sorting and indexing of BAM files ##
 #########################################################################
 runTophat <- function(tophatargs, runid="01") {
-	require(Rsamtools)
+	library(Rsamtools)
 	moduleload(tophatargs$modules[1]); moduleload(tophatargs$modules[2]) # loads bowtie2/tophat2 from module system
 	tmp <- paste(tophatargs$outpath, gsub("^.*/", "", tophatargs$infile1), ".tophat/accepted_hits.bam", sep="")
 	bam_paths <- rep(FALSE, length(tmp)); names(bam_paths) <- tmp

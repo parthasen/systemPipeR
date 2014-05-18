@@ -26,5 +26,5 @@ export(
     ## Utilities
     ## Source: systemPipe.R
     "alignStats", "getQsubargs", "qsubRun", "returnRPKM", 
-    "runBowtie", "runTophat", "systemArgs", "moduleload", "modulelist"
+    "runBowtie", "runTophat", "systemArgs"
 ) 
