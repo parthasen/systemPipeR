@@ -7,9 +7,9 @@ batch submissions to a queuing system (currently tested only with Torque) of
 a compute cluster.
 
 ### Usage
-Instructions for running _systemPipe.R_ are given in _analysis.R_. The expected
+Instructions for running _systemPipeR_ are given in _./vignettes/analysis.R_. The expected
 format to define the RNA-Seq samples (e.g. FASTQ files) and their labels
-are given in _targets.txt_ and _targetsPE.txt_ (latter is for PE reads). Currently, 
+are given in _./inst/extdata/targets.txt_ and _./inst/extdata/targetsPE.txt_ (latter is for PE reads). Currently, 
 supported command-line software includes:
 
  - Bowtie 2
