@@ -30,7 +30,7 @@ modulelist()
 ...
 }
 \author{
-Tyler Backman
+Tyler Backman and Thomas Girke
 }
 \note{
 ...
