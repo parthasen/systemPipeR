@@ -1,9 +1,0 @@
-Package: systemPipeR
-Type: Package
-Title: systemPipeR: utilities to run command-line NGS software on one or many compute nodes
-Version: 1.0
-Date: 2014-05-14
-Author: Thomas Girke
-Maintainer: Thomas Girke <thomas.girke@ucr.edu>
-Description: Run command-line software for NG sequence analysis from within R. Supports interactive job submissions on a single machine or batch submissions to a queuing system of a compute cluster.
-License: Artistic-2.0
