@@ -9,9 +9,10 @@
 % \VignetteKeywords{}
 % \VignettePackage{gpls}
 \documentclass{article}
-<<style, echo=FALSE, results=tex>>=
+<<style, eval=TRUE, echo=FALSE, results=tex>>=
 BiocStyle::latex()
 @
+
 \usepackage[authoryear,round]{natbib}
 \bibliographystyle{plainnat}
 \def\bibsection{\section{References}}
@@ -63,7 +64,7 @@ unlink("test.db")
 \subsection{Installation}
 The R software can be downloaded from CRAN (\url{http://cran.at.r-project.org/}) and the \Rpackage{systemPipeR} package from GitHub (\url{https://github.com/tgirke/systemPipeR}). The \Rpackage{systemPipeR} package can be installed from R using the \Rfunction{install.packages} command after downloading and uncompressing the package directory. 
 <<eval=FALSE>>=
-# $ R CMD build systemPipeR # Builds package
+system("R CMD build systemPipeR") # Builds package
 install.packages("systemPipeR.1.0.0.tar.gz", repos=NULL, type="source") # Installs the package
 @
 
@@ -138,7 +139,7 @@ read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 
-\subsection{Alignement with Bowtie 2 (here for miRNA profiling experiment)}
+\subsection{Alignment with Bowtie 2 (here for miRNA profiling experiment)}
 Run as single process without submitting to cluster, e.g. via qsub -I
 <<eval=FALSE, keep.source=TRUE>>=
 mymodules <- c("bowtie2/2.1.0")
