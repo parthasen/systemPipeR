@@ -1,7 +1,7 @@
 Package: systemPipeR
 Type: Package
 Title: systemPipeR: utilities to run command-line NGS software on one or many compute nodes
-Version: 1.0
+Version: 1.0.0
 Date: 2014-05-14
 Author: Thomas Girke
 Maintainer: Thomas Girke <thomas.girke@ucr.edu>

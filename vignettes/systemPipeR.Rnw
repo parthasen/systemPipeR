@@ -47,14 +47,16 @@ unlink("test.db")
 %\bibliographystyle{plainnat}
 
 \begin{document}
-\title{systemPipeR: pipeline to run command-line NGS software}
+\title{\Rpackage{systemPipeR}: pipeline to run command-line NGS software}
 \author{Thomas Girke \\
  Email contact: thomas.girke@ucr.edu}
 \maketitle
 
 \section{Introduction}
 
-\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports interactive job submissions or batch submissions to queuing systems of clusters (currently tested only with Torque) \citep{chen2002psm}. 
+\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). Currently, the following command-line aligners are supported: \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}. 
+
+\tableofcontents
 
 \section{Getting Started}
 
@@ -67,12 +69,133 @@ install.packages("systemPipeR.1.0.0.tar.gz", repos=NULL, type="source") # Instal
 
 \subsection{Loading the Package and Documentation}
 
-<<eval=TRUE, keep.source=TRUE>>=
-library("systemPipeR") # Loads the package
-@
 <<eval=FALSE, keep.source=TRUE>>=
+library("systemPipeR") # Loads the package
 library(help="systemPipeR") # Lists all functions and classes 
 vignette("systemPipeR") # Opens this PDF manual from R
+@
+
+\section{Structure of \Robject{targets} file}
+The \Robject{targets} file defines all samples and comparisons of the analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
+<<eval=TRUE, keep.source=TRUE>>=
+library(systemPipeR)
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+read.delim(targetspath, comment.char = "#")
+@
+Comparisons are defined in the header lines of the \Robject{targets} starting with '\# <CMP>'. The 
+function \Rfunction{readComp} imports the comparison and stores them in a \Robject{list}.
+<<eval=TRUE, keep.source=TRUE>>=
+readComp(file=targetspath, format="vector", delim="-")
+@
+
+\section{Workflow}
+\subsection{Define environment settings and samples}
+Load packages and functions
+<<eval=FALSE, keep.source=TRUE>>=
+library(systemPipeR)
+library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
+@
+
+\noindent Generate input targets file. Note: for 'qsubRun()' the file \Robject{targets\_run.txt} needs to contain absolute paths to FASTQ files in the "FileName' column.
+<<eval=FALSE, keep.source=TRUE>>=
+targets <- read.delim("targets.txt", comment.char = "#")
+write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+@
+
+\subsection{Alignment with Tophat 2}
+Build Bowtie 2 index.
+<<eval=FALSE, keep.source=TRUE>>=
+system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
+@
+
+\noindent Run as single process without submitting to cluster, \textit{e.g.} via \Rfunction{qsub -I}.
+<<eval=FALSE, keep.source=TRUE>>=
+mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
+myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
+myref <- "./data/My_genome.fasta"
+tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mygff="My_specie.gff", mytargets="targets_run.txt")
+bampaths <- runTophat(tophatargs=tophatargs, runid="01")
+@
+
+\noindent Submit to compute nodes.
+<<eval=FALSE, keep.source=TRUE>>=
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+@
+
+\noindent Alignment Stats
+<<eval=FALSE, keep.source=TRUE>>=
+read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
+read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
+write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
+@
+
+\subsection{Alignement with Bowtie 2 (here for miRNA profiling experiment)}
+Run as single process without submitting to cluster, e.g. via qsub -I
+<<eval=FALSE, keep.source=TRUE>>=
+mymodules <- c("bowtie2/2.1.0")
+myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
+myref <- "./data/My_genome.fasta"
+bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mytargets="targets_run.txt")
+bampaths <- runBowtie(bowtieargs=bowtieargs, runid="01")
+@
+
+\noindent Submit to compute nodes
+<<eval=FALSE, keep.source=TRUE>>=
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", bowtieargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+@
+
+\subsection{Read counting for mRNA profiling experiments}
+Create txdb (do only once)
+<<eval=FALSE, keep.source=TRUE>>=
+txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
+saveDb(txdb, file="./data/My_species.sqlite")
+@
+
+\noindent Read counting with summarizeOverlaps in parallel mode with multiple cores
+<<eval=FALSE, keep.source=TRUE>>=
+library(BiocParallel)
+txdb <- loadDb("./data/My_species.sqlite")
+eByg <- exonsBy(txdb, by="gene")
+bams <- names(bampaths); names(bams) <- targets$SampleName
+bfl <- BamFileList(bams, yieldSize=50000, index=character())
+multicoreParam <- MulticoreParam(workers=4); register(multicoreParam); registered()
+counteByg <- bplapply(bfl, function(x) summarizeOverlaps(gff, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
+countDFeByg <- sapply(seq(along=counteByg), function(x) assays(counteByg[[x]])$counts)
+rownames(countDFeByg) <- names(rowData(counteByg[[1]])); colnames(countDFeByg) <- names(bfl)
+rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
+write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+@
+
+\subsection{Read counting for miRNA profiling experiments}
+Download miRNA genes from miRBase
+<<eval=FALSE, keep.source=TRUE>>=
+system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
+gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
+gff <- split(gff, elementMetadata(gff)$ID)
+bams <- names(bampaths); names(bams) <- targets$SampleName
+bfl <- BamFileList(bams, yieldSize=50000, index=character())
+countDFmiR <- summarizeOverlaps(gff, bfl, mode="Union", ignore.strand=FALSE, inter.feature=FALSE) # Note: inter.feature=FALSE important since pre and mature miRNA ranges overlap
+rpkmDFmiR <- apply(countDFmiR, 2, function(x) returnRPKM(counts=x, gffsub=gff))
+write.table(assays(countDFmiR)$counts, "results/countDFmiR.xls", col.names=NA, quote=FALSE, sep="\t")
+write.table(rpkmDFmiR, "results/rpkmDFmiR.xls", col.names=NA, quote=FALSE, sep="\t")
+@
+
+\subsection{Correlation analysis of samples}
+<<eval=FALSE, keep.source=TRUE>>=
+library(ape)
+rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
+rpkmDFeByg <- rpkmDFeByg[rowMeans(rpkmDFeByg) > 50,]
+d <- cor(rpkmDFeByg, method="spearman")
+hc <- hclust(as.dist(1-d))
+plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
+@
+
+\subsection{Differential analysis} 
+<<eval=FALSE, keep.source=TRUE>>=
+cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
 @
 
 \section{Version Information}
@@ -81,7 +204,7 @@ toLatex(sessionInfo())
 @
 
 \section{Funding}
-This software was developed with funding from the National Science Foundation: \href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0957099}{{\textcolor{blue}{ABI-0957099}}}, 2010-0520325 and IGERT-0504249.
+This software was developed with funding from the National Science Foundation: \href{http://www.nsf.gov/awardsearch/showAward?AWD_ID=1021969}{{\textcolor{blue}{MCB-1021969 }}}.
 
 
 \bibliography{bibtex}
