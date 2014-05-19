@@ -1,0 +1,89 @@
+% Manual compile
+% Sweave("systemPipeR.Rnw"); system("pdflatex systemPipeR.tex; bibtex systemPipeR; pdflatex systemPipeR.tex; pdflatex systemPipeR.tex")
+% echo 'Sweave("systemPipeR.Rnw")' | R --slave; echo 'Stangle("systemPipeR.Rnw")' | R --slave; pdflatex systemPipeR.tex;  bibtex systemPipeR; pdflatex systemPipeR.tex
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+% \VignetteIndexEntry{ChemmineR Tutorial}
+% \VignetteDepends{}
+% \VignetteKeywords{}
+% \VignettePackage{gpls}
+\documentclass{article}
+<<style, echo=FALSE, results=tex>>=
+BiocStyle::latex()
+@
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{plainnat}
+\def\bibsection{\section{References}}
+
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{url}
+
+%\newcommand{\comment}[1]{}
+%\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+%\newcommand{\Robject}[1]{{\texttt{#1}}}
+%\newcommand{\Rpackage}[1]{{\textit{#1}}}
+%\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+%\newcommand{\Rclass}[1]{{\textit{#1}}}
+	
+% Define header and footer area with fandyhdr package (see: http://www.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\rhead{\nouppercase{\leftmark}}
+\lhead{\textit{systemPipeR Manual}}
+\rfoot{\thepage}
+
+<<echo=FALSE>>=
+options(width=95)
+unlink("test.db")
+@
+%\parindent 0in
+
+%\bibliographystyle{plainnat}
+
+\begin{document}
+\title{systemPipeR: pipeline to run command-line NGS software}
+\author{Thomas Girke \\
+ Email contact: thomas.girke@ucr.edu}
+\maketitle
+
+\section{Introduction}
+
+\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports interactive job submissions or batch submissions to queuing systems of clusters (currently tested only with Torque) \citep{chen2002psm}. 
+
+\section{Getting Started}
+
+\subsection{Installation}
+The R software can be downloaded from CRAN (\url{http://cran.at.r-project.org/}) and the \Rpackage{systemPipeR} package from GitHub (\url{https://github.com/tgirke/systemPipeR}). The \Rpackage{systemPipeR} package can be installed from R using the \Rfunction{install.packages} command after downloading and uncompressing the package directory. 
+<<eval=FALSE>>=
+# $ R CMD build systemPipeR # Builds package
+install.packages("systemPipeR.1.0.0.tar.gz", repos=NULL, type="source") # Installs the package
+@
+
+\subsection{Loading the Package and Documentation}
+
+<<eval=TRUE, keep.source=TRUE>>=
+library("systemPipeR") # Loads the package
+@
+<<eval=FALSE, keep.source=TRUE>>=
+library(help="systemPipeR") # Lists all functions and classes 
+vignette("systemPipeR") # Opens this PDF manual from R
+@
+
+\section{Version Information}
+<<sessionInfo, results=tex, print=TRUE>>=
+toLatex(sessionInfo())
+@
+
+\section{Funding}
+This software was developed with funding from the National Science Foundation: \href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0957099}{{\textcolor{blue}{ABI-0957099}}}, 2010-0520325 and IGERT-0504249.
+
+
+\bibliography{bibtex}
+
+\end{document}
