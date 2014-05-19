@@ -7,8 +7,8 @@ job submissions or batch submissions to queuing systems of clusters
 (currently tested only with Torque).
 
 ### Usage
-Instructions for running _systemPipeR_ are given in
-[_analysis.R_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/analysis.R).
+Instructions for running _systemPipeR_ are given in the
+[_vignette_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeR.pdf?raw=true).
 The expected format to define the RNA-Seq samples (e.g. FASTQ files) and their
 labels are given in
 [_targets.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targets.txt)
