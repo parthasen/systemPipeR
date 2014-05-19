@@ -37,33 +37,41 @@ read.delim(targetspath, comment.char = "#")
 
 
 ###################################################
-### code chunk number 6: systemPipeR.Rnw:87-88
+### code chunk number 6: systemPipeR.Rnw:87-90
+###################################################
+library(systemPipeR)
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+read.delim(targetspath, comment.char = "#")
+
+
+###################################################
+### code chunk number 7: systemPipeR.Rnw:95-96
 ###################################################
 readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 7: systemPipeR.Rnw:94-96 (eval = FALSE)
+### code chunk number 8: systemPipeR.Rnw:102-104 (eval = FALSE)
 ###################################################
 ## library(systemPipeR)
 ## library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
 
 
 ###################################################
-### code chunk number 8: systemPipeR.Rnw:100-102 (eval = FALSE)
+### code chunk number 9: systemPipeR.Rnw:108-110 (eval = FALSE)
 ###################################################
 ## targets <- read.delim("targets.txt", comment.char = "#")
 ## write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
 
 
 ###################################################
-### code chunk number 9: systemPipeR.Rnw:107-108 (eval = FALSE)
+### code chunk number 10: systemPipeR.Rnw:115-116 (eval = FALSE)
 ###################################################
 ## system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 
 
 ###################################################
-### code chunk number 10: systemPipeR.Rnw:112-117 (eval = FALSE)
+### code chunk number 11: systemPipeR.Rnw:120-125 (eval = FALSE)
 ###################################################
 ## mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
 ## myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
@@ -73,14 +81,14 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 11: systemPipeR.Rnw:121-123 (eval = FALSE)
+### code chunk number 12: systemPipeR.Rnw:129-131 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 ## (joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
 
 
 ###################################################
-### code chunk number 12: systemPipeR.Rnw:127-130 (eval = FALSE)
+### code chunk number 13: systemPipeR.Rnw:135-138 (eval = FALSE)
 ###################################################
 ## read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
 ## read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
@@ -88,7 +96,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 13: systemPipeR.Rnw:135-140 (eval = FALSE)
+### code chunk number 14: systemPipeR.Rnw:143-148 (eval = FALSE)
 ###################################################
 ## mymodules <- c("bowtie2/2.1.0")
 ## myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
@@ -98,21 +106,21 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 14: systemPipeR.Rnw:144-146 (eval = FALSE)
+### code chunk number 15: systemPipeR.Rnw:152-154 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", bowtieargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 ## (joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
 
 
 ###################################################
-### code chunk number 15: systemPipeR.Rnw:151-153 (eval = FALSE)
+### code chunk number 16: systemPipeR.Rnw:159-161 (eval = FALSE)
 ###################################################
 ## txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
 ## saveDb(txdb, file="./data/My_species.sqlite")
 
 
 ###################################################
-### code chunk number 16: systemPipeR.Rnw:157-169 (eval = FALSE)
+### code chunk number 17: systemPipeR.Rnw:165-177 (eval = FALSE)
 ###################################################
 ## library(BiocParallel)
 ## txdb <- loadDb("./data/My_species.sqlite")
@@ -129,7 +137,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 17: systemPipeR.Rnw:174-183 (eval = FALSE)
+### code chunk number 18: systemPipeR.Rnw:182-191 (eval = FALSE)
 ###################################################
 ## system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
 ## gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
@@ -143,7 +151,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 18: systemPipeR.Rnw:187-193 (eval = FALSE)
+### code chunk number 19: systemPipeR.Rnw:195-201 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -154,13 +162,13 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 19: systemPipeR.Rnw:197-198 (eval = FALSE)
+### code chunk number 20: systemPipeR.Rnw:205-206 (eval = FALSE)
 ###################################################
 ## cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 20: sessionInfo
+### code chunk number 21: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 

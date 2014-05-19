@@ -82,7 +82,15 @@ library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
 read.delim(targetspath, comment.char = "#")
 @
-Comparisons are defined in the header lines of the \Robject{targets} starting with '\# <CMP>'. The 
+
+\noindent Structure of \Robject{targets} file for paired end (PE) samples.
+<<eval=TRUE, keep.source=TRUE>>=
+library(systemPipeR)
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+read.delim(targetspath, comment.char = "#")
+@
+
+\noindent Comparisons are defined in the header lines of the \Robject{targets} starting with '\# <CMP>'. The 
 function \Rfunction{readComp} imports the comparison and stores them in a \Robject{list}.
 <<eval=TRUE, keep.source=TRUE>>=
 readComp(file=targetspath, format="vector", delim="-")
