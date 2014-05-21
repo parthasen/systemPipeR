@@ -260,4 +260,70 @@ moduleload <- function(module) {
 	Sys.setenv(PATH=modpath) 
 }
 
+#######################################################################
+## Run edgeR GLM with entire count matrix or subsetted by comparison ##
+#######################################################################
+## If independent=TRUE then countDF will be subsetted for each comparison
+run_edgeR <- function(countDF=countDF, targets=targets, cmp=cmp, independent=TRUE, paired=NULL, mdsplot="") {
+    require(edgeR)
+    samples <- as.character(targets$Factor); names(samples) <- paste(as.character(targets$SampleName), "", sep="")
+    countDF <- countDF[, names(samples)]
+    countDF[is.na(countDF)] <- 0
+    edgeDF <- data.frame(row.names=rownames(countDF))
+    group <- as.character(samples)
+    if(independent==TRUE) {
+        loopv <- seq(along=cmp[,1])
+    } else {
+	loopv <- 1
+    }
+    for(j in loopv) {
+	## Filtering and normalization
+	y <- DGEList(counts=countDF, group=group) # Constructs DGEList object
+	if(independent == TRUE) {
+	    subset <- samples[samples %in% cmp[j,]]
+	    y <- y[, names(subset)]
+        }
+	keep <- rowSums(cpm(y)>1) >= 2; y <- y[keep, ]
+	y <- calcNormFactors(y)
+	## Design matrix
+	if(length(paired)==0) {
+		design <- model.matrix(~0+y$samples$group, data=y$samples)
+		colnames(design) <- levels(y$samples$group)
+	} else {
+        	if(length(paired)>0 & independent==FALSE) stop("When providing values under 'paired' also set independent=TRUE")
+		Subject <- factor(samplepairs[samples %in% cmp[j,]])
+		Treat <- y$samples$group
+        	design <- model.matrix(~Subject+Treat)
+		levels(design) <- levels(y$samples$group)
+	}
+        ## Estimate dispersion
+	y <- estimateGLMCommonDisp(y, design, verbose=TRUE) # Estimates common dispersions
+	y <- estimateGLMTrendedDisp(y, design) # Estimates trended dispersions
+	y <- estimateGLMTagwiseDisp(y, design) # Estimates tagwise dispersions 
+	fit <- glmFit(y, design) # Fits the negative binomial GLM for each tag and produces an object of class DGEGLM with some new components.
+	## Contrast matrix is optional but makes anlysis more transparent
+	if(independent == TRUE) {
+		mycomp <- paste(cmp[j,1], cmp[j,2], sep="-")
+	} else {
+		mycomp <- paste(cmp[,1], cmp[,2], sep="-")
+	}
+	if(length(paired)==0) contrasts <- makeContrasts(contrasts=mycomp, levels=design)
+	for(i in seq(along=mycomp)) {
+	    if(length(paired)==0) {
+            	lrt <- glmLRT(fit, contrast=contrasts[,i]) # Takes DGEGLM object and carries out the likelihood ratio test. 
+	    } else {
+                lrt <- glmLRT(fit) # No contrast matrix with paired design
+            }
+            deg <- as.data.frame(topTags(lrt, n=length(rownames(y))))
+	    colnames(deg) <- paste(paste(mycomp[i], collapse="_"), colnames(deg), sep="_")
+	    edgeDF <- cbind(edgeDF, deg[rownames(edgeDF),]) 
+	}
+	if(nchar(mdsplot)>0) pdf(paste("./results/sample_MDS_", paste(unique(subset), collapse="-"), ".pdf", sep="")); plotMDS(y); dev.off()
+    }
+    return(edgeDF)
+}
+## Usage:
+# cmp <- t(combn(unique(as.character(targets$Factor)), m=2)) # Defines comparisons in run_edgeR, here all possible ones
+# edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp, independent=TRUE, mdsplot="")
+
 
