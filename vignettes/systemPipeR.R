@@ -162,9 +162,12 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 20: systemPipeR.Rnw:206-207 (eval = FALSE)
+### code chunk number 20: systemPipeR.Rnw:206-210 (eval = FALSE)
 ###################################################
-## cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
+## targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+## targets <- read.delim(targetspath, comment.char = "#")
+## cmp <- readComp(file=targetspath, format="matrix", delim="-")
+## edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################

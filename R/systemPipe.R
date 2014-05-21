@@ -323,7 +323,7 @@ run_edgeR <- function(countDF=countDF, targets=targets, cmp=cmp, independent=TRU
     return(edgeDF)
 }
 ## Usage:
-# cmp <- t(combn(unique(as.character(targets$Factor)), m=2)) # Defines comparisons in run_edgeR, here all possible ones
-# edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp, independent=TRUE, mdsplot="")
+# cmp <- readComp(file=targetspath, format="matrix", delim="-")
+# edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 

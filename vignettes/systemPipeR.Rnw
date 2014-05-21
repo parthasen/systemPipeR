@@ -202,9 +202,12 @@ hc <- hclust(as.dist(1-d))
 plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
 @
 
-\subsection{Differential analysis} 
+\subsection{DEG analysis with \Rpackage{edgeR}} 
 <<eval=FALSE, keep.source=TRUE>>=
-cmp <- readComp(myfile="targets.txt", format="vector", delim="-")
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+targets <- read.delim(targetspath, comment.char = "#")
+cmp <- readComp(file=targetspath, format="matrix", delim="-")
+edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 @
 
 \section{Version Information}
