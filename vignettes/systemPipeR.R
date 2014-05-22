@@ -162,16 +162,21 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 20: systemPipeR.Rnw:206-210 (eval = FALSE)
+### code chunk number 20: systemPipeR.Rnw:206-209
 ###################################################
-## targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
-## targets <- read.delim(targetspath, comment.char = "#")
-## cmp <- readComp(file=targetspath, format="matrix", delim="-")
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targets <- read.delim(targetspath, comment.char = "#")
+(cmp <- readComp(file=targetspath, format="matrix", delim="-"))
+
+
+###################################################
+### code chunk number 21: systemPipeR.Rnw:211-212 (eval = FALSE)
+###################################################
 ## edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################
-### code chunk number 21: sessionInfo
+### code chunk number 22: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 

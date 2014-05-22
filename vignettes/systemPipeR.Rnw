@@ -203,10 +203,12 @@ plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.labe
 @
 
 \subsection{DEG analysis with \Rpackage{edgeR}} 
-<<eval=FALSE, keep.source=TRUE>>=
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+<<eval=TRUE, keep.source=TRUE>>=
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
 targets <- read.delim(targetspath, comment.char = "#")
-cmp <- readComp(file=targetspath, format="matrix", delim="-")
+(cmp <- readComp(file=targetspath, format="matrix", delim="-"))
+@
+<<eval=FALSE, keep.source=TRUE>>=
 edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 @
 
