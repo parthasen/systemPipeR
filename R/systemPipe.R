@@ -264,8 +264,7 @@ moduleload <- function(module) {
 ## Run edgeR GLM with entire count matrix or subsetted by comparison ##
 #######################################################################
 ## If independent=TRUE then countDF will be subsetted for each comparison
-run_edgeR <- function(countDF=countDF, targets=targets, cmp=cmp, independent=TRUE, paired=NULL, mdsplot="") {
-    require(edgeR)
+run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsplot="") {
     samples <- as.character(targets$Factor); names(samples) <- paste(as.character(targets$SampleName), "", sep="")
     countDF <- countDF[, names(samples)]
     countDF[is.na(countDF)] <- 0
