@@ -3,21 +3,23 @@ import(Rsamtools, ShortRead)
 
 ## EXPORTS
 ## S4 Classes
-#exportClasses(
-#   "..."
-#)
+exportClasses(
+    "SYSargs"
+)
 
 ## Methods
-#exportMethods(
-#   "..."
-#)
+exportMethods(
+    "modules", "software", "cores", "other", "reference",
+    "infile1", "infile2", "outfile1", "SampleName", "sysargs",
+    "outpaths", "show", "names" 
+)
 
 ## Functions
 # exportPattern("^[[:alpha:]]+")
 export(
     ## Data sets
     ## Source: ./data/
-#    "targets", "targetsPE",
+    # "targets", "targetsPE",
 
     ## Import/exports
     ## Source: systemPipe.R
@@ -26,6 +28,6 @@ export(
     ## Utilities
     ## Source: systemPipe.R
     "alignStats", "getQsubargs", "qsubRun", "returnRPKM", 
-    "runBowtie", "runTophat", "systemArgs", "moduleload", 
+    "runCommandline", "systemArgs", "moduleload", 
     "modulelist", "run_edgeR"
 ) 

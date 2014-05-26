@@ -1,34 +1,29 @@
-\name{systemArgs}
-\alias{systemArgs}
+\name{runCommandline}
+\alias{runCommandline}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Constructs SYSargs object from param and targets files
+Execute SYSargs
 }
 \description{
-Constructs \code{SYSargs} object from 'param' and 'targets' files.
-The 'param' file sets the parameters of the command-line software
-and the 'targets' file defines the samples (e.g. FASTQ files).  
+Function to execute system parameters specified in \code{SYSargs} object
 }
 \usage{
-systemArgs(sysma, mytargets, type = "SYSargs")
+runCommandline(args, runid = "01")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{sysma}{ path to 'param' file; file structure follows a simple name/value syntax that
-	converted into JSON format; for details about the file structure see sample files provided
-	by package.
+  \item{args}{
+	object of class \code{SYSargs}
 }
-  \item{mytargets}{ path to targets file
-}
-  \item{type}{ \code{type="SYSargs"} returns \code{SYSargs}, \code{type="json"} returns param file 
-		content in JSON format (requires \code{rjson} library)
+  \item{runid}{
+	Run identifier used for log file to track system call commands. Default is \code{"01"}.
 }
 }
 \details{
 ...
 }
 \value{
-\code{SYSargs} object or \code{character} string in JSON format
+	Output files, their paths can be obtained with \code{outpaths()} from \code{SYSargs} container. 
+	In addition, a \code{character vector} is returned containing the same paths.
 }
 \references{
 ...
@@ -37,7 +32,7 @@ systemArgs(sysma, mytargets, type = "SYSargs")
 Thomas Girke
 }
 \seealso{
-\code{showClass("SYSargs")}
+...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 
@@ -61,3 +56,4 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 }
 }
 \keyword{ utilities }
+

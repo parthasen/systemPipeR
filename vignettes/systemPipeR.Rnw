@@ -65,7 +65,7 @@ unlink("test.db")
 The R software can be downloaded from CRAN (\url{http://cran.at.r-project.org/}) and the \Rpackage{systemPipeR} package from GitHub (\url{https://github.com/tgirke/systemPipeR}). The \Rpackage{systemPipeR} package can be installed from R using the \Rfunction{install.packages} command after downloading and uncompressing the package directory. 
 <<eval=FALSE>>=
 system("R CMD build systemPipeR") # Builds package
-install.packages("systemPipeR.1.0.0.tar.gz", repos=NULL, type="source") # Installs the package
+install.packages("systemPipeR.X.X.X.tar.gz", repos=NULL, type="source") # Installs the package
 @
 
 \subsection{Loading the Package and Documentation}
@@ -77,7 +77,7 @@ vignette("systemPipeR") # Opens this PDF manual from R
 @
 
 \section{Structure of \Robject{targets} file}
-The \Robject{targets} file defines all samples and comparisons of the analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
+The \Robject{targets} file defines all FASTQ files and sample comparisons of the analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
 <<eval=TRUE, keep.source=TRUE>>=
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
@@ -95,6 +95,17 @@ read.delim(targetspath, comment.char = "#")
 function \Rfunction{readComp} imports the comparison and stores them in a \Robject{list}.
 <<eval=TRUE, keep.source=TRUE>>=
 readComp(file=targetspath, format="vector", delim="-")
+@
+
+\section{Structure of \Robject{param} file and \Robject{SYSargs} container}
+\noindent Construct \Robject{SYSargs} object from param and targets files 
+<<eval=TRUE, keep.source=TRUE>>=
+parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
+read.delim(parampath, comment.char = "#")
+systemArgs(sysma=parampath, mytargets=targetspath, type="json")
+args <- systemArgs(sysma=parampath, mytargets=targetspath)
+args
+names(args); modules(args); cores(args); outpaths(args)[1]; sysargs(args)[1]
 @
 
 \section{Workflow}
@@ -119,17 +130,13 @@ system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 
 \noindent Run as single process without submitting to cluster, \textit{e.g.} via \Rfunction{qsub -I}.
 <<eval=FALSE, keep.source=TRUE>>=
-mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
-myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-myref <- "./data/My_genome.fasta"
-tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mygff="My_specie.gff", mytargets="targets_run.txt")
-bampaths <- runTophat(tophatargs=tophatargs, runid="01")
+bampaths <- runCommandline(args=args)
 @
 
 \noindent Submit to compute nodes.
 <<eval=FALSE, keep.source=TRUE>>=
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", package="systemPipeR"))
 @
 
 \noindent Alignment Stats

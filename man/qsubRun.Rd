@@ -7,7 +7,7 @@ Submit command-line tools to cluster
 Submits command-line tools to queue (e.g. Torque) of compute cluster using run specifications defined by \code{runX} and \code{getQsubargs} functions. 
 }
 \usage{
-qsubRun(appfct, appargs, qsubargs, Nqsubs = 1, submitdir = "results", myfct = "systemPipeR")
+qsubRun(appfct, appargs, qsubargs, Nqsubs = 1, submitdir = "results", package = "systemPipeR")
 }
 \arguments{
   \item{appfct}{
@@ -25,7 +25,7 @@ qsubRun(appfct, appargs, qsubargs, Nqsubs = 1, submitdir = "results", myfct = "s
   \item{submitdir}{
 	Directory from where qsub jobs should be submitted. Default is set to \code{results}.
 }
-  \item{myfct}{
+  \item{package}{
 	Package to load. Name provided as character vector of length one. Default is \code{sytemPipeR}.
 }
 }
@@ -61,7 +61,7 @@ bampaths <- runTophat(tophatargs=tophatargs, runid="01")
 
 ## Submit to compute nodes
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+(joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", package="systemPipeR"))
 
 ## Alignment stats
 read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 

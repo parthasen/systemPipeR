@@ -17,7 +17,7 @@ unlink("test.db")
 ### code chunk number 3: systemPipeR.Rnw:66-68 (eval = FALSE)
 ###################################################
 ## system("R CMD build systemPipeR") # Builds package
-## install.packages("systemPipeR.1.0.0.tar.gz", repos=NULL, type="source") # Installs the package
+## install.packages("systemPipeR.X.X.X.tar.gz", repos=NULL, type="source") # Installs the package
 
 
 ###################################################
@@ -51,44 +51,51 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 8: systemPipeR.Rnw:103-105 (eval = FALSE)
+### code chunk number 8: systemPipeR.Rnw:102-108
+###################################################
+parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
+read.delim(parampath, comment.char = "#")
+systemArgs(sysma=parampath, mytargets=targetspath, type="json")
+args <- systemArgs(sysma=parampath, mytargets=targetspath)
+args
+names(args); modules(args); cores(args); outpaths(args)[1]; sysargs(args)[1]
+
+
+###################################################
+### code chunk number 9: systemPipeR.Rnw:114-116 (eval = FALSE)
 ###################################################
 ## library(systemPipeR)
 ## library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
 
 
 ###################################################
-### code chunk number 9: systemPipeR.Rnw:109-111 (eval = FALSE)
+### code chunk number 10: systemPipeR.Rnw:120-122 (eval = FALSE)
 ###################################################
 ## targets <- read.delim("targets.txt", comment.char = "#")
 ## write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
 
 
 ###################################################
-### code chunk number 10: systemPipeR.Rnw:116-117 (eval = FALSE)
+### code chunk number 11: systemPipeR.Rnw:127-128 (eval = FALSE)
 ###################################################
 ## system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 
 
 ###################################################
-### code chunk number 11: systemPipeR.Rnw:121-126 (eval = FALSE)
+### code chunk number 12: systemPipeR.Rnw:132-133 (eval = FALSE)
 ###################################################
-## mymodules <- c("bowtie2/2.1.0", "tophat/2.0.8b")
-## myargs <- c(software="tophat", p="-p 4", g="-g 1", segment_length="--segment-length 25", i="-i 30", I="-I 3000")
-## myref <- "./data/My_genome.fasta"
-## tophatargs <- systemArgs(app="tophat2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mygff="My_specie.gff", mytargets="targets_run.txt")
-## bampaths <- runTophat(tophatargs=tophatargs, runid="01")
+## bampaths <- runCommandline(args=args)
 
 
 ###################################################
-### code chunk number 12: systemPipeR.Rnw:130-132 (eval = FALSE)
+### code chunk number 13: systemPipeR.Rnw:137-139 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
-## (joblist <- qsubRun(appfct="runTophat(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+## (joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", package="systemPipeR"))
 
 
 ###################################################
-### code chunk number 13: systemPipeR.Rnw:136-139 (eval = FALSE)
+### code chunk number 14: systemPipeR.Rnw:143-146 (eval = FALSE)
 ###################################################
 ## read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
 ## read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
@@ -96,7 +103,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 14: systemPipeR.Rnw:144-149 (eval = FALSE)
+### code chunk number 15: systemPipeR.Rnw:151-156 (eval = FALSE)
 ###################################################
 ## mymodules <- c("bowtie2/2.1.0")
 ## myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
@@ -106,21 +113,21 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 15: systemPipeR.Rnw:153-155 (eval = FALSE)
+### code chunk number 16: systemPipeR.Rnw:160-162 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", bowtieargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
 ## (joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
 
 
 ###################################################
-### code chunk number 16: systemPipeR.Rnw:160-162 (eval = FALSE)
+### code chunk number 17: systemPipeR.Rnw:167-169 (eval = FALSE)
 ###################################################
 ## txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
 ## saveDb(txdb, file="./data/My_species.sqlite")
 
 
 ###################################################
-### code chunk number 17: systemPipeR.Rnw:166-178 (eval = FALSE)
+### code chunk number 18: systemPipeR.Rnw:173-185 (eval = FALSE)
 ###################################################
 ## library(BiocParallel)
 ## txdb <- loadDb("./data/My_species.sqlite")
@@ -137,7 +144,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 18: systemPipeR.Rnw:183-192 (eval = FALSE)
+### code chunk number 19: systemPipeR.Rnw:190-199 (eval = FALSE)
 ###################################################
 ## system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
 ## gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
@@ -151,7 +158,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 19: systemPipeR.Rnw:196-202 (eval = FALSE)
+### code chunk number 20: systemPipeR.Rnw:203-209 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -162,7 +169,7 @@ readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 20: systemPipeR.Rnw:206-209
+### code chunk number 21: systemPipeR.Rnw:213-216
 ###################################################
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
 targets <- read.delim(targetspath, comment.char = "#")
@@ -170,13 +177,13 @@ targets <- read.delim(targetspath, comment.char = "#")
 
 
 ###################################################
-### code chunk number 21: systemPipeR.Rnw:211-212 (eval = FALSE)
+### code chunk number 22: systemPipeR.Rnw:218-219 (eval = FALSE)
 ###################################################
 ## edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################
-### code chunk number 22: sessionInfo
+### code chunk number 23: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
