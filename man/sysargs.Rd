@@ -1,36 +1,26 @@
 \name{sysargs}
 \alias{modules}
 \alias{modules-methods}
-\alias{modules,SYSargs-method}
 \alias{software}
 \alias{software-methods}
-\alias{software,SYSargs-method}
 \alias{cores}
 \alias{cores-methods}
-\alias{cores,SYSargs-method}
 \alias{other}
 \alias{other-methods}
-\alias{other,SYSargs-method}
 \alias{reference}
 \alias{reference-methods}
-\alias{reference,SYSargs-method}
 \alias{infile1}
 \alias{infile1-methods}
-\alias{infile1,SYSargs-method}
 \alias{infile2}
 \alias{infile2-methods}
-\alias{infile2,SYSargs-method}
 \alias{outfile1}
 \alias{outfile1-methods}
-\alias{outfile1,SYSargs-method}
 \alias{SampleName}
 \alias{SampleName-methods}
-\alias{SampleName,SYSargs-method}
+\alias{sysargs}
 \alias{sysargs-methods}
-\alias{sysargs,SYSargs-method}
 \alias{outpaths}
 \alias{outpaths-methods}
-\alias{outpaths,SYSargs-method}
 \docType{data}
 \title{ SYSargs accessor methods}
 
