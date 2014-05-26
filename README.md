@@ -14,6 +14,6 @@ labels are given in
 and
 [_targetsPE.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targetsPE.txt)
 (latter is for PE reads). 
-The run parameters of command-line software are defined by param files that have a JSON-like 
-name/value structure. Here is a sample param file for _Tophat2_: [_tophat.param_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/tophat.param). 
+The run parameters of command-line software are defined by param files that have a simplified
+JSON-like name/value structure. Here is a sample param file for _Tophat2_: [_tophat.param_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/tophat.param). 
  
