@@ -1,10 +1,9 @@
 systemPipeR
 ===
 
-R package to run command-line software for NG sequence analysis 
-on both single machines or compute clusters. Supports both interactive 
-job submissions and batch submissions to queuing systems of clusters
-(currently tested only with Torque).
+R package to run command-line software for NG sequence analysis. Supports both
+interactive job submissions and batch submissions to queuing systems of
+clusters (currently tested only with Torque).
 
 ### Usage
 Instructions for running _systemPipeR_ are given in the
