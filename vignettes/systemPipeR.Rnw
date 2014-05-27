@@ -48,7 +48,7 @@ unlink("test.db")
 %\bibliographystyle{plainnat}
 
 \begin{document}
-\title{\Rpackage{systemPipeR}: pipeline to run command-line NGS software}
+\title{\Rpackage{systemPipeR}: utilities for building NGS analysis pipelines}
 \author{Thomas Girke \\
  Email contact: thomas.girke@ucr.edu}
 \maketitle
