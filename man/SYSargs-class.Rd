@@ -81,7 +81,7 @@ names(args); modules(args); cores(args); outpaths(args); sysargs(args)
 runCommandline(args=args)
 
 ## Execute SYSargs on multiple machines  
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(tophat), memory="mem=10gb", time="walltime=20:00:00")
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=1, submitdir="results", package="systemPipeR")
 }
 }

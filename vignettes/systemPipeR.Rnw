@@ -55,7 +55,7 @@ unlink("test.db")
 
 \section{Introduction}
 
-\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). Currently, the following command-line aligners are supported: \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}. 
+\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports both interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). \Rpackage{systemPipeR} can be used with most command-line aligners such as \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}.
 
 \tableofcontents
 
@@ -77,7 +77,7 @@ vignette("systemPipeR") # Opens this PDF manual from R
 @
 
 \section{Structure of \Robject{targets} file}
-The \Robject{targets} file defines all FASTQ files and sample comparisons of the analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
+The \Robject{targets} file defines all FASTQ files and sample comparisons of an analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
 <<eval=TRUE, keep.source=TRUE>>=
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
@@ -98,28 +98,45 @@ readComp(file=targetspath, format="vector", delim="-")
 @
 
 \section{Structure of \Robject{param} file and \Robject{SYSargs} container}
-\noindent Construct \Robject{SYSargs} object from param and targets files 
+\noindent The \Robject{param} file defines the parameters of the command-line software. The following shows the format of a sample \Robject{param} file provided by this package. 
 <<eval=TRUE, keep.source=TRUE>>=
 parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
 read.delim(parampath, comment.char = "#")
-systemArgs(sysma=parampath, mytargets=targetspath, type="json")
+@
+\noindent The \Rfunction{systemArgs} function imports the definitions of both the \Robject{param} file and the \Robject{targets} file, and stores all relevant information as \Robject{SYSargs} object.
+<<eval=TRUE, keep.source=TRUE>>=   
 args <- systemArgs(sysma=parampath, mytargets=targetspath)
 args
-names(args); modules(args); cores(args); outpaths(args)[1]; sysargs(args)[1]
+@
+\noindent Several accessor functions are available that are named after the slot names of the \Robject{SYSargs} object class.
+<<eval=TRUE, keep.source=TRUE>>=   
+names(args)
+modules(args)
+cores(args)
+outpaths(args)[1]
+sysargs(args)[1]
+@
+\noindent The content of the \Robject{param} file can be returned as JSON object as follows (requires \Rpackage{rjson} package).
+<<eval=TRUE, keep.source=TRUE>>=   
+systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 @
 
 \section{Workflow}
 \subsection{Define environment settings and samples}
-Load packages and functions
+Load package:
 <<eval=FALSE, keep.source=TRUE>>=
 library(systemPipeR)
-library(BSgenome); library(Rsamtools); library(rtracklayer); library(GenomicFeatures); library(Gviz); library(parallel); library(BiocParallel)
 @
 
-\noindent Generate input targets file. Note: for 'qsubRun()' the file \Robject{targets\_run.txt} needs to contain absolute paths to FASTQ files in the "FileName' column.
+\noindent Subset input targets file as needed. Note: for \Rfunction{qsubRun} the \Robject{targets} file needs to contain absolute paths to FASTQ files in the "FileName' column.
 <<eval=FALSE, keep.source=TRUE>>=
-targets <- read.delim("targets.txt", comment.char = "#")
+targets <- read.delim(targetspath, comment.char = "#")
 write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+@
+
+\noindent Construct \Robject{SYSargs} object from \Robject{param} and \Robject{targets} files.
+<<eval=FALSE, keep.source=TRUE>>=
+args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
 @
 
 \subsection{Alignment with Tophat 2}
@@ -128,38 +145,36 @@ Build Bowtie 2 index.
 system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
 @
 
-\noindent Run as single process without submitting to cluster, \textit{e.g.} via \Rfunction{qsub -I}.
+\noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster.
 <<eval=FALSE, keep.source=TRUE>>=
 bampaths <- runCommandline(args=args)
 @
 
 \noindent Submit to compute nodes.
-<<eval=FALSE, keep.source=TRUE>>=
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", tophatargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", package="systemPipeR"))
+<<eval=FALSE, keep.source=TRUE>>=0
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
 @
 
 \noindent Alignment Stats
 <<eval=FALSE, keep.source=TRUE>>=
-read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
+read_statsDF <- alignStats(fqpaths=infile1(args), bampaths=outpaths(args), fqgz=TRUE) 
 read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 
 \subsection{Alignment with Bowtie 2 (here for miRNA profiling experiment)}
-Run as single process without submitting to cluster, e.g. via qsub -I
+Run as single process without submitting to cluster, e.g. via qsub -I.
 <<eval=FALSE, keep.source=TRUE>>=
-mymodules <- c("bowtie2/2.1.0")
-myargs <- c(software="bowtie2", p="-p 4", k="-k 50", other="--non-deterministic")
-myref <- "./data/My_genome.fasta"
-bowtieargs <- systemArgs(app="bowtie2", mymodules=mymodules, mydir=getwd(), myargs=myargs, myref=myref, mytargets="targets_run.txt")
-bampaths <- runBowtie(bowtieargs=bowtieargs, runid="01")
+parampath <- paste0(system.file("extdata", package="systemPipeR"), "/bowtieSE.param")
+args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
+bampaths <- runCommandline(args=args)
 @
 
 \noindent Submit to compute nodes
 <<eval=FALSE, keep.source=TRUE>>=
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=4", cores=as.numeric(gsub("^.* ", "", bowtieargs$args["p"])), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runBowtie(appargs, runid)", appargs=tophatargs, qsubargs=qsubargs, Nqsubs=6, submitdir="/bigdata/tgirke/Projects/project_name/RNAseq/data", myfct="~/Projects/project_name/RNA-Seq/systemPipe.R"))
+qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
 @
 
 \subsection{Read counting for mRNA profiling experiments}
