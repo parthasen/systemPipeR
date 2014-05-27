@@ -61,7 +61,7 @@ setAs(from="list", to="SYSargs",
 ## Define print behavior for SYSargs
 setMethod(f="show", signature="SYSargs", 
 	definition=function(object) {    
-	cat("An instance of ", class(object), " with ", length(object@sysargs), " samples ", "\n", sep="")
+	cat("An instance of '", class(object), "' for running '", object@software, "' on ", length(object@sysargs), " samples ", "\n", sep="")
 })
 
 ## Extend names() method
