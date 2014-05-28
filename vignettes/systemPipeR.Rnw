@@ -165,8 +165,9 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 
 \subsection{Create symbolic links for viewing BAM files in IGV}
 <<eval=FALSE, keep.source=TRUE>>=
-symLink2bam(sysargs=args, command="ln -s", htmldir=c("~/.html/", "somedir/"), ext=c(".bam", ".bai"), 
-            urlbase="http://biocluster.ucr.edu/~tgirke/", urlfile="IGVurl.txt")
+symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
+            urlbase="http://biocluster.ucr.edu/~tgirke/", 
+	    urlfile="IGVurl.txt")
 @
 
 \subsection{Alignment with Bowtie 2 (here for miRNA profiling experiment)}
