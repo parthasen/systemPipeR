@@ -28,6 +28,6 @@ export(
     ## Utilities
     ## Source: systemPipe.R
     "alignStats", "getQsubargs", "qsubRun", "returnRPKM", 
-    "runCommandline", "systemArgs", "moduleload", 
+    "runCommandline", "systemArgs", "symLink2bam", "moduleload", 
     "modulelist", "run_edgeR"
 ) 

@@ -163,6 +163,12 @@ read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 
+\subsection{Create symbolic links for viewing BAM files in IGV}
+<<eval=FALSE, keep.source=TRUE>>=
+symLink2bam(sysargs=args, command="ln -s", htmldir=c("~/.html/", "somedir/"), ext=c(".bam", ".bai"), 
+            urlbase="http://biocluster.ucr.edu/~tgirke/", urlfile="IGVurl.txt")
+@
+
 \subsection{Alignment with Bowtie 2 (here for miRNA profiling experiment)}
 Run as single process without submitting to cluster, e.g. via qsub -I.
 <<eval=FALSE, keep.source=TRUE>>=

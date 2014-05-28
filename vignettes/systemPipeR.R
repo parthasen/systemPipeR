@@ -127,7 +127,14 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 19: systemPipeR.Rnw:168-171 (eval = FALSE)
+### code chunk number 19: systemPipeR.Rnw:167-169 (eval = FALSE)
+###################################################
+## symLink2bam(sysargs=args, command="ln -s", htmldir=c("~/.html/", "somedir/"), ext=c(".bam", ".bai"), 
+##             urlbase="http://biocluster.ucr.edu/~tgirke/", urlfile="IGVurl.txt")
+
+
+###################################################
+### code chunk number 20: systemPipeR.Rnw:174-177 (eval = FALSE)
 ###################################################
 ## parampath <- paste0(system.file("extdata", package="systemPipeR"), "/bowtieSE.param")
 ## args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
@@ -135,21 +142,21 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 20: systemPipeR.Rnw:175-177 (eval = FALSE)
+### code chunk number 21: systemPipeR.Rnw:181-183 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 ## (joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
 
 
 ###################################################
-### code chunk number 21: systemPipeR.Rnw:182-184 (eval = FALSE)
+### code chunk number 22: systemPipeR.Rnw:188-190 (eval = FALSE)
 ###################################################
 ## txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
 ## saveDb(txdb, file="./data/My_species.sqlite")
 
 
 ###################################################
-### code chunk number 22: systemPipeR.Rnw:188-200 (eval = FALSE)
+### code chunk number 23: systemPipeR.Rnw:194-206 (eval = FALSE)
 ###################################################
 ## library(BiocParallel)
 ## txdb <- loadDb("./data/My_species.sqlite")
@@ -166,7 +173,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 23: systemPipeR.Rnw:205-214 (eval = FALSE)
+### code chunk number 24: systemPipeR.Rnw:211-220 (eval = FALSE)
 ###################################################
 ## system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
 ## gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
@@ -180,7 +187,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 24: systemPipeR.Rnw:218-224 (eval = FALSE)
+### code chunk number 25: systemPipeR.Rnw:224-230 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -191,7 +198,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 25: systemPipeR.Rnw:228-231
+### code chunk number 26: systemPipeR.Rnw:234-237
 ###################################################
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
 targets <- read.delim(targetspath, comment.char = "#")
@@ -199,13 +206,13 @@ targets <- read.delim(targetspath, comment.char = "#")
 
 
 ###################################################
-### code chunk number 26: systemPipeR.Rnw:233-234 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:239-240 (eval = FALSE)
 ###################################################
 ## edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################
-### code chunk number 27: sessionInfo
+### code chunk number 28: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 

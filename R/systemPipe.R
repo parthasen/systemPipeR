@@ -98,6 +98,8 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 	software <- as.character(arglist$software[grepl("v", names(arglist$software))])
 	other <- as.character(arglist$other[grepl("v", names(arglist$other))])
 	reference <- as.character(arglist$reference[grepl("v", names(arglist$reference))])
+	if(!grepl("^/", reference)) reference <- paste0(getwd(), gsub("^\\.", "", reference)) # Turn relative into absolute path.
+	arglist[["reference"]]["v1"] <- reference
 	cores <- as.numeric(arglist$cores[grepl("v", names(arglist$cores))])	
 
 	## Populate arglist$infile1
@@ -133,13 +135,14 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 	outfile1 <- paste(outfile1, append, sep="")
 	argname <- arglist$outfile1[grep("<.*>", arglist$outfile1)[1] -1]
 	path <- arglist$outfile1[grep("path", arglist$outfile)[1] +1]
-	outfile1back <- paste(path, outfile1, sep="")
+	path <- gsub("^\\./|^/|/$", "", path)
+	outfile1back <- paste(getwd(), "/", path, "/", outfile1, sep="")
 	names(outfile1back) <- as.character(mytargets$SampleName)	
-	outfile1 <- paste(argname, " ", path, outfile1, sep="")
+	outfile1 <- paste(argname, " ", getwd(), "/", path, "/", outfile1, sep="")
 	arglist[["outfile1"]] <- gsub("(^ {1,})|( ${1,})", "", outfile1)
 
 	## Generate arglist$outpaths
-	outpaths <- paste(path, outpaths, outextension, sep="")
+	outpaths <- paste(getwd(), "/", path, "/", outpaths, outextension, sep="")
 	names(outpaths) <- as.character(mytargets$SampleName)	
 
 	## Collapse remaining components to single string vectors
@@ -248,6 +251,26 @@ qsubRun <- function(appfct, appargs, qsubargs, Nqsubs=1, submitdir="results", pa
 }
 ## Usage:
 # qsubRun(appfct="runCommandline(args=args)", appargs=tophat, qsubargs=qsubargs, Nqsubs=1, submitdir="results", package="systemPipeR")
+
+##################################################################
+## Function to create sym links to bam files for viewing in IGV ##
+##################################################################
+symLink2bam <- function(sysargs, command, htmldir, ext=c(".bam", ".bai"), urlbase, urlfile) {
+	## Create URL file 
+	bampaths <- outpaths(sysargs)
+	symname <- SampleName(sysargs)
+	urls <- paste(urlbase, htmldir[2], symname, ext[1], "\t", symname, sep="")
+	writeLines(urls, urlfile)
+	## Creat correspoding sym links
+	dir.create(paste(htmldir, collapse=""))
+	symname <- rep(symname, each=2)
+	symname <- paste(symname, c(ext[1], paste(ext, collapse="")), sep="")
+	bampaths2 <- as.vector(t(cbind(bampaths, paste(bampaths, ext[2], sep=""))))	
+	symcommands <- paste(command, " ", bampaths2, " ", paste(htmldir, collapse=""), symname, sep="") 
+	for(i in symcommands) system(i)
+}
+## Usage: 
+# symLink2bam(sysargs=args, command="ln -s", htmldir=c("~/.html/", "somedir/"), ext=c(".bam", ".bai"), urlbase="http://biocluster.ucr.edu/~tgirke/", urlfile="IGVurl.txt") 
 
 #####################
 ## Alignment Stats ##
