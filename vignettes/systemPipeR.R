@@ -130,7 +130,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 ### code chunk number 19: systemPipeR.Rnw:167-170 (eval = FALSE)
 ###################################################
 ## symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
-##             urlbase="http://biocluster.ucr.edu/~tgirke/", 
+##             urlbase="http://myserver.edu/~username/", 
 ## 	    urlfile="IGVurl.txt")
 
 
