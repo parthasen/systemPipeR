@@ -166,7 +166,7 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 \subsection{Create symbolic links for viewing BAM files in IGV}
 <<eval=FALSE, keep.source=TRUE>>=
 symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
-            urlbase="http://biocluster.ucr.edu/~tgirke/", 
+            urlbase="http://myserver.edu/~username/", 
 	    urlfile="IGVurl.txt")
 @
 
