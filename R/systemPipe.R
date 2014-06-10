@@ -234,8 +234,7 @@ qsubRun <- function(appfct, appargs, qsubargs, Nqsubs=1, submitdir="results", pa
 	qsub_command <- paste(qsubargs$software, " -q ", qsubargs$queue, " -l ", qsubargs$Nnodes, ":ppn=", qsubargs$cores, ",", qsubargs$memory, ",", qsubargs$time, sep="")	
 	jobids <- NULL
 	for(i in 1:Nqsubs) {
-		appargs[["infile1"]] <- filesets[[i]]
-		appargs[["infile2"]] <- filesets2[[i]]
+		appargs <- commands[[i]]
 		counter <- formatC(i, width = 2, format = "d", flag = "0")
 		appfct <- gsub("runid.*)", paste("runid=", "'", counter, "'", ")", sep=""), appfct) # Passes on proper runid
 		save(list=c("appargs"), file=paste("submitargs", counter, sep="")) 
