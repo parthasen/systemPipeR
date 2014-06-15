@@ -115,7 +115,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 ### code chunk number 17: systemPipeR.Rnw:154-156 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-## (joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
+## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
 
 
 ###################################################
@@ -146,7 +146,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 ### code chunk number 21: systemPipeR.Rnw:182-184 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-## (joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
+## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
 
 
 ###################################################

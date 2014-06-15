@@ -153,7 +153,7 @@ bampaths <- runCommandline(args=args)
 \noindent Submit to compute nodes.
 <<eval=FALSE, keep.source=TRUE>>=0
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
+(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
 @
 
 \noindent Alignment Stats
@@ -181,7 +181,7 @@ bampaths <- runCommandline(args=args)
 \noindent Submit to compute nodes
 <<eval=FALSE, keep.source=TRUE>>=
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=4, submitdir="results", package="systemPipeR"))
+(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
 @
 
 \subsection{Read counting for mRNA profiling experiments}
