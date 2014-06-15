@@ -9,9 +9,9 @@ exportClasses(
 
 ## Methods
 exportMethods(
-    "modules", "software", "cores", "other", "reference",
+    "modules", "software", "cores", "other", "reference", "results",
     "infile1", "infile2", "outfile1", "SampleName", "sysargs",
-    "outpaths", "show", "names" 
+    "outpaths", "show", "names", "length", "[" 
 )
 
 ## Functions

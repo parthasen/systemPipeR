@@ -48,7 +48,7 @@ runCommandline(args=args)
 
 ## Execute SYSargs on multiple machines  
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(tophat), memory="mem=10gb", time="walltime=20:00:00")
-qsubRun(appfct="runCommandline(args=args)", appargs=args, qsubargs=qsubargs, Nqsubs=1, submitdir="results", package="systemPipeR")
+qsubRun(args=args, qsubargs=qsubargs, Nqsubs=1, package="systemPipeR")
 ## Alignment stats
 read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
 read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)

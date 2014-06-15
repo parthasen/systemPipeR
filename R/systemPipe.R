@@ -11,6 +11,7 @@ setClass("SYSargs", representation(modules="character",
 				   cores="numeric", 
 				   other="character",
 				   reference="character",
+				   results="character",
 			           infile1="character",
 				   infile2="character",
 				   outfile1="character",
@@ -29,6 +30,8 @@ setGeneric(name="other", def=function(x) standardGeneric("other"))
 setMethod(f="other", signature="SYSargs", definition=function(x) {return(x@other)})
 setGeneric(name="reference", def=function(x) standardGeneric("reference"))
 setMethod(f="reference", signature="SYSargs", definition=function(x) {return(x@reference)})
+setGeneric(name="results", def=function(x) standardGeneric("results"))
+setMethod(f="results", signature="SYSargs", definition=function(x) {return(x@results)})
 setGeneric(name="infile1", def=function(x) standardGeneric("infile1"))
 setMethod(f="infile1", signature="SYSargs", definition=function(x) {return(x@infile1)})
 setGeneric(name="infile2", def=function(x) standardGeneric("infile2"))
@@ -51,6 +54,7 @@ setAs(from="list", to="SYSargs",
 			       cores=from$cores, 
 			       other=from$other,
 			       reference=from$reference,
+			       results=from$results,
 			       infile1=from$infile1, 
 			       infile2=from$infile2,
 			       outfile1=from$outfile1,
@@ -68,6 +72,25 @@ setMethod(f="show", signature="SYSargs",
 setMethod(f="names", signature="SYSargs",
     definition=function(x) {
     	return(slotNames(x))
+})
+
+## Extend length() method
+setMethod(f="length", signature="SYSargs",
+    definition=function(x) {
+        return(length(x@infile1))
+})
+
+## Behavior of "[" operator for SYSargs
+setMethod(f="[", signature="SYSargs", definition=function(x, i, ..., drop) {
+        if(is.logical(i)) {
+                i <- which(i)
+        }
+        x@infile1 <- x@infile1[i]
+        x@infile2 <- x@infile2[i]
+        x@outfile1 <- x@outfile1[i]
+        x@sysargs <- x@sysargs[i]
+        x@outpaths <- x@outpaths[i]
+        return(x)
 })
 
 ## Construct SYSargs object from param and targets files
@@ -136,6 +159,7 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 	argname <- arglist$outfile1[grep("<.*>", arglist$outfile1)[1] -1]
 	path <- arglist$outfile1[grep("path", arglist$outfile)[1] +1]
 	path <- gsub("^\\./|^/|/$", "", path)
+	resultpath <- paste(getwd(), "/", path, "/", sep="")	
 	outfile1back <- paste(getwd(), "/", path, "/", outfile1, sep="")
 	names(outfile1back) <- as.character(mytargets$SampleName)	
 	outfile1 <- paste(argname, " ", getwd(), "/", path, "/", outfile1, sep="")
@@ -158,6 +182,7 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
                         cores=cores,
 			other=other,
 			reference=reference,
+			results=as.character(resultpath),
 			infile1=infile1back,
 			infile2=infile2back,
 			outfile1=outfile1back,
@@ -178,7 +203,7 @@ runCommandline <- function(args, runid="01") {
 	commands <- sysargs(args)
 	completed <- file.exists(outpaths(args))
 	names(completed) <- outfile1(args)
-	resultdir <- gsub("(\\./.*?/).*", "\\1", outpaths(args)[[1]])	
+	resultdir <- results(args)
 	for(i in seq(along=commands)) {
 		## Run alignmets only for samples for which no BAM file is available.
 		if(as.logical(completed)[i]) {
@@ -225,31 +250,32 @@ getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=
 ###########################################################################
 ## Function to submit runCommandline jobs to queuing system of a cluster ##
 ###########################################################################
-qsubRun <- function(appfct, appargs, qsubargs, Nqsubs=1, submitdir="results", package="systemPipeR") {
-	appargs <- sysargs(appargs)
+qsubRun <- function(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs=1, package="systemPipeR") {
+	args2 <- sysargs(args)
 	mydir <- getwd()
-	setwd(submitdir)
-	splitvector <- sort(rep_len(1:Nqsubs, length.out=length(appargs)))
-	commands <- split(appargs, splitvector)
+	setwd(results(args))
+	splitvector <- sort(rep_len(1:Nqsubs, length.out=length(args2)))
+	commands <- split(args2, splitvector)
 	qsub_command <- paste(qsubargs$software, " -q ", qsubargs$queue, " -l ", qsubargs$Nnodes, ":ppn=", qsubargs$cores, ",", qsubargs$memory, ",", qsubargs$time, sep="")	
 	jobids <- NULL
 	for(i in 1:Nqsubs) {
-		appargs <- commands[[i]]
+		args2 <- commands[[i]]
 		counter <- formatC(i, width = 2, format = "d", flag = "0")
 		appfct <- gsub("runid.*)", paste("runid=", "'", counter, "'", ")", sep=""), appfct) # Passes on proper runid
-		save(list=c("appargs"), file=paste("submitargs", counter, sep="")) 
-		rscript <- c(paste("library('", package, "')", sep=""), paste("load('submitargs", counter, "')", sep=""), appfct)
+		splitargs <- args[splitvector==i]
+		save(splitargs, file=paste("submitargs", counter, sep="")) 
+		rscript <- c(paste("library('", package, "')", sep=""), paste("load('submitargs", counter, "')", sep=""), "args <- splitargs", appfct)
 		writeLines(rscript, paste("submitargs", counter, ".R", sep=""))
 		writeLines(c("#!/bin/bash", "cd $PBS_O_WORKDIR", paste("Rscript --verbose submitargs", counter, ".R", sep="")), paste("submitargs", counter, ".sh", sep=""))
 		myqsub <- paste(qsub_command, paste("submitargs", counter, ".sh", sep=""))
 		(jobids <- c(jobids, system(myqsub, intern=TRUE)))
 	}
 	setwd(mydir)
-	names(filesets) <- jobids
-	return(filesets)
+	names(commands) <- jobids
+	return(commands)
 }
 ## Usage:
-# qsubRun(appfct="runCommandline(args=args)", appargs=tophat, qsubargs=qsubargs, Nqsubs=1, submitdir="results", package="systemPipeR")
+# qsubRun(args=args, qsubargs=qsubargs, Nqsubs=1, package="systemPipeR")
 
 ##################################################################
 ## Function to create sym links to bam files for viewing in IGV ##
