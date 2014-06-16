@@ -202,7 +202,7 @@ runCommandline <- function(args, runid="01") {
 	for(j in modules(args)) moduleload(j) # loads specified software from module system
 	commands <- sysargs(args)
 	completed <- file.exists(outpaths(args))
-	names(completed) <- outfile1(args)
+	names(completed) <- outpaths(args)
 	resultdir <- results(args)
 	for(i in seq(along=commands)) {
 		## Run alignmets only for samples for which no BAM file is available.

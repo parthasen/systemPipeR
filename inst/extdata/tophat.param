@@ -9,7 +9,7 @@ other	NA	-g 1 --segment-length 25 -i 30 -I 3000 -G ./data/My_species.gff
 outfile1	-o	<FileName1>
 outfile1	path	./results/
 outfile1	remove	NA
-outfile1	append	.tophat/accepted_hits.bam
+outfile1	append	.tophat
 outfile1	outextension	.tophat/accepted_hits.bam
 reference	NA	./data/My_genome.fasta
 infile1	NA	<FileName1>
