@@ -301,8 +301,9 @@ symLink2bam <- function(sysargs, command, htmldir, ext=c(".bam", ".bai"), urlbas
 ## Alignment Stats ##
 #####################
 alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
-	fqpaths <- fqpaths[as.logical(bampaths)]
-	bampaths <- bampaths[as.logical(bampaths)]
+	bamexists <- file.exists(bampaths)
+	fqpaths <- fqpaths[bamexists]
+	bampaths <- bampaths[bamexists]
 	## Obtain total read number from FASTQ files
 	if(fqgz==TRUE) {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("zcat", x, "| wc -l | cut -d' ' -f1"), intern=TRUE))/4)
@@ -310,7 +311,7 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
 	## Obtain total number of alignments from BAM files
-	bfl <- BamFileList(names(bampaths), yieldSize=50000, index=character())
+	bfl <- BamFileList(bampaths, yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
 	## Obtain number of primary alignments from BAM files
 	param <- ScanBamParam(flag=scanBamFlag(isNotPrimaryRead=FALSE, isUnmappedQuery=FALSE))
