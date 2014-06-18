@@ -213,13 +213,12 @@ runCommandline <- function(args, runid="01") {
 			cat(commands[i], file=paste(resultdir, "submitargs", runid, "_log", sep=""), sep = "\n", append=TRUE)
         		## Run executable  
 			system(as.character(commands[i]))
-			if(grepl(".bam$", names(completed[i]))) { # If output is unindexed *.bam file (e.g. Tophat2)
+			if(grepl(".sam$", outfile1(args)[i])) { # If output is *.sam file (e.g. Bowtie2)
+				asBam(file=outfile1(args)[i], destination=gsub("\\.sam$", "", outfile1(args)[i]), overwrite=TRUE, indexDestination=TRUE)
+				unlink(outfile1(args)[i])
+			} else { # If output is unindexed *.bam file (e.g. Tophat2)
 				sortBam(file=names(completed[i]), destination=gsub("\\.bam$", "", names(completed[i])))
         			indexBam(names(completed[i]))
-			}
-			if(grepl(".sam$", names(completed[i]))) { # If output is *.sam file (e.g. Bowtie2)
-				asBam(file=names(completed[i]), destination=gsub("\\.sam$", "", names(completed[i])), overwrite=TRUE, indexDestination=TRUE)
-				unlink(names(completed[i]))
 			}
 		}
 	}
@@ -280,7 +279,7 @@ qsubRun <- function(appfct="runCommandline(args=args, runid='01')", args, qsubar
 ##################################################################
 ## Function to create sym links to bam files for viewing in IGV ##
 ##################################################################
-symLink2bam <- function(sysargs, command, htmldir, ext=c(".bam", ".bai"), urlbase, urlfile) {
+symLink2bam <- function(sysargs, command="ln -s", htmldir, ext=c(".bam", ".bai"), urlbase, urlfile) {
 	## Create URL file 
 	bampaths <- outpaths(sysargs)
 	symname <- SampleName(sysargs)
