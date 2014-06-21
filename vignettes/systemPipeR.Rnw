@@ -88,7 +88,7 @@ read.delim(targetspath, comment.char = "#")
 <<eval=TRUE, keep.source=TRUE>>=
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
-read.delim(targetspath, comment.char = "#")
+read.delim(targetspath, comment.char = "#")[1:2,1:6]
 @
 
 \noindent Comparisons are defined in the header lines of the \Robject{targets} starting with '\# <CMP>'. The 

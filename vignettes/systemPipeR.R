@@ -41,7 +41,7 @@ read.delim(targetspath, comment.char = "#")
 ###################################################
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
-read.delim(targetspath, comment.char = "#")
+read.delim(targetspath, comment.char = "#")[1:2,1:6]
 
 
 ###################################################
@@ -121,7 +121,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 ###################################################
 ### code chunk number 18: systemPipeR.Rnw:160-163 (eval = FALSE)
 ###################################################
-## read_statsDF <- alignStats(fqpaths=infile1(args), bampaths=outpaths(args), fqgz=TRUE) 
+## read_statsDF <- alignStats(args, fqgz=TRUE) 
 ## read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 ## write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 
