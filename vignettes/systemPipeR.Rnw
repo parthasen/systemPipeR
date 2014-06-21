@@ -137,6 +137,11 @@ args <- systemArgs(sysma="tophat.param", mytargets="targetsPE.txt")
 @
 
 \subsection{FASTQ quality report}
+The following \Rfunction{seeFastq} and \Rfunction{seeFastqPlot} functions generate and plot a series of
+useful quality statistics for a set of FASTQ files including per cycle quality
+box plots, base proportions, base-level quality trends, relative k-mer
+diversity, length and occurrence distribution of reads, number of reads above
+quality cutoffs and mean quality distribution.  
 <<eval=FALSE, keep.source=TRUE>>=
 fqlist <- seeFastq(fastq=infile1(args), batchsize=10000, klength=8)
 pdf("./results/fastqReport.pdf", height=18, width=4*length(fastq))
