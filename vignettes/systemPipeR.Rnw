@@ -55,7 +55,7 @@ unlink("test.db")
 
 \section{Introduction}
 
-\Rpackage{systemPipeR} is a pipeline for running command-line software, such as NGS aligners, on both single machines or compute clusters. It supports both interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). \Rpackage{systemPipeR} can be used with most command-line aligners such as \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}.
+\Rpackage{systemPipeR} provides utiities for building \textit{end-to-end} analysis pipelines with automated report generation for NGS applications such as RNA-Seq, ChIP-Seq, VAR-Seq and many others. An important feature is support for running command-line software, such as NGS aligners, on both single machines or compute clusters. This includes both interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). For instance, \Rpackage{systemPipeR} can be used with most command-line aligners such as \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}.
 
 \tableofcontents
 
