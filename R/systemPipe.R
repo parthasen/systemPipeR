@@ -128,6 +128,7 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 	## Populate arglist$infile1
 	infile1 <- gsub("<|>", "", arglist$infile1[grepl("^<.*>$", arglist$infile1)][[1]])
 	infile1 <- as.character(mytargets[,infile1])	
+	infile1 <- normalizePath(infile1)
 	argname <- arglist$infile1[grep("<.*>", arglist$infile1)[1] -1]
 	path <- arglist$infile1[grep("path", arglist$infile1)[1] +1]
 	infile1back <- paste(path, infile1, sep="")
@@ -138,6 +139,7 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 	## Populate arglist$infile2
 	infile2 <- gsub("<|>", "", arglist$infile2[grepl("^<.*>$", arglist$infile2)][[1]])
 	infile2 <- as.character(mytargets[,infile2])	
+	if(nchar(infile2[1]) > 0) infile2 <- normalizePath(infile2)
 	argname <- arglist$infile2[grep("<.*>", arglist$infile2)[1] -1]
 	path <- arglist$infile2[grep("path", arglist$infile2)[1] +1]
 	infile2back <- paste(path, infile2, sep="")
@@ -299,7 +301,9 @@ symLink2bam <- function(sysargs, command="ln -s", htmldir, ext=c(".bam", ".bai")
 #####################
 ## Alignment Stats ##
 #####################
-alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
+alignStats <- function(args, fqgz=TRUE) {
+	fqpaths <- infile1(args)
+	bampaths <- outpaths(args)
 	bamexists <- file.exists(bampaths)
 	fqpaths <- fqpaths[bamexists]
 	bampaths <- bampaths[bamexists]
@@ -309,6 +313,8 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
 	} else {
 		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
 	}
+	## If reads are PE multiply by 2
+	if(nchar(infile2(args))[1] > 0) Nreads <- Nreads * 2	
 	## Obtain total number of alignments from BAM files
 	bfl <- BamFileList(bampaths, yieldSize=50000, index=character())
 	Nalign <- countBam(bfl)
@@ -322,6 +328,7 @@ alignStats <- function(fqpaths, bampaths, fqgz=TRUE) {
                               Nalign_Primary=Nalignprim$records, 
                               Perc_Aligned_Primary=Nalignprim$records/Nreads*100
 	)
+	colnames(statsDF)[which(colnames(statsDF)=="Nreads")] <- "Nreads2x"
 	return(statsDF)
 }
 ## Usage:
@@ -444,7 +451,11 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 	    colnames(deg) <- paste(paste(mycomp[i], collapse="_"), colnames(deg), sep="_")
 	    edgeDF <- cbind(edgeDF, deg[rownames(edgeDF),]) 
 	}
-	if(nchar(mdsplot)>0) pdf(paste("./results/sample_MDS_", paste(unique(subset), collapse="-"), ".pdf", sep="")); plotMDS(y); dev.off()
+	if(nchar(mdsplot)>0) {
+		pdf(paste("./results/sample_MDS_", paste(unique(subset), collapse="-"), ".pdf", sep=""))
+                plotMDS(y)
+                dev.off()
+    	}
     }
     return(edgeDF)
 }

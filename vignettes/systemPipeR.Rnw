@@ -158,7 +158,7 @@ qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memo
 
 \noindent Alignment Stats
 <<eval=FALSE, keep.source=TRUE>>=
-read_statsDF <- alignStats(fqpaths=infile1(args), bampaths=outpaths(args), fqgz=TRUE) 
+read_statsDF <- alignStats(args, fqgz=TRUE) 
 read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
