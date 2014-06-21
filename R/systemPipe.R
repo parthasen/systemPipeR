@@ -328,7 +328,7 @@ alignStats <- function(args, fqgz=TRUE) {
                               Nalign_Primary=Nalignprim$records, 
                               Perc_Aligned_Primary=Nalignprim$records/Nreads*100
 	)
-	colnames(statsDF)[which(colnames(statsDF)=="Nreads")] <- "Nreads2x"
+	if(nchar(infile2(args))[1] > 0) colnames(statsDF)[which(colnames(statsDF)=="Nreads")] <- "Nreads2x"
 	return(statsDF)
 }
 ## Usage:

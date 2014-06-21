@@ -131,21 +131,16 @@ Load package:
 library(systemPipeR)
 @
 
-\noindent Subset input targets file as needed. Note: for \Rfunction{qsubRun} the \Robject{targets} file needs to contain absolute paths to FASTQ files in the "FileName' column.
-<<eval=FALSE, keep.source=TRUE>>=
-targets <- read.delim(targetspath, comment.char = "#")
-write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
-@
-
 \noindent Construct \Robject{SYSargs} object from \Robject{param} and \Robject{targets} files.
 <<eval=FALSE, keep.source=TRUE>>=
-args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
+args <- systemArgs(sysma="tophat.param", mytargets="targetsPE.txt")
 @
 
 \subsection{Alignment with Tophat 2}
 Build Bowtie 2 index.
 <<eval=FALSE, keep.source=TRUE>>=
-system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
+moduleload(modules(args)) # Skip if module system is not available
+system("bowtie2-build ./data/tair10.fasta ./data/tair10.fasta")
 @
 
 \noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster.
@@ -155,14 +150,13 @@ bampaths <- runCommandline(args=args)
 
 \noindent Submit to compute nodes.
 <<eval=FALSE, keep.source=TRUE>>=0
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
+qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 @
 
 \noindent Alignment Stats
 <<eval=FALSE, keep.source=TRUE>>=
 read_statsDF <- alignStats(args, fqgz=TRUE) 
-read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 
@@ -176,37 +170,36 @@ symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"),
 \subsection{Alignment with Bowtie 2 (here for miRNA profiling experiment)}
 Run as single process without submitting to cluster, e.g. via qsub -I.
 <<eval=FALSE, keep.source=TRUE>>=
-parampath <- paste0(system.file("extdata", package="systemPipeR"), "/bowtieSE.param")
-args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
+args <- systemArgs(sysma="bowtieSE.param", mytargets="targets.txt")
 bampaths <- runCommandline(args=args)
 @
 
 \noindent Submit to compute nodes
 <<eval=FALSE, keep.source=TRUE>>=
-qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
+qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 @
 
 \subsection{Read counting for mRNA profiling experiments}
 Create txdb (do only once)
 <<eval=FALSE, keep.source=TRUE>>=
-txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
-saveDb(txdb, file="./data/My_species.sqlite")
+library(GenomicFeatures)
+txdb <- makeTranscriptDbFromGFF(file="data/tair10.gff", format="gff", dataSource="TAIR", species="A. thaliana")
+saveDb(txdb, file="./data/tair10.sqlite")
 @
 
 \noindent Read counting with summarizeOverlaps in parallel mode with multiple cores
 <<eval=FALSE, keep.source=TRUE>>=
 library(BiocParallel)
-txdb <- loadDb("./data/My_species.sqlite")
+txdb <- loadDb("./data/tair10.sqlite")
 eByg <- exonsBy(txdb, by="gene")
-bams <- names(bampaths); names(bams) <- targets$SampleName
-bfl <- BamFileList(bams, yieldSize=50000, index=character())
+bfl <- BamFileList(outpaths(args), yieldSize=50000, index=character())
 multicoreParam <- MulticoreParam(workers=4); register(multicoreParam); registered()
-counteByg <- bplapply(bfl, function(x) summarizeOverlaps(gff, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
+counteByg <- bplapply(bfl, function(x) summarizeOverlaps(eByg, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
 countDFeByg <- sapply(seq(along=counteByg), function(x) assays(counteByg[[x]])$counts)
 rownames(countDFeByg) <- names(rowData(counteByg[[1]])); colnames(countDFeByg) <- names(bfl)
-rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
-write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, ranges=eByg))
+write.table(countDFeByg, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 @
 
@@ -236,12 +229,13 @@ plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.labe
 
 \subsection{DEG analysis with \Rpackage{edgeR}} 
 <<eval=TRUE, keep.source=TRUE>>=
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
-targets <- read.delim(targetspath, comment.char = "#")
-(cmp <- readComp(file=targetspath, format="matrix", delim="-"))
+library(edgeR)
+targets <- read.delim(targetspath, comment="#")
+cmp <- readComp(file=targetspath, format="matrix", delim="-")
+cmp[[1]]
 @
 <<eval=FALSE, keep.source=TRUE>>=
-edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 @
 
 \section{Version Information}

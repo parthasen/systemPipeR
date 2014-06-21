@@ -87,47 +87,40 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 13: systemPipeR.Rnw:135-137 (eval = FALSE)
+### code chunk number 13: systemPipeR.Rnw:135-136 (eval = FALSE)
 ###################################################
-## targets <- read.delim(targetspath, comment.char = "#")
-## write.table(targets, "targets_run.txt", row.names=FALSE, quote=FALSE, sep="\t")
+## args <- systemArgs(sysma="tophat.param", mytargets="targetsPE.txt")
 
 
 ###################################################
-### code chunk number 14: systemPipeR.Rnw:141-142 (eval = FALSE)
+### code chunk number 14: systemPipeR.Rnw:141-143 (eval = FALSE)
 ###################################################
-## args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
+## moduleload(modules(args)) # Skip if module system is not available
+## system("bowtie2-build ./data/tair10.fasta ./data/tair10.fasta")
 
 
 ###################################################
 ### code chunk number 15: systemPipeR.Rnw:147-148 (eval = FALSE)
 ###################################################
-## system("bowtie2-build ./data/mygenome.fa ./data/bowtie2index/mygenome")
-
-
-###################################################
-### code chunk number 16: systemPipeR.Rnw:152-153 (eval = FALSE)
-###################################################
 ## bampaths <- runCommandline(args=args)
 
 
 ###################################################
-### code chunk number 17: systemPipeR.Rnw:157-159 (eval = FALSE)
+### code chunk number 16: systemPipeR.Rnw:152-154 (eval = FALSE)
 ###################################################
-## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
+## qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 
 
 ###################################################
-### code chunk number 18: systemPipeR.Rnw:163-166 (eval = FALSE)
+### code chunk number 17: systemPipeR.Rnw:158-160 (eval = FALSE)
 ###################################################
 ## read_statsDF <- alignStats(args, fqgz=TRUE) 
-## read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 ## write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 
 
 ###################################################
-### code chunk number 19: systemPipeR.Rnw:170-173 (eval = FALSE)
+### code chunk number 18: systemPipeR.Rnw:164-167 (eval = FALSE)
 ###################################################
 ## symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
 ##             urlbase="http://myserver.edu/~username/", 
@@ -135,46 +128,45 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 20: systemPipeR.Rnw:178-181 (eval = FALSE)
+### code chunk number 19: systemPipeR.Rnw:172-174 (eval = FALSE)
 ###################################################
-## parampath <- paste0(system.file("extdata", package="systemPipeR"), "/bowtieSE.param")
-## args <- systemArgs(sysma=parampath, mytargets="targets_run.txt")
+## args <- systemArgs(sysma="bowtieSE.param", mytargets="targets.txt")
 ## bampaths <- runCommandline(args=args)
 
 
 ###################################################
-### code chunk number 21: systemPipeR.Rnw:185-187 (eval = FALSE)
+### code chunk number 20: systemPipeR.Rnw:178-180 (eval = FALSE)
 ###################################################
-## qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
-## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=4, package="systemPipeR"))
+## qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 
 
 ###################################################
-### code chunk number 22: systemPipeR.Rnw:192-194 (eval = FALSE)
+### code chunk number 21: systemPipeR.Rnw:185-188 (eval = FALSE)
 ###################################################
-## txdb <- makeTranscriptDbFromGFF(file="data/mygenome.gtf", format="gtf", dataSource="ENSEMBL", species="My_species")
-## saveDb(txdb, file="./data/My_species.sqlite")
+## library(GenomicFeatures)
+## txdb <- makeTranscriptDbFromGFF(file="data/tair10.gff", format="gff", dataSource="TAIR", species="A. thaliana")
+## saveDb(txdb, file="./data/tair10.sqlite")
 
 
 ###################################################
-### code chunk number 23: systemPipeR.Rnw:198-210 (eval = FALSE)
+### code chunk number 22: systemPipeR.Rnw:192-203 (eval = FALSE)
 ###################################################
 ## library(BiocParallel)
-## txdb <- loadDb("./data/My_species.sqlite")
+## txdb <- loadDb("./data/tair10.sqlite")
 ## eByg <- exonsBy(txdb, by="gene")
-## bams <- names(bampaths); names(bams) <- targets$SampleName
-## bfl <- BamFileList(bams, yieldSize=50000, index=character())
+## bfl <- BamFileList(outpaths(args), yieldSize=50000, index=character())
 ## multicoreParam <- MulticoreParam(workers=4); register(multicoreParam); registered()
-## counteByg <- bplapply(bfl, function(x) summarizeOverlaps(gff, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
+## counteByg <- bplapply(bfl, function(x) summarizeOverlaps(eByg, x, mode="Union", ignore.strand=TRUE, inter.feature=TRUE, singleEnd=TRUE)) # Note: for strand-specific RNA-Seq set 'ignore.strand=FALSE' and for PE data set 'singleEnd=FALSE'
 ## countDFeByg <- sapply(seq(along=counteByg), function(x) assays(counteByg[[x]])$counts)
 ## rownames(countDFeByg) <- names(rowData(counteByg[[1]])); colnames(countDFeByg) <- names(bfl)
-## rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, gffsub=eByg))
-## write.table(assays(countDFeByg)$counts, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+## rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, ranges=eByg))
+## write.table(countDFeByg, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 ## write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
 
 
 ###################################################
-### code chunk number 24: systemPipeR.Rnw:215-224 (eval = FALSE)
+### code chunk number 23: systemPipeR.Rnw:208-217 (eval = FALSE)
 ###################################################
 ## system("wget ftp://mirbase.org/pub/mirbase/19/genomes/My_species.gff3 -P ./data/")
 ## gff <- import.gff("./data/My_species.gff3", asRangedData=FALSE)
@@ -188,7 +180,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 25: systemPipeR.Rnw:228-234 (eval = FALSE)
+### code chunk number 24: systemPipeR.Rnw:221-227 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -199,21 +191,22 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 26: systemPipeR.Rnw:238-241
+### code chunk number 25: systemPipeR.Rnw:231-235
 ###################################################
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
-targets <- read.delim(targetspath, comment.char = "#")
-(cmp <- readComp(file=targetspath, format="matrix", delim="-"))
+library(edgeR)
+targets <- read.delim(targetspath, comment="#")
+cmp <- readComp(file=targetspath, format="matrix", delim="-")
+cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:243-244 (eval = FALSE)
+### code chunk number 26: systemPipeR.Rnw:237-238 (eval = FALSE)
 ###################################################
-## edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: sessionInfo
+### code chunk number 27: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
