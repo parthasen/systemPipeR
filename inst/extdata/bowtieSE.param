@@ -5,7 +5,7 @@ modules	NA	bowtie2/2.1.0
 software	NA	bowtie2
 cores	-p	4
 other	NA	-k 50 --non-deterministic
-reference	-x	./data/My_genome.fasta
+reference	-x	./data/tair10.fasta
 infile1	-U	<FileName1>
 infile1	path	NA
 infile2	NA	<FileName2>
