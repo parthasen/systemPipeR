@@ -17,9 +17,6 @@
 
 ## (A) Compute quality stats and store them in list
 seeFastq <- function(fastq, batchsize, klength=8) {
-        require(ShortRead)
-        require(Biostrings)
-	
 	## Processing of single fastq file
 	.seeFastq <- function(fastq, batchsize, klength) { 
         	## Random sample N reads from fastq file (N=batchsize)
@@ -129,13 +126,10 @@ seeFastq <- function(fastq, batchsize, klength=8) {
 	return(fqlist)
 }
 ## Alias
-fastqQuality <- seeFastq 
+# fastqQuality <- seeFastq 
 
 ## (B) Plot seeFastq results 
 seeFastqPlot <- function(fqlist, arrange=c(1,2,3,4,5,8,6,7), ...) {
-	require(grid)
-        require(ggplot2)
-	
 	## Create plotting instances from fqlist
 	.fastqPlot <- function(x=fqlist) {
         	## (A) Per cycle quality box plot
@@ -227,7 +221,7 @@ seeFastqPlot <- function(fqlist, arrange=c(1,2,3,4,5,8,6,7), ...) {
 	}
 }
 ## Alias
-plotFQ <- seeFastqPlot
+# plotFQ <- seeFastqPlot
 
 ## Usage:
 ## Download some sample fastq files
