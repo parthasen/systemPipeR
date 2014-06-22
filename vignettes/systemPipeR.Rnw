@@ -48,7 +48,7 @@ unlink("test.db")
 %\bibliographystyle{plainnat}
 
 \begin{document}
-\title{\Rpackage{systemPipeR}: NGS workflow environment with automated reports}
+\title{\Rpackage{systemPipeR}: NGS workflow and report generation environment}
 \author{Thomas Girke \\
  Email contact: thomas.girke@ucr.edu}
 \maketitle

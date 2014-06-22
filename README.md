@@ -1,4 +1,4 @@
-### systemPipeR: NGS workflow environment with automated reports
+### systemPipeR: NGS workflow and report generation environment 
 
 _systemPipeR_ is an R package for building *end-to-end* analysis pipelines with
 automated report generation for NGS applications such as RNA-Seq, ChIP-Seq,
