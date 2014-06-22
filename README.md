@@ -1,4 +1,4 @@
-systemPipeR
+systemPipeR}: NGS analysis pipelines with automated report generation
 ===
 
 R package for building *end-to-end* analysis pipelines with automated report
