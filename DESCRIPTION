@@ -1,6 +1,6 @@
 Package: systemPipeR
 Type: Package
-Title: systemPipeR}: NGS analysis pipelines with automated report generation
+Title: systemPipeR: NGS analysis pipelines with automated report generation
 Version: 1.0.9
 Date: 2014-06-22
 Author: Thomas Girke
