@@ -94,7 +94,7 @@ targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE
 read.delim(targetspath, comment.char = "#")[1:2,1:6]
 @
 
-\noindent Comparisons are defined in the header lines of the \Robject{targets} starting with '\# <CMP>'. The 
+\noindent Comparisons are defined in the header lines of the \Robject{targets} starting with '\texttt{\# <CMP>}'. The 
 function \Rfunction{readComp} imports the comparison and stores them in a \Robject{list}.
 <<eval=TRUE, keep.source=TRUE>>=
 readComp(file=targetspath, format="vector", delim="-")
