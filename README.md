@@ -7,9 +7,9 @@ others. An important feature is support for running command-line software, such
 as NGS aligners, on both single machines or compute clusters. This includes
 both interactive job submissions or batch submissions to queuing systems of
 clusters (tested only with Torque). Efficient handling of complex sample sets
-and experimental designs is facilitated by well defined sample definitions
-which improves reproducibility and user-friendliness of many typical analysis
-workflows in the NGS area.
+and experimental designs is facilitated by a well-defined sample annotation
+infrastructure which improves reproducibility and user-friendliness of many
+typical analysis workflows in the NGS area.
 
 
 ### Usage
