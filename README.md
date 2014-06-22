@@ -1,5 +1,4 @@
-systemPipeR: utilities for building NGS pipelines
----
+### systemPipeR: NGS workflow environment with automated reports
 
 _systemPipeR_ is an R package for building *end-to-end* analysis pipelines with
 automated report generation for NGS applications such as RNA-Seq, ChIP-Seq,
@@ -12,7 +11,7 @@ sample annotation infrastructure which improves reproducibility and
 user-friendliness of many typical analysis workflows in the NGS area.
 
 
-### Usage
+#### Usage
 Instructions for running _systemPipeR_ are given in the
 [_vignette_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeR.pdf?raw=true).
 The sample data set used in the vignette can be downloaded [_here_](http://biocluster.ucr.edu/~tgirke/projects/systemPipeR_test_data.zip). 
