@@ -18,7 +18,7 @@
 ## (A) Compute quality stats and store them in list
 seeFastq <- function(fastq, batchsize, klength=8) {
 	## Processing of single fastq file
-	.seeFastq <- function(fastq, batchsize, klength) { 
+	seeFastqSingle <- function(fastq, batchsize, klength) {
         	## Random sample N reads from fastq file (N=batchsize)
         	f <- open(FastqSampler(fastq, batchsize))
         	fq <- yield(f)
@@ -120,8 +120,8 @@ seeFastq <- function(fastq, batchsize, klength=8) {
 		## Assemble results in list
 		return(list(fqstats=c(batchsize=batchsize, nReads=nReads, klength=klength), astats=astats, bstats=bstats, cstats=cstats, dstats=dstats, estats=estats, fstats=fstats, gstats=gstats, hstats=hstats))
 	}
-	## Loop to run .seeFastq on one or many fastq files
-	fqlist <- lapply(names(fastq), function(x) .seeFastq(fastq=fastq[x], batchsize=batchsize, klength=klength))
+	## Loop to run seeFastqSingle on one or many fastq files
+	fqlist <- lapply(names(fastq), function(x) seeFastqSingle(fastq=fastq[x], batchsize=batchsize, klength=klength))
 	names(fqlist) <- names(fastq)
 	return(fqlist)
 }

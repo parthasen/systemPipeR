@@ -1,5 +1,5 @@
 ## IMPORTS
-import(Rsamtools, ShortRead)
+import(Rsamtools, ShortRead, Biostrings)
 
 ## EXPORTS
 ## S4 Classes
