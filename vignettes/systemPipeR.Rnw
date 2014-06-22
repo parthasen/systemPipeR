@@ -48,7 +48,7 @@ unlink("test.db")
 %\bibliographystyle{plainnat}
 
 \begin{document}
-\title{\Rpackage{systemPipeR}: NGS analysis pipelines with automated report generation}
+\title{\Rpackage{systemPipeR}: NGS analysis pipeline with automated report generation}
 \author{Thomas Girke \\
  Email contact: thomas.girke@ucr.edu}
 \maketitle
