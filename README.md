@@ -1,4 +1,4 @@
-systemPipeR: NGS pipelines and reports
+systemPipeR: utilities for building NGS pipelines
 ---
 
 R package for building *end-to-end* analysis pipelines with automated report
