@@ -150,8 +150,8 @@ dev.off()
 @
 \begin{figure}[bthp]
   \centering
-   \includegraphics[width=10cm]{fastqReport.pdf}
-   \caption{Sample FASTQ report.}
+   \includegraphics[width=18cm]{fastqReport.pdf}
+   \caption{QC report for 18 FASTQ files.}
    \label{fig:fastqreport}
 \end{figure}
 
