@@ -144,10 +144,16 @@ diversity, length and occurrence distribution of reads, number of reads above
 quality cutoffs and mean quality distribution.  
 <<eval=FALSE, keep.source=TRUE>>=
 fqlist <- seeFastq(fastq=infile1(args), batchsize=10000, klength=8)
-pdf("./results/fastqReport.pdf", height=18, width=4*length(fastq))
+pdf("./results/fastqReport.pdf", height=18, width=4*length(fqlist))
 seeFastqPlot(fqlist)
 dev.off()
 @
+\begin{figure}[bthp]
+  \centering
+   \includegraphics[width=10cm]{fastqReport.pdf}
+   \caption{Sample FASTQ report.}
+   \label{fig:fastqreport}
+\end{figure}
 
 \subsection{Alignment with Tophat 2}
 Build Bowtie 2 index.
