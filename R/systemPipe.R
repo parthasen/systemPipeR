@@ -480,7 +480,7 @@ filterDEGs <- function(pval, log2FC, filter, plot=TRUE) {
 	colnames(pf) <- gsub("_FDR", "", colnames(pf))
 	pf[is.na(pf)] <- FALSE
 	DEGlistDOWN <- sapply(colnames(pf), function(x) rownames(pf[pf[,x,drop=FALSE],,drop=FALSE]), simplify=FALSE)
-	df <- data.frame(Comparisons=names(DEGlist), Counts_Up_or_Down=sapply(DEGlistUPorDOWN, length), Counts_Up=sapply(DEGlistUP, length), Counts_Down=sapply(DEGlistDOWN, length))
+	df <- data.frame(Comparisons=names(DEGlistUPorDOWN), Counts_Up_or_Down=sapply(DEGlistUPorDOWN, length), Counts_Up=sapply(DEGlistUP, length), Counts_Down=sapply(DEGlistDOWN, length))
 	resultlist <- list(UporDown=DEGlistUPorDOWN, Up=DEGlistUP, Down=DEGlistDOWN, Summary=df)
 	if(plot==TRUE) {
 		library(ggplot2)
