@@ -215,11 +215,9 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:261-266 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:261-264 (eval = FALSE)
 ###################################################
-## pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
-## fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
-## DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1), plot=TRUE)
+## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
 ## names(DEG_list)
 ## DEG_list$Summary
 

@@ -464,7 +464,9 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 # edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 ## Filter DEGs by p-value and fold change
-filterDEGs <- function(pval, log2FC, filter, plot=TRUE) {
+filterDEGs <- function(degDF, filter, plot=TRUE) {
+	pval <- degDF[, grep("_FDR$", colnames(degDF)), drop=FALSE]
+	log2FC <- degDF[, grep("_logFC$", colnames(degDF)), drop=FALSE]
 	## DEGs that are up or down regulated 
 	pf <- pval <= filter["FDR"]/100 & (log2FC >= log2(filter["Fold"]) | log2FC <= -log2(filter["Fold"]))
 	colnames(pf) <- gsub("_FDR", "", colnames(pf))
@@ -492,8 +494,6 @@ filterDEGs <- function(pval, log2FC, filter, plot=TRUE) {
 	return(resultlist)
 }
 ## Usage:
-# pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
-# fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
-# DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1))
+# DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
 
 
