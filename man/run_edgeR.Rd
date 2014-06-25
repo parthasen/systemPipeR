@@ -51,7 +51,7 @@ Thomas Girke
 \examples{
 \dontrun{
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
-edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
 fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
 DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1), plot=TRUE)

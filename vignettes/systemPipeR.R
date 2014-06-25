@@ -211,19 +211,24 @@ cmp[[1]]
 ###################################################
 ### code chunk number 27: systemPipeR.Rnw:257-258 (eval = FALSE)
 ###################################################
-## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:261-264 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:261-262 (eval = FALSE)
 ###################################################
-## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
+## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
+
+
+###################################################
+### code chunk number 29: systemPipeR.Rnw:270-272 (eval = FALSE)
+###################################################
 ## names(DEG_list)
 ## DEG_list$Summary
 
 
 ###################################################
-### code chunk number 29: sessionInfo
+### code chunk number 30: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 

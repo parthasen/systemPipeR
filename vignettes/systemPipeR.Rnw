@@ -255,11 +255,19 @@ cmp[[1]]
 @
 Run \Rpackage{edgeR}
 <<eval=FALSE, keep.source=TRUE>>=
-edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 @
-Filter and plot DEG results for up and down regulated genes
+Filter and plot DEG results for up and down regulated genes. Because of the toy sample set used in this vignette, the \Rfunarg{FDR} value has been set to a relatively high threshold (here 10\%). More commonly used \Rfunarg{FDR} cutoffs are 1\% or 5\%.
 <<eval=FALSE, keep.source=TRUE>>=
-DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
+DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
+@
+\begin{figure}[bthp]
+  \centering
+   \includegraphics[width=10cm]{DEGcounts.pdf}
+   \caption{Up and down regulated DEGs.}
+   \label{fig:DEGcounts}
+\end{figure}
+<<eval=FALSE, keep.source=TRUE>>=
 names(DEG_list)
 DEG_list$Summary
 @
