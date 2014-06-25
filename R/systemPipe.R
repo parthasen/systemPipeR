@@ -420,11 +420,11 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 	y <- calcNormFactors(y)
 	## Design matrix
 	if(length(paired)==0) {
-		design <- model.matrix(~0+as.character(y$samples$group), data=y$samples)
-		colnames(design) <- unique(as.character(y$samples$group))
+		design <- model.matrix(~0+y$samples$group, data=y$samples)
+		colnames(design) <- levels(y$samples$group)
 	} else {
         	if(length(paired)>0 & independent==FALSE) stop("When providing values under 'paired' also set independent=TRUE")
-		Subject <- factor(paired[samples %in% cmp[j,]])
+		Subject <- factor(samplepairs[samples %in% cmp[j,]])
 		Treat <- y$samples$group
         	design <- model.matrix(~Subject+Treat)
 		levels(design) <- levels(y$samples$group)
