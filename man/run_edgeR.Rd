@@ -52,6 +52,11 @@ Thomas Girke
 \dontrun{
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
 edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
+fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
+DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1), plot=TRUE)
+names(DEG_list)
+DEG_list$Summary
 }
 }
 \keyword{ utilities }

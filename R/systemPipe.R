@@ -420,11 +420,11 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 	y <- calcNormFactors(y)
 	## Design matrix
 	if(length(paired)==0) {
-		design <- model.matrix(~0+y$samples$group, data=y$samples)
-		colnames(design) <- levels(y$samples$group)
+		design <- model.matrix(~0+as.character(y$samples$group), data=y$samples)
+		colnames(design) <- unique(as.character(y$samples$group))
 	} else {
         	if(length(paired)>0 & independent==FALSE) stop("When providing values under 'paired' also set independent=TRUE")
-		Subject <- factor(samplepairs[samples %in% cmp[j,]])
+		Subject <- factor(paired[samples %in% cmp[j,]])
 		Treat <- y$samples$group
         	design <- model.matrix(~Subject+Treat)
 		levels(design) <- levels(y$samples$group)
@@ -462,5 +462,38 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 ## Usage:
 # cmp <- readComp(file=targetspath, format="matrix", delim="-")
 # edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
+
+## Filter DEGs by p-value and fold change
+filterDEGs <- function(pval, log2FC, filter, plot=TRUE) {
+	## DEGs that are up or down regulated 
+	pf <- pval <= filter["FDR"]/100 & (log2FC >= log2(filter["Fold"]) | log2FC <= -log2(filter["Fold"]))
+	colnames(pf) <- gsub("_FDR", "", colnames(pf))
+	pf[is.na(pf)] <- FALSE
+	DEGlistUPorDOWN <- sapply(colnames(pf), function(x) rownames(pf[pf[,x,drop=FALSE],,drop=FALSE]), simplify=FALSE)
+	## DEGs that are up regulated 
+	pf <- pval <= filter["FDR"]/100 & log2FC >= log2(filter["Fold"])
+	colnames(pf) <- gsub("_FDR", "", colnames(pf))
+	pf[is.na(pf)] <- FALSE
+	DEGlistUP <- sapply(colnames(pf), function(x) rownames(pf[pf[,x,drop=FALSE],,drop=FALSE]), simplify=FALSE)
+	## DEGs that are down regulated 
+	pf <- pval <= filter["FDR"]/100 & log2FC <= -log2(filter["Fold"])
+	colnames(pf) <- gsub("_FDR", "", colnames(pf))
+	pf[is.na(pf)] <- FALSE
+	DEGlistDOWN <- sapply(colnames(pf), function(x) rownames(pf[pf[,x,drop=FALSE],,drop=FALSE]), simplify=FALSE)
+	df <- data.frame(Comparisons=names(DEGlist), Counts_Up_or_Down=sapply(DEGlistUPorDOWN, length), Counts_Up=sapply(DEGlistUP, length), Counts_Down=sapply(DEGlistDOWN, length))
+	resultlist <- list(UporDown=DEGlistUPorDOWN, Up=DEGlistUP, Down=DEGlistDOWN, Summary=df)
+	if(plot==TRUE) {
+		library(ggplot2)
+		mytitle <- paste("DEG Counts (", names(filter)[1], ": ", filter[1], " & " , names(filter)[2], ": ", filter[2], "%)", sep="")
+		df_plot <- data.frame(Comparisons=rep(as.character(df$Comparisons), 2), Counts=c(df$Counts_Up, df$Counts_Down), Type=rep(c("Up", "Down"), each=length(df[,1])))
+		p <- ggplot(df_plot, aes(Comparisons, Counts, fill = Type)) + geom_bar(position="stack", stat="identity") + coord_flip() + theme(axis.text.y=element_text(angle=0, hjust=1)) + ggtitle(mytitle)
+		print(p)
+	}
+	return(resultlist)
+}
+## Usage:
+# pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
+# fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
+# DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1))
 
 

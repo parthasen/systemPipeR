@@ -209,13 +209,23 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:256-257 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:257-258 (eval = FALSE)
 ###################################################
 ## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=TRUE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: sessionInfo
+### code chunk number 28: systemPipeR.Rnw:261-266 (eval = FALSE)
+###################################################
+## pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
+## fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
+## DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1), plot=TRUE)
+## names(DEG_list)
+## DEG_list$Summary
+
+
+###################################################
+### code chunk number 29: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
