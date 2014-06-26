@@ -200,7 +200,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 26: systemPipeR.Rnw:250-254
+### code chunk number 26: systemPipeR.Rnw:256-260
 ###################################################
 library(edgeR)
 targets <- read.delim(targetspath, comment="#")
@@ -209,19 +209,19 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:257-258 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:263-264 (eval = FALSE)
 ###################################################
 ## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:261-262 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:267-268 (eval = FALSE)
 ###################################################
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 
 
 ###################################################
-### code chunk number 29: systemPipeR.Rnw:270-272 (eval = FALSE)
+### code chunk number 29: systemPipeR.Rnw:276-278 (eval = FALSE)
 ###################################################
 ## names(DEG_list)
 ## DEG_list$Summary

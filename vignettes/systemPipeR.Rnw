@@ -245,6 +245,12 @@ d <- cor(rpkmDFeByg, method="spearman")
 hc <- hclust(as.dist(1-d))
 plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
 @
+\begin{figure}[bthp]
+  \centering
+   \includegraphics[width=6cm]{sample_tree.pdf}
+   \caption{Correlation dendrogram of samples.}
+   \label{fig:sample_tree}
+\end{figure}
 
 \subsection{DEG analysis with \Rpackage{edgeR}} 
 <<eval=TRUE, keep.source=TRUE>>=
