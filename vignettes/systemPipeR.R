@@ -264,7 +264,7 @@ cmp[[1]]
 ###################################################
 ### code chunk number 32: systemPipeR.Rnw:315-320 (eval = FALSE)
 ###################################################
-## gos <- BatchResultslim[grep("M6-V6", BatchResultslim$CLID), ]
+## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
 ## gos <- BatchResultslim
 ## pdf("GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
 ## goBarplot(gos, gocat="BP")
