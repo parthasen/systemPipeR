@@ -3,11 +3,11 @@
 ###################################################
 ### code chunk number 1: style
 ###################################################
-BiocStyle::latex()
+BiocStyle::latex(use.unsrturl=FALSE)
 
 
 ###################################################
-### code chunk number 2: systemPipeR.Rnw:42-44
+### code chunk number 2: systemPipeR.Rnw:43-45
 ###################################################
 options(width=95)
 unlink("test.db")

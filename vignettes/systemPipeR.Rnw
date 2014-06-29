@@ -10,17 +10,18 @@
 % \VignettePackage{gpls}
 \documentclass{article}
 <<style, eval=TRUE, echo=FALSE, results=tex>>=
-BiocStyle::latex()
+BiocStyle::latex(use.unsrturl=FALSE)
 @
 
-%\usepackage[authoryear,round]{natbib}
-%\bibliographystyle{plainnat}
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{plainnat}
 \def\bibsection{\section{References}}
 
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{float}
 
 %\newcommand{\comment}[1]{}
 %\newcommand{\Rfunction}[1]{{\texttt{#1}}}
@@ -45,7 +46,6 @@ unlink("test.db")
 @
 %\parindent 0in
 
-%\bibliographystyle{plainnat}
 
 \begin{document}
 \title{\Rpackage{systemPipeR}: NGS workflow and report generation environment}
@@ -55,7 +55,7 @@ unlink("test.db")
 
 \section{Introduction}
 
-\Rpackage{systemPipeR} provides utilities for building \textit{end-to-end} analysis workflows with automated report generation for next generation sequence (NGS) applications such as RNA-Seq, ChIP-Seq, VAR-Seq and many others. An important feature is support for running command-line software, such as NGS aligners, on both single machines or compute clusters. This includes both interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). For instance, \Rpackage{systemPipeR} can be used with most command-line aligners such as \Robject{BWA} \cite{Li2013-oy, Li2009-oc}, \Robject{TopHat 2} \cite{Kim2013-vg} and \Robject{Bowtie 2} \cite{Langmead2012-bs}, as well as the R-based NGS aligner \Rpackage{Rsubread} \cite{Liao2013-bn}. Efficient handling of complex sample sets and experimental designs is facilitated by a well-defined sample annotation infrastructure which improves reproducibility and user-friendliness of many typical analysis workflows in the NGS area. 
+\Rpackage{systemPipeR} provides utilities for building \textit{end-to-end} analysis workflows with automated report generation for next generation sequence (NGS) applications such as RNA-Seq, ChIP-Seq, VAR-Seq and many others \citep{Girke2014-oy}. An important feature is support for running command-line software, such as NGS aligners, on both single machines or compute clusters. This includes both interactive job submissions or batch submissions to queuing systems of clusters (tested only with Torque). For instance, \Rpackage{systemPipeR} can be used with most command-line aligners such as \Robject{BWA} \citep{Li2013-oy, Li2009-oc}, \Robject{TopHat 2} \citep{Kim2013-vg} and \Robject{Bowtie 2} \citep{Langmead2012-bs}, as well as the R-based NGS aligner \Rpackage{Rsubread} \citep{Liao2013-bn}. Efficient handling of complex sample sets and experimental designs is facilitated by a well-defined sample annotation infrastructure which improves reproducibility and user-friendliness of many typical analysis workflows in the NGS area \citep{Lawrence2013-kt}. 
 
 \tableofcontents
 
@@ -148,7 +148,7 @@ pdf("./results/fastqReport.pdf", height=18, width=4*length(fqlist))
 seeFastqPlot(fqlist)
 dev.off()
 @
-\begin{figure}[bthp]
+\begin{figure}[H]
   \centering
    \includegraphics[width=18cm]{fastqReport.pdf}
    \caption{QC report for 18 FASTQ files.}
@@ -245,7 +245,7 @@ d <- cor(rpkmDFeByg, method="spearman")
 hc <- hclust(as.dist(1-d))
 plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
 @
-\begin{figure}[bthp]
+\begin{figure}[H]
   \centering
    \includegraphics[width=6cm]{sample_tree.pdf}
    \caption{Correlation dendrogram of samples.}
@@ -267,7 +267,7 @@ Filter and plot DEG results for up and down regulated genes. Because of the toy 
 <<eval=FALSE, keep.source=TRUE>>=
 DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 @
-\begin{figure}[bthp]
+\begin{figure}[H]
   \centering
    \includegraphics[width=10cm]{DEGcounts.pdf}
    \caption{Up and down regulated DEGs.}

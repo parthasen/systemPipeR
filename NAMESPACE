@@ -29,5 +29,7 @@ export(
     ## Source: systemPipe.R
     "alignStats", "getQsubargs", "qsubRun", "returnRPKM", 
     "runCommandline", "systemArgs", "symLink2bam", "moduleload", 
-    "modulelist", "run_edgeR", "filterDEGs", "seeFastq", "seeFastqPlot"
+    "modulelist", "run_edgeR", "filterDEGs", "seeFastq", "seeFastqPlot",
+    "GOHyperGAll", "GOHyperGAll_Subset", "GOHyperGAll_Simplify", "GOCluster_Report",
+    "readGOorg", "sampleDFgene2GO", "gene2GOlist", "loadData", "goBarplot"
 ) 
