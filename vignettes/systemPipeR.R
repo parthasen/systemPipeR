@@ -228,7 +228,51 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 30: sessionInfo
+### code chunk number 30: systemPipeR.Rnw:283-296 (eval = FALSE)
+###################################################
+## library("biomaRt")
+## listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
+## m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) # Choose genome from VectorBase, here aaegypti_eg_gene
+## m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+## listAttributes(m) # Choose data types you want to download
+## go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)
+## go <- go[go[,3]!="",]; go[,3] <- as.character(go[,3])
+## go[go[,3]=="molecular_function", 3] <- "F"; go[go[,3]=="biological_process", 3] <- "P"; go[go[,3]=="cellular_component", 3] <- "C"
+## go[1:4,]
+## dir.create("./data/GO")
+## write.table(go, "data/GO/GOannotationsBiomart_mod.txt", quote=FALSE, row.names=FALSE, col.names=FALSE, sep="\t")
+## readGOorg(myfile = "data/GO/GOannotationsBiomart_mod.txt", outdir="data/GO", colno = c(1,2,3))
+## gene2GOlist(outdir="data/GO", rootUK=FALSE)
+
+
+###################################################
+### code chunk number 31: systemPipeR.Rnw:300-312 (eval = FALSE)
+###################################################
+## edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE)
+## DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
+## up_down <- DEGlist$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")
+## up <- DEGlist$Up; names(up) <- paste(names(up), "_up", sep="")
+## down <- DEGlist$Down; names(down) <- paste(names(down), "_down", sep="")
+## DEGlist <- c(up_down, up, down)
+## DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
+## loadData("data/GO")
+## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+## library("biomaRt"); vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
+## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=vb)[,1])
+## BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+
+
+###################################################
+### code chunk number 32: systemPipeR.Rnw:316-320 (eval = FALSE)
+###################################################
+## gos <- gos[grep("mycomp", gos$CLID), ]
+## goBarplot(gos, gocat="MF")
+## goBarplot(gos, gocat="BP")
+## goBarplot(gos, gocat="CC")
+
+
+###################################################
+### code chunk number 33: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
