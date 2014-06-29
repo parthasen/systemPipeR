@@ -241,32 +241,32 @@ cmp[[1]]
 ## go[1:4,]
 ## dir.create("./data/GO")
 ## write.table(go, "data/GO/GOannotationsBiomart_mod.txt", quote=FALSE, row.names=FALSE, col.names=FALSE, sep="\t")
-## readGOorg(myfile = "data/GO/GOannotationsBiomart_mod.txt", outdir="data/GO", colno = c(1,2,3))
+## readGOorg(myfile = "data/GO/GOannotationsBiomart_mod.txt", outdir="data/GO", org="", colno = c(1,2,3))
 ## gene2GOlist(outdir="data/GO", rootUK=FALSE)
 
 
 ###################################################
-### code chunk number 31: systemPipeR.Rnw:300-312 (eval = FALSE)
+### code chunk number 31: systemPipeR.Rnw:300-311 (eval = FALSE)
 ###################################################
-## edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE)
-## DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
-## up_down <- DEGlist$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")
-## up <- DEGlist$Up; names(up) <- paste(names(up), "_up", sep="")
-## down <- DEGlist$Down; names(down) <- paste(names(down), "_down", sep="")
+## loadData("data/GO")
+## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
+## up_down <- DEG_list$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")
+## up <- DEG_list$Up; names(up) <- paste(names(up), "_up", sep="")
+## down <- DEG_list$Down; names(down) <- paste(names(down), "_down", sep="")
 ## DEGlist <- c(up_down, up, down)
 ## DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
-## loadData("data/GO")
-## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=2, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
 ## library("biomaRt"); m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
 ## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=m)[,1])
 ## BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
 
 
 ###################################################
-### code chunk number 32: systemPipeR.Rnw:316-320 (eval = FALSE)
+### code chunk number 32: systemPipeR.Rnw:315-320 (eval = FALSE)
 ###################################################
-## gos <- BatchResultslim[grep("mycomp", BatchResultslim$CLID), ]
-## goBarplot(gos, gocat="MF")
+## gos <- BatchResultslim[grep("M6-V6", BatchResultslim$CLID), ]
+## gos <- BatchResultslim
+## pdf("GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
 ## goBarplot(gos, gocat="BP")
 ## goBarplot(gos, gocat="CC")
 
