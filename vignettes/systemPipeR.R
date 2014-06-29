@@ -228,7 +228,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 30: systemPipeR.Rnw:283-296 (eval = FALSE)
+### code chunk number 30: systemPipeR.Rnw:284-297 (eval = FALSE)
 ###################################################
 ## library("biomaRt")
 ## listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
@@ -246,7 +246,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 31: systemPipeR.Rnw:300-311 (eval = FALSE)
+### code chunk number 31: systemPipeR.Rnw:302-313 (eval = FALSE)
 ###################################################
 ## loadData("data/GO")
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
@@ -262,7 +262,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 32: systemPipeR.Rnw:315-320 (eval = FALSE)
+### code chunk number 32: systemPipeR.Rnw:318-323 (eval = FALSE)
 ###################################################
 ## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
 ## gos <- BatchResultslim
