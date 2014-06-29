@@ -2,7 +2,6 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SYSargs-class}
-\alias{SampleName,SYSargs-method}
 \alias{[,SYSargs-method}
 \alias{coerce,list,SYSargs-method}
 \alias{cores,SYSargs-method}
@@ -12,13 +11,14 @@
 \alias{names,SYSargs-method}
 \alias{length,SYSargs-method}
 \alias{other,SYSargs-method}
+\alias{results,SYSargs-method}
 \alias{outfile1,SYSargs-method}
 \alias{outpaths,SYSargs-method}
 \alias{reference,SYSargs-method}
-\alias{results,SYSargs-method}
 \alias{show,SYSargs-method}
 \alias{software,SYSargs-method}
 \alias{sysargs,SYSargs-method}
+\alias{SampleName,SYSargs-method}
 
 \title{Class \code{"SYSargs"}}
 \description{
@@ -75,15 +75,20 @@ Thomas Girke
 \code{systemArgs} and \code{runCommandline}
 }
 \examples{
+\dontrun{
 showClass("SYSargs")
 ## Construct SYSargs object from param and targets files 
 param <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
 targets <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
 args <- systemArgs(sysma=param, mytargets=targets)
 args
-names(args); modules(args); cores(args); outpaths(args); sysargs(args)
+names(args); software(args); modules(args); cores(args); outpaths(args); 
+sysargs(args); other(args); reference(args); results(args); infile1(args)
+infile2(args); outfile1(args); SampleName(args)
 
-\dontrun{
+## The subsetting operator '[' allows to select specific samples
+args[1:4]
+
 ## Execute SYSargs on single machine
 runCommandline(args=args)
 

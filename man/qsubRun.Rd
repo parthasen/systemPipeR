@@ -7,7 +7,7 @@ Submit command-line tools to cluster
 Submits command-line tools to queue (e.g. Torque) of compute cluster using run specifications defined by \code{runX} and \code{getQsubargs} functions. 
 }
 \usage{
-qsubRun(appfct"runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs = 1, package = "systemPipeR")
+qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs = 1, package = "systemPipeR")
 }
 \arguments{
   \item{appfct}{
