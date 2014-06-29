@@ -257,15 +257,15 @@ cmp[[1]]
 ## DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
 ## loadData("data/GO")
 ## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
-## library("biomaRt"); vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
-## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=vb)[,1])
+## library("biomaRt"); m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=m)[,1])
 ## BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
 
 
 ###################################################
 ### code chunk number 32: systemPipeR.Rnw:316-320 (eval = FALSE)
 ###################################################
-## gos <- gos[grep("mycomp", gos$CLID), ]
+## gos <- BatchResultslim[grep("mycomp", BatchResultslim$CLID), ]
 ## goBarplot(gos, gocat="MF")
 ## goBarplot(gos, gocat="BP")
 ## goBarplot(gos, gocat="CC")
