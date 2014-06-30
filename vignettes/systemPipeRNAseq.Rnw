@@ -1,0 +1,289 @@
+% Manual compile
+% Sweave("systemPipeR.Rnw"); system("pdflatex systemPipeR.tex; bibtex systemPipeR; pdflatex systemPipeR.tex; pdflatex systemPipeR.tex")
+% echo 'Sweave("systemPipeRNAseq.Rnw")' | R --slave; echo 'Stangle("systemPipeRNAseq.Rnw")' | R --slave; pdflatex systemPipeRNAseq.tex;  bibtex systemPipeRNAseq; pdflatex systemPipeRNAseq.tex
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+% \VignetteIndexEntry{ChemmineR Tutorial}
+% \VignetteDepends{}
+% \VignetteKeywords{}
+% \VignettePackage{gpls}
+\documentclass{article}
+<<style, eval=TRUE, echo=FALSE, results=tex>>=
+BiocStyle::latex(use.unsrturl=FALSE)
+@
+
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{plainnat}
+\def\bibsection{\section{References}}
+
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{float}
+
+%\newcommand{\comment}[1]{}
+%\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+%\newcommand{\Robject}[1]{{\texttt{#1}}}
+%\newcommand{\Rpackage}[1]{{\textit{#1}}}
+%\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+%\newcommand{\Rclass}[1]{{\textit{#1}}}
+	
+% Define header and footer area with fandyhdr package (see: http://www.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\rhead{\nouppercase{\leftmark}}
+\lhead{\textit{systemPipeR RNA-Seq Report}}
+\rfoot{\thepage}
+
+<<echo=FALSE>>=
+options(width=95)
+unlink("test.db")
+@
+%\parindent 0in
+
+%\bibliographystyle{plainnat}
+
+\begin{document}
+\title{RNA-Seq project report template: Some Descriptive Title}
+\author{Project ID: RNAseq\_PI\_Name\_Organism\_Jun2014 \\
+	Project PI: First Last (first.last@inst.edu)\\
+        Author of Report: First Last (first.last@inst.edu)}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+This report describes the analysis of an RNA-Seq project from Dr. First Last's lab which studies the gene expression changes of ... in \textit{Organism XYZ}. The experimental design is as follows...
+
+\section{Sample definitions and environment settings}
+
+\subsection{Environment settings and input data}
+Typically, the user wants to record here the sources and versions of the reference genome sequence along with the corresponding annotations. In the provided sample data set all data inputs are stored in a \Robject{data} subdirectory and all results will be written to a separate \Robject{results} directory, while the \Robject{systemPipeRNAseq.Rnw} script and the \Robject{targets} file are expected be located in the parent directory. The R session is expected to run from this parent directory.
+
+To run the this sample report, mini sample FASTQ and reference genome files can be downloaded from \href{http://biocluster.ucr.edu/~tgirke/projects/systemPipeR_test_data.zip}{\textcolor{blue}{here}}. The chosen data set \href{http://www.ncbi.nlm.nih.gov/sra/?term=SRP010938}{\textcolor{blue}{SRP010938}} contains 18 paired-end (PE) read sets from \textit{Arabidposis thaliana} \cite{Howard2013-fq}. To minimize processing time during testing, each FASTQ file has been subsetted to 90,000-100,000 random sampled PE reads that map to the first 100,000 nucleotides of each chromosome of the \textit{A. thalina} genome. The corresponding reference genome sequence (FASTA) and its GFF annotion files (provided in the same download) have been truncated accordingly. This way the entire test sample data set is less than 200MB in storage space. A PE read set has been chosen for this test data set for flexibility, because it can be used for testing both types of analysis routines requiring either SE (single end) reads or PE reads. 
+
+\subsection{Required packages and resources}
+The \Rpackage{systemPipeR} package needs to be loaded to perform the analysis steps shown in this report \citep{Girke2014-oy}. 
+<<eval=TRUE, keep.source=TRUE>>=
+library(systemPipeR)
+@
+
+If applicable load custom functions not provided by \Rpackage{systemPipeR}
+<<eval=FALSE, keep.source=TRUE>>=
+source("systemPipeRNAseq_Fct.R")
+@
+
+\subsection{Experiment definition provided by \Robject{targets} file}
+The \href{run:targets.txt}{\Robject{targets}} file defines all FASTQ files and sample comparisons of the analysis workflow. 
+<<eval=FALSE, keep.source=TRUE>>=
+targets <- read.delim("targets.txt", comment.char = "#")[,1:4]
+@
+
+\section{Read preprocessing}
+\subsection{FASTQ quality report}
+The following \Rfunction{seeFastq} and \Rfunction{seeFastqPlot} functions generate and plot a series of
+useful quality statistics for a set of FASTQ files including per cycle quality
+box plots, base proportions, base-level quality trends, relative k-mer
+diversity, length and occurrence distribution of reads, number of reads above
+quality cutoffs and mean quality distribution. The results are written to a PDF file named 
+\href{run:./results/fastqReport.pdf}{\Robject{fastqReport.pdf}}.
+
+<<eval=FALSE, keep.source=TRUE>>=
+args <- systemArgs(sysma="tophat.param", mytargets="targets.txt")
+fqlist <- seeFastq(fastq=infile1(args), batchsize=100000, klength=8)
+pdf("./results/fastqReport.pdf", height=18, width=4*length(fqlist))
+seeFastqPlot(fqlist)
+dev.off()
+@
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=18cm]{fastqReport.pdf}
+   \caption{QC report for 18 FASTQ files.}
+   \label{fig:fastqreport}
+\end{figure}
+
+\section{Alignments}
+\subsection{Read mapping with \Rfunction{Bowtie2/Tophat2}}
+The NGS reads of this project will be aligned against the reference genome sequence using \Robject{Bowtie2/TopHat2} \citep{Kim2013-vg, Langmead2012-bs}. The parameter settings of the aligner are defined in the \Robject{tophat.param} file.
+<<eval=FALSE, keep.source=TRUE>>=
+args <- systemArgs(sysma="tophat.param", mytargets="targets.txt")
+sysargs(args)[1] # Command-line parameters for first FASTQ file
+@
+Submission of alignment jobs to compute cluster, here using 72 CPU cores (18 \Robject{qsub} processes each with 4 CPU cores).
+<<eval=FALSE, keep.source=TRUE>>=
+moduleload(modules(args))
+system("bowtie2-build ./data/aedes-aegypti-liverpool_scaffolds_AaegL3.fa ./data/aedes-aegypti-liverpool_scaffolds_AaegL3.fa")
+qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
+(joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
+@
+Check whether all BAM files have been created
+<<eval=FALSE, keep.source=TRUE>>=
+file.exists(outpaths(args))
+@
+
+\subsection{Read and alignment stats}
+The following provides an overview of the number of reads in each sample and how many of them aligned to the reference.
+<<eval=FALSE, keep.source=TRUE>>=
+read_statsDF <- alignStats(args=args, fqgz=TRUE) 
+write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
+@
+<<eval=FALSE, keep.source=TRUE>>=
+read.delim("results/alignStats.xls")
+@
+
+\subsection{Create symbolic links for viewing BAM files in IGV}
+The \Rfunction{symLink2bam} function creates symbolic links to view the BAM alignment files in a genome browser such as IGV. The corresponding URLs are written to a file with a path specified under \Robject{urlfile}, here \href{run:./results/IGVurl.txt}{IGVurl.txt}.
+<<eval=FALSE, keep.source=TRUE>>=
+symLink2bam(sysargs=args, htmldir=c("~/.html/", "projects/AlexRaikhel/2014/"), 
+            urlbase="http://biocluster.ucr.edu/~tgirke/", 
+	    urlfile="./results/IGVurl.txt")
+@
+
+\section{Read quantification per annotation range}
+\subsection{Read counting with \Rfunction{summarizeOverlaps} in parallel mode using multiple cores}
+Reads overlapping with annotation ranges of interest are counted for each sample using the \Rfunction{summarizeOverlaps} function \citep{Lawrence2013-kt}. The read counting is preformed for exonic gene regions in a non-strand-specific manner while ignoring overlaps among different genes. Subsequently, the expression count values are normalized by \textit{reads per kp per million mapped reads} (RPKM). The raw read count table (\href{run:./results/countDFeByg.xls}{countDFeByg.xls}) and the correspoding RPKM table (\href{run:./results/rpkmDFeByg.xls}{rpkmDFeByg.xls}) are written to separate files in the \Robject{results} directory of this project. Parallelization is achieved with the \Rpackage{BiocParallel} package, here using 8 CPU cores.
+<<eval=FALSE, keep.source=TRUE>>=
+library("GenomicFeatures"); library(BiocParallel)
+txdb <- loadDb("./data/AedesAegypti.sqlite")
+eByg <- exonsBy(txdb, by=c("gene"))
+bfl <- BamFileList(outpaths(args), yieldSize=50000, index=character())
+multicoreParam <- MulticoreParam(workers=8); register(multicoreParam); registered()
+counteByg <- bplapply(bfl, function(x) summarizeOverlaps(eByg, x, mode="Union", 
+                                               ignore.strand=TRUE, 
+                                               inter.feature=FALSE, 
+                                               singleEnd=TRUE)) 
+countDFeByg <- sapply(seq(along=counteByg), function(x) assays(counteByg[[x]])$counts)
+rownames(countDFeByg) <- names(rowData(counteByg[[1]])); colnames(countDFeByg) <- names(bfl)
+rpkmDFeByg <- apply(countDFeByg, 2, function(x) returnRPKM(counts=x, ranges=eByg))
+write.table(countDFeByg, "results/countDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+write.table(rpkmDFeByg, "results/rpkmDFeByg.xls", col.names=NA, quote=FALSE, sep="\t")
+@
+Sample of data slice of count table
+<<eval=FALSE, keep.source=TRUE>>=
+read.delim("results/countDFeByg.xls", row.names=1, check.names=FALSE)[1:4,1:5]
+@
+Sample of data slice of RPKM table
+<<eval=FALSE, keep.source=TRUE>>=
+read.delim("results/rpkmDFeByg.xls", row.names=1, check.names=FALSE)[1:4,1:4]
+@
+
+\subsection{Sample-wise correlation analysis}
+The following computes the sample-wise Spearman correlation coefficients from the RPKM normalized expresssion values. After transformation to a distance matrix, hierarchical clustring is performed with the \Rfunction{hclust} function and the result is plotted as a dendrogram (\href{run:./results/sample_tree.pdf}{sample\_tree.pdf}). 
+<<eval=FALSE, keep.source=TRUE>>=
+library(ape)
+rpkmDFeByg <- read.delim("./results/rpkmDFeByg.xls", row.names=1, check.names=FALSE)[,-19]
+rpkmDFeByg <- rpkmDFeByg[rowMeans(rpkmDFeByg) > 50,]
+d <- cor(rpkmDFeByg, method="spearman")
+hc <- hclust(as.dist(1-d))
+pdf("results/sample_tree.pdf")
+plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.label=TRUE, no.margin=TRUE)
+dev.off()
+@
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=10cm]{sample_tree.pdf}
+   \caption{Correlation dendrogram of samples.}
+   \label{fig:sample_tree}
+\end{figure}
+
+\section{Analysis of differentially expressed genes with \Rpackage{edgeR}}
+The analysis of differentially expressed genes (DEGs) is performed with the glm method from the \Rpackage{edgeR} package \citep{Robinson2010-uk}. The sample comparisons used by this analysis are defined in the header lines of the \href{run:targets.txt}{\Robject{targets}} file starting with \texttt{<CMP>}.
+<<eval=FALSE, keep.source=TRUE>>=
+library(edgeR)
+countDF <- read.delim("countDFeByg.xls", row.names=1, check.names=FALSE) 
+targets <- read.delim("targets.txt", comment="#")
+cmp <- readComp(file="targets.txt", format="matrix", delim="-")
+edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
+@
+
+Add functional descriptions
+<<eval=FALSE, keep.source=TRUE>>=
+desc <- read.delim("data/desc.xls") 
+desc <- desc[!duplicated(desc[,1]),]
+descv <- as.character(desc[,2]); names(descv) <- as.character(desc[,1])
+edgeDF <- data.frame(edgeDF, Desc=descv[rownames(edgeDF)], check.names=FALSE)
+write.table(edgeDF, "./results/edgeRglm_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
+@
+
+Filter and plot DEG results for up and down regulated genes
+<<eval=FALSE, keep.source=TRUE>>=
+edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
+pdf("results/DEGcounts.pdf")
+DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
+dev.off()
+write.table(DEG_list$Summary, "./results/DEGcounts.xls", quote=FALSE, sep="\t", row.names=FALSE)
+@
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=10cm]{DEGcounts.pdf}
+   \caption{Up and down regulated DEGs with FDR of 1\%.}
+   \label{fig:DEGcounts}
+\end{figure}
+
+\section{GO term enrichment analysis of DEGs}
+Instructions for obtaining GO annotations programatically with \Rpackage{biomaRt} (not used, see below). 
+<<eval=FALSE, keep.source=TRUE>>=
+library("biomaRt") 
+listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
+vb <- useMart("vb_mart_22"); listDatasets(vb) # Choose genome from VectorBase, here aaegypti_eg_gene
+vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
+listAttributes(vb) # Choose data types you want to download
+go <- getBM(attributes=c("ensembl_gene_id",  "go_accession", "go_name_1006", "go_namespace_1003"), mart=vb)
+go[1:4,]
+@
+
+Since VectorBase's online BioMart service contains a newer version (L3.1) of the \textit{Aedes aegypti} genome annotation, this version was used here rather than the one obtainable via the \Rpackage{biomaRt} package. For details see \href{run:systemPipeRNAseq_Fct.R}{\Robject{systemPipeRNAseq\_Fct.R}}.
+<<eval=FALSE, keep.source=TRUE>>=
+downloadGOdata(rerun=FALSE) # Do only once
+@
+
+The following GO term enrichment analysis uses the hypergeometric distribution. The results for the complete GO analysis are stored in \href{run:./results/GOBatchResultedgeR_allcomp.xls}{GOBatchResultedgeR\_allcomp.xls} (FDR 1\%) and \href{run:./results/GOBatchResultedgeR_allcomp_FDR5.xls}{GOBatchResultedgeR\_allcomp\_FDR5.xls} (FDR 5\%). The GO slim results are available in \href{run:./results/GOslimBatchResultedgeR_allcomp.xls}{GOslimBatchResultedgeR\_allcomp.xls}.
+<<eval=FALSE, keep.source=TRUE>>=
+edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
+DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
+up_down <- DEGlist$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")  
+up <- DEGlist$Up; names(up) <- paste(names(up), "_up", sep="")  
+down <- DEGlist$Down; names(down) <- paste(names(down), "_down", sep="")  
+DEGlist <- c(up_down, up, down)
+DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
+loadData("data/GO")
+BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+write.table(BatchResult, "./results/GOBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
+library("biomaRt"); vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
+goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=vb)[,1])
+BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+write.table(BatchResultslim, "./results/GOslimBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
+@
+
+Sample plots of GO slim terms. The plots are available in the following PDF files: \href{run:./results/GOslimbarplotBP.pdf}{GOslimbarplotBP.pdf}, \href{run:./results/GOslimbarplotCC.pdf}{GOslimbarplotCC.pdf} and \href{run:./results/GOslimbarplotMF.pdf}{GOslimbarplotMF.pdf}.
+<<eval=FALSE, keep.source=TRUE>>=
+gos <- read.delim("results/GOslimBatchResultedgeR_allcomp.xls", row.names=1, check.names=FALSE)
+gos <- gos[grep("^iEcRa24h-iLuc24h", gos$CLID), ] 
+pdf("./results/GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
+pdf("./results/GOslimbarplotBP.pdf", height=8, width=10); goBarplot(gos, gocat="BP"); dev.off()
+pdf("./results/GOslimbarplotCC.pdf", height=8, width=10); goBarplot(gos, gocat="CC"); dev.off()
+@
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=20cm]{GOslimbarplotMF.pdf}
+   \caption{GO Slim Barplot for MF Ontology.}
+   \label{fig:GOMF}
+\end{figure}
+
+
+\section{Version Information}
+<<sessionInfo, results=tex, print=TRUE>>=
+toLatex(sessionInfo())
+@
+
+\section{Funding}
+This project was supported by funds from the National Institutes of Health (NIH).
+
+\bibliography{bibtex}
+
+\end{document}

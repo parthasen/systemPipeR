@@ -31,7 +31,7 @@ setMethod(f="other", signature="SYSargs", definition=function(x) {return(x@other
 setGeneric(name="reference", def=function(x) standardGeneric("reference"))
 setMethod(f="reference", signature="SYSargs", definition=function(x) {return(x@reference)})
 setGeneric(name="results", def=function(x) standardGeneric("results"))
-setMethod(f="results", signature="SYSargs", definition=function(x) {return(x@results)})
+setMethod(f="results", signature="SYSargs", definition=function(x) {return(as.character(x@results))})
 setGeneric(name="infile1", def=function(x) standardGeneric("infile1"))
 setMethod(f="infile1", signature="SYSargs", definition=function(x) {return(x@infile1)})
 setGeneric(name="infile2", def=function(x) standardGeneric("infile2"))
@@ -184,7 +184,7 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
                         cores=cores,
 			other=other,
 			reference=reference,
-			results=as.character(resultpath),
+			results=resultpath,
 			infile1=infile1back,
 			infile2=infile2back,
 			outfile1=outfile1back,

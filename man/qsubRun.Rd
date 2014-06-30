@@ -13,7 +13,7 @@ qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs =
   \item{appfct}{
 	Accpets runX functions, such as \code{appfct="runCommandline(args, runid)"}
 }
-  \item{app}{
+  \item{args}{
 	Argument list returned by \code{systemArgs()}.
 }
   \item{qsubargs}{
