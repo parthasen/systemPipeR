@@ -27,7 +27,7 @@ have a simplified JSON-like name/value structure. Here is a sample param file
 for _Tophat2_:
 [_tophat.param_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/tophat.param).
 Templates for setting up custom project reports are provided as _*.Rnw_
-files in the _inst/extdata_ directory of this package. The
+files in the [vignettes](https://github.com/tgirke/systemPipeR/tree/master/vignettes) subdirectory of this package. The
 corresponding PDFs of these report templates are linked here:
 [systemPipeRNAseq](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeRNAseq.pdf?raw=true),
 [systemPipeChIPseq](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeChIPseq.pdf?raw=true)
