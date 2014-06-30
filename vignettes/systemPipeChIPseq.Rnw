@@ -110,10 +110,10 @@ dev.off()
 \end{figure}
 
 \section{Alignments}
-\subsection{Read mapping with \Rfunction{Bowtie2/Tophat2}}
-The NGS reads of this project will be aligned against the reference genome sequence using \Robject{Bowtie2/TopHat2} \citep{Kim2013-vg, Langmead2012-bs}. The parameter settings of the aligner are defined in the \Robject{tophat.param} file.
+\subsection{Read mapping with \Rfunction{Bowtie2}}
+The NGS reads of this project will be aligned against the reference genome sequence using \Robject{Bowtie2} \citep{Langmead2012-bs}. The parameter settings of the aligner are defined in the \Robject{tophat.param} file.
 <<eval=FALSE, keep.source=TRUE>>=
-args <- systemArgs(sysma="tophat.param", mytargets="targets.txt")
+args <- systemArgs(sysma="bowtieSE.param", mytargets="targets.txt")
 sysargs(args)[1] # Command-line parameters for first FASTQ file
 @
 Submission of alignment jobs to compute cluster, here using 72 CPU cores (18 \Robject{qsub} processes each with 4 CPU cores).
