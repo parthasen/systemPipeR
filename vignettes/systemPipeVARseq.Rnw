@@ -111,7 +111,7 @@ dev.off()
 
 \section{Alignments}
 \subsection{Read mapping with \Rfunction{BWA}}
-The NGS reads of this project will be aligned against the reference genome sequence using \Robject{BWA} \cite{Li2013-oy, Li2009-oc}. The parameter settings of the aligner are defined in the \Robject{bwa.param} file.
+The NGS reads of this project will be aligned against the reference genome sequence using \Robject{BWA} \citep{Li2013-oy, Li2009-oc}. The parameter settings of the aligner are defined in the \Robject{bwa.param} file.
 <<eval=FALSE, keep.source=TRUE>>=
 args <- systemArgs(sysma="bwa.param", mytargets="targets.txt")
 sysargs(args)[1] # Command-line parameters for first FASTQ file
