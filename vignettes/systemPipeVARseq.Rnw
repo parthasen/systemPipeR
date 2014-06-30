@@ -58,7 +58,7 @@ unlink("test.db")
 \tableofcontents
 
 \section{Introduction}
-This report describes the analysis of an VAR-Seq project from Dr. First Last's lab which studies the gene expression changes of ... in \textit{Organism XYZ}. The experimental design is as follows...
+This report describes the analysis of an VAR-Seq project from Dr. First Last's lab which studies the genetic variances of ... in \textit{Organism x}. The experimental design is as follows...
 
 \section{Sample definitions and environment settings}
 
