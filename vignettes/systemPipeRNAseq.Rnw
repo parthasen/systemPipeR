@@ -80,8 +80,10 @@ source("systemPipeRNAseq_Fct.R")
 
 \subsection{Experiment definition provided by \Robject{targets} file}
 The \href{run:targets.txt}{\Robject{targets}} file defines all FASTQ files and sample comparisons of the analysis workflow. 
-<<eval=FALSE, keep.source=TRUE>>=
-targets <- read.delim("targets.txt", comment.char = "#")[,1:4]
+<<eval=TRUE, keep.source=TRUE>>=
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targets <- read.delim(targetspath, comment.char = "#")[,1:4]
+targets
 @
 
 \section{Read preprocessing}

@@ -26,13 +26,15 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 5: systemPipeRNAseq.Rnw:83-84 (eval = FALSE)
+### code chunk number 5: systemPipeRNAseq.Rnw:83-86
 ###################################################
-## targets <- read.delim("targets.txt", comment.char = "#")[,1:4]
+targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targets <- read.delim(targetspath, comment.char = "#")[,1:4]
+targets
 
 
 ###################################################
-### code chunk number 6: systemPipeRNAseq.Rnw:96-101 (eval = FALSE)
+### code chunk number 6: systemPipeRNAseq.Rnw:98-103 (eval = FALSE)
 ###################################################
 ## args <- systemArgs(sysma="tophat.param", mytargets="targets.txt")
 ## fqlist <- seeFastq(fastq=infile1(args), batchsize=100000, klength=8)
@@ -42,14 +44,14 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 7: systemPipeRNAseq.Rnw:113-115 (eval = FALSE)
+### code chunk number 7: systemPipeRNAseq.Rnw:115-117 (eval = FALSE)
 ###################################################
 ## args <- systemArgs(sysma="tophat.param", mytargets="targets.txt")
 ## sysargs(args)[1] # Command-line parameters for first FASTQ file
 
 
 ###################################################
-### code chunk number 8: systemPipeRNAseq.Rnw:118-122 (eval = FALSE)
+### code chunk number 8: systemPipeRNAseq.Rnw:120-124 (eval = FALSE)
 ###################################################
 ## moduleload(modules(args))
 ## system("bowtie2-build ./data/aedes-aegypti-liverpool_scaffolds_AaegL3.fa ./data/aedes-aegypti-liverpool_scaffolds_AaegL3.fa")
@@ -58,26 +60,26 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 9: systemPipeRNAseq.Rnw:125-126 (eval = FALSE)
+### code chunk number 9: systemPipeRNAseq.Rnw:127-128 (eval = FALSE)
 ###################################################
 ## file.exists(outpaths(args))
 
 
 ###################################################
-### code chunk number 10: systemPipeRNAseq.Rnw:131-133 (eval = FALSE)
+### code chunk number 10: systemPipeRNAseq.Rnw:133-135 (eval = FALSE)
 ###################################################
 ## read_statsDF <- alignStats(args=args, fqgz=TRUE) 
 ## write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 
 
 ###################################################
-### code chunk number 11: systemPipeRNAseq.Rnw:135-136 (eval = FALSE)
+### code chunk number 11: systemPipeRNAseq.Rnw:137-138 (eval = FALSE)
 ###################################################
 ## read.delim("results/alignStats.xls")
 
 
 ###################################################
-### code chunk number 12: systemPipeRNAseq.Rnw:141-144 (eval = FALSE)
+### code chunk number 12: systemPipeRNAseq.Rnw:143-146 (eval = FALSE)
 ###################################################
 ## symLink2bam(sysargs=args, htmldir=c("~/.html/", "projects/AlexRaikhel/2014/"), 
 ##             urlbase="http://biocluster.ucr.edu/~tgirke/", 
@@ -85,7 +87,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 13: systemPipeRNAseq.Rnw:150-164 (eval = FALSE)
+### code chunk number 13: systemPipeRNAseq.Rnw:152-166 (eval = FALSE)
 ###################################################
 ## library("GenomicFeatures"); library(BiocParallel)
 ## txdb <- loadDb("./data/AedesAegypti.sqlite")
@@ -104,19 +106,19 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 14: systemPipeRNAseq.Rnw:167-168 (eval = FALSE)
+### code chunk number 14: systemPipeRNAseq.Rnw:169-170 (eval = FALSE)
 ###################################################
 ## read.delim("results/countDFeByg.xls", row.names=1, check.names=FALSE)[1:4,1:5]
 
 
 ###################################################
-### code chunk number 15: systemPipeRNAseq.Rnw:171-172 (eval = FALSE)
+### code chunk number 15: systemPipeRNAseq.Rnw:173-174 (eval = FALSE)
 ###################################################
 ## read.delim("results/rpkmDFeByg.xls", row.names=1, check.names=FALSE)[1:4,1:4]
 
 
 ###################################################
-### code chunk number 16: systemPipeRNAseq.Rnw:177-185 (eval = FALSE)
+### code chunk number 16: systemPipeRNAseq.Rnw:179-187 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.delim("./results/rpkmDFeByg.xls", row.names=1, check.names=FALSE)[,-19]
@@ -129,7 +131,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 17: systemPipeRNAseq.Rnw:196-201 (eval = FALSE)
+### code chunk number 17: systemPipeRNAseq.Rnw:198-203 (eval = FALSE)
 ###################################################
 ## library(edgeR)
 ## countDF <- read.delim("countDFeByg.xls", row.names=1, check.names=FALSE) 
@@ -139,7 +141,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 18: systemPipeRNAseq.Rnw:205-210 (eval = FALSE)
+### code chunk number 18: systemPipeRNAseq.Rnw:207-212 (eval = FALSE)
 ###################################################
 ## desc <- read.delim("data/desc.xls") 
 ## desc <- desc[!duplicated(desc[,1]),]
@@ -149,7 +151,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 19: systemPipeRNAseq.Rnw:214-219 (eval = FALSE)
+### code chunk number 19: systemPipeRNAseq.Rnw:216-221 (eval = FALSE)
 ###################################################
 ## edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
 ## pdf("results/DEGcounts.pdf")
@@ -159,7 +161,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 20: systemPipeRNAseq.Rnw:230-237 (eval = FALSE)
+### code chunk number 20: systemPipeRNAseq.Rnw:232-239 (eval = FALSE)
 ###################################################
 ## library("biomaRt") 
 ## listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
@@ -171,13 +173,13 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 21: systemPipeRNAseq.Rnw:241-242 (eval = FALSE)
+### code chunk number 21: systemPipeRNAseq.Rnw:243-244 (eval = FALSE)
 ###################################################
 ## downloadGOdata(rerun=FALSE) # Do only once
 
 
 ###################################################
-### code chunk number 22: systemPipeRNAseq.Rnw:246-260 (eval = FALSE)
+### code chunk number 22: systemPipeRNAseq.Rnw:248-262 (eval = FALSE)
 ###################################################
 ## edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
 ## DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
@@ -196,7 +198,7 @@ library(systemPipeR)
 
 
 ###################################################
-### code chunk number 23: systemPipeRNAseq.Rnw:264-269 (eval = FALSE)
+### code chunk number 23: systemPipeRNAseq.Rnw:266-271 (eval = FALSE)
 ###################################################
 ## gos <- read.delim("results/GOslimBatchResultedgeR_allcomp.xls", row.names=1, check.names=FALSE)
 ## gos <- gos[grep("^iEcRa24h-iLuc24h", gos$CLID), ] 
