@@ -22,8 +22,12 @@ labels are given in
 and
 [_targetsPE.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targetsPE.txt)
 (latter is for PE reads). 
-The run parameters of command-line software are defined by param files that have a simplified
-JSON-like name/value structure. Here is a sample param file for _Tophat2_: [_tophat.param_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/tophat.param). Templates for generating project reports are available here: 
-[_RNA-Seq_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeRNAseq.pdf?raw=true), 
-[_ChIP-Seq_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeChIPseq.pdf?raw=true) and
+The run parameters of command-line software are defined by param files that
+have a simplified JSON-like name/value structure. Here is a sample param file
+for _Tophat2_:
+[_tophat.param_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/tophat.param).
+Templates for setting up custom project reports are available here:
+[_RNA-Seq_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeRNAseq.pdf?raw=true),
+[_ChIP-Seq_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeChIPseq.pdf?raw=true)
+and
 [_VAR-Seq_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeVARseq.pdf?raw=true).
