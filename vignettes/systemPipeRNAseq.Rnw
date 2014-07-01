@@ -291,6 +291,13 @@ pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_dist
 dev.off()
 @
 
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=12cm]{heatmap1.pdf}
+   \caption{Heat map with hierarchical clustering dendrograms of DEGs.}
+   \label{fig:heatmap}
+\end{figure}
+
 \section{Version Information}
 <<sessionInfo, results=tex, print=TRUE>>=
 toLatex(sessionInfo())
