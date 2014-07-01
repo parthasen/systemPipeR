@@ -8,7 +8,7 @@ Execute SYSargs
 Function to execute system parameters specified in \code{SYSargs} object
 }
 \usage{
-runCommandline(args, runid = "01")
+runCommandline(args, runid = "01", usemodule=TRUE)
 }
 \arguments{
   \item{args}{
@@ -16,6 +16,9 @@ runCommandline(args, runid = "01")
 }
   \item{runid}{
 	Run identifier used for log file to track system call commands. Default is \code{"01"}.
+}
+  \item{usemodule}{
+	Determines whether the external executable software should be loaded from a module system. If set to \code{TRUE} then the software version specified in the \code{*.param} file will be used. The function \code{modules} returns this parameter from a \code{SYSargs} instance. On systems where a module system is not available, \code{usemodule} should be set to \code{FALSE}.
 }
 }
 \details{

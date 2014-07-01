@@ -7,7 +7,7 @@ Submit command-line tools to cluster
 Submits command-line tools to queue (e.g. Torque) of compute cluster using run specifications defined by \code{runX} and \code{getQsubargs} functions. 
 }
 \usage{
-qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs = 1, package = "systemPipeR")
+qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs = 1, package = "systemPipeR", shebang="#!/bin/bash")
 }
 \arguments{
   \item{appfct}{
@@ -24,6 +24,9 @@ qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs =
 }
   \item{package}{
 	Package to load. Name provided as character vector of length one. Default is \code{sytemPipeR}.
+}
+  \item{shebang}{
+	defines \code{shebang} (fist line) used in submission shell script; default is set to \code{#!/bin/bash}.
 }
 }
 \value{

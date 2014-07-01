@@ -200,8 +200,10 @@ systemArgs <- function(sysma, mytargets, type="SYSargs") {
 ##############################################################################
 ## Function to run NGS aligners including sorting and indexing of BAM files ##
 ##############################################################################
-runCommandline <- function(args, runid="01") {
-	for(j in modules(args)) moduleload(j) # loads specified software from module system
+runCommandline <- function(args, runid="01", usemodule=TRUE) {
+	if(usemodule==TRUE) {
+		for(j in modules(args)) moduleload(j) # loads specified software from module system
+	}	
 	commands <- sysargs(args)
 	completed <- file.exists(outpaths(args))
 	names(completed) <- outpaths(args)
@@ -251,7 +253,7 @@ getQsubargs <- function(software="qsub", queue="batch", Nnodes="nodes=1", cores=
 ###########################################################################
 ## Function to submit runCommandline jobs to queuing system of a cluster ##
 ###########################################################################
-qsubRun <- function(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs=1, package="systemPipeR") {
+qsubRun <- function(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs=1, package="systemPipeR", shebang="#!/bin/bash") {
 	args2 <- sysargs(args)
 	mydir <- getwd()
 	setwd(results(args))
@@ -267,7 +269,7 @@ qsubRun <- function(appfct="runCommandline(args=args, runid='01')", args, qsubar
 		save(splitargs, file=paste("submitargs", counter, sep="")) 
 		rscript <- c(paste("library('", package, "')", sep=""), paste("load('submitargs", counter, "')", sep=""), "args <- splitargs", appfct)
 		writeLines(rscript, paste("submitargs", counter, ".R", sep=""))
-		writeLines(c("#!/bin/bash", "cd $PBS_O_WORKDIR", paste("Rscript --verbose submitargs", counter, ".R", sep="")), paste("submitargs", counter, ".sh", sep=""))
+		writeLines(c(shebang, "cd $PBS_O_WORKDIR", paste("Rscript --verbose submitargs", counter, ".R", sep="")), paste("submitargs", counter, ".sh", sep=""))
 		myqsub <- paste(qsub_command, paste("submitargs", counter, ".sh", sep=""))
 		(jobids <- c(jobids, system(myqsub, intern=TRUE)))
 	}
