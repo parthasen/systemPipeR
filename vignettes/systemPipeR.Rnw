@@ -239,6 +239,7 @@ write.table(rpkmDFmiR, "results/rpkmDFmiR.xls", col.names=NA, quote=FALSE, sep="
 @
 
 \subsection{Correlation analysis of samples}
+The following computes the sample-wise Spearman correlation coefficients from the RPKM normalized expresssion values. After transformation to a distance matrix, hierarchical clustring is performed with the \Rfunction{hclust} function and the result is plotted as a dendrogram (\href{run:./results/sample_tree.pdf}{sample\_tree.pdf}). 
 <<eval=FALSE, keep.source=TRUE>>=
 library(ape)
 rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -331,6 +332,27 @@ goBarplot(gos, gocat="CC")
    \caption{GO Slim Barplot for MF Ontology.}
    \label{fig:GOMF}
 \end{figure}
+
+\subsection{Clustering and heat maps}
+The following example performs hierarchical clustering on the RPKM normalized expression matrix subsetted by the DEGs identified in the 
+above differential expression analysis. It uses a Pearson correlation-based distance measure and complete linkage for cluster joining.
+<<eval=FALSE, keep.source=TRUE>>=
+library(pheatmap)
+geneids <- as.character(unlist(DEGlist))
+y <- rpkmDFeByg[geneids, ]
+pdf("heatmap1.pdf")
+pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_distance_cols="correlation")
+dev.off()
+@
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=12cm]{heatmap1.pdf}
+   \caption{Heat map with hierarchical clustering dendrograms of DEGs.}
+   \label{fig:heatmap}
+\end{figure}
+
+
 
 \section{Version Information}
 <<sessionInfo, results=tex, print=TRUE>>=

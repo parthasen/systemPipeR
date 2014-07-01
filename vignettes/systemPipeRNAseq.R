@@ -205,7 +205,18 @@ targets
 
 
 ###################################################
-### code chunk number 23: sessionInfo
+### code chunk number 23: systemPipeRNAseq.Rnw:285-291 (eval = FALSE)
+###################################################
+## library(pheatmap)
+## geneids <- as.character(unlist(DEGlist))
+## y <- rpkmDFeByg[geneids, ]
+## pdf("heatmap1.pdf")
+## pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_distance_cols="correlation")
+## dev.off()
+
+
+###################################################
+### code chunk number 24: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 

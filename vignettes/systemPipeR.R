@@ -189,7 +189,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 25: systemPipeR.Rnw:242-248 (eval = FALSE)
+### code chunk number 25: systemPipeR.Rnw:243-249 (eval = FALSE)
 ###################################################
 ## library(ape)
 ## rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -200,7 +200,7 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 26: systemPipeR.Rnw:258-262
+### code chunk number 26: systemPipeR.Rnw:259-263
 ###################################################
 library(edgeR)
 targets <- read.delim(targetspath, comment="#")
@@ -209,26 +209,26 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:265-266 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:266-267 (eval = FALSE)
 ###################################################
 ## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:269-270 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:270-271 (eval = FALSE)
 ###################################################
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 
 
 ###################################################
-### code chunk number 29: systemPipeR.Rnw:278-280 (eval = FALSE)
+### code chunk number 29: systemPipeR.Rnw:279-281 (eval = FALSE)
 ###################################################
 ## names(DEG_list)
 ## DEG_list$Summary
 
 
 ###################################################
-### code chunk number 30: systemPipeR.Rnw:286-299 (eval = FALSE)
+### code chunk number 30: systemPipeR.Rnw:287-300 (eval = FALSE)
 ###################################################
 ## library("biomaRt")
 ## listMarts() # To choose BioMart database
@@ -246,7 +246,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 31: systemPipeR.Rnw:304-315 (eval = FALSE)
+### code chunk number 31: systemPipeR.Rnw:305-316 (eval = FALSE)
 ###################################################
 ## loadData("data/GO")
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
@@ -262,7 +262,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 32: systemPipeR.Rnw:320-325 (eval = FALSE)
+### code chunk number 32: systemPipeR.Rnw:321-326 (eval = FALSE)
 ###################################################
 ## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
 ## gos <- BatchResultslim
@@ -272,7 +272,18 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 33: sessionInfo
+### code chunk number 33: systemPipeR.Rnw:339-345 (eval = FALSE)
+###################################################
+## library(pheatmap)
+## geneids <- as.character(unlist(DEGlist))
+## y <- rpkmDFeByg[geneids, ]
+## pdf("heatmap1.pdf")
+## pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_distance_cols="correlation")
+## dev.off()
+
+
+###################################################
+### code chunk number 34: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
