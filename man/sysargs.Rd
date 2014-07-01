@@ -9,6 +9,8 @@
 \alias{other-methods}
 \alias{reference}
 \alias{reference-methods}
+\alias{results}
+\alias{results-methods}
 \alias{infile1}
 \alias{infile1-methods}
 \alias{infile2}
