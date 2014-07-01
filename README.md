@@ -2,7 +2,7 @@
 
 _systemPipeR_ is an R package for building *end-to-end* analysis pipelines with
 automated report generation for next generation sequence (NGS) applications
-such as RNA-Seq, ChIP-Seq, VAR-Seq and many others. An important feature is
+such as RNA-Seq, ChIP-Seq, BS-Seq, VAR-Seq and many others. An important feature is
 support for running command-line software, such as NGS aligners, on both single
 machines or compute clusters. This includes both interactive job submissions or
 batch submissions to queuing systems of clusters (tested only with Torque).
@@ -13,10 +13,10 @@ NGS area.
 
 
 #### Usage
-Instructions for running _systemPipeR_ are given in the
-[_vignette_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeR.pdf?raw=true).
+Instructions for running _systemPipeR_ are given in its
+[_vignette_](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeR.pdf?raw=true) (manual).
 The sample data set used in the vignette can be downloaded [_here_](http://biocluster.ucr.edu/~tgirke/projects/systemPipeR_test_data.zip). 
-The expected format to define the RNA-Seq samples (e.g. FASTQ files) and their
+The expected format to define NGS samples (_e.g._ FASTQ files) and their
 labels are given in
 [_targets.txt_](https://github.com/tgirke/systemPipeR/blob/master/inst/extdata/targets.txt)
 and
