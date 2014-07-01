@@ -227,56 +227,57 @@ write.table(DEG_list$Summary, "./results/DEGcounts.xls", quote=FALSE, sep="\t", 
    \label{fig:DEGcounts}
 \end{figure}
 
-\section{GO term enrichment analysis of DEGs}
-Instructions for obtaining GO annotations programatically with \Rpackage{biomaRt} (not used, see below). 
+\subsection{GO term enrichment analysis of DEGs}
+\subsubsection{Obtain gene-to-GO mappings}
+The following shows how to obtain gene-to-GO mappings from \Rpackage{biomaRt} (here for \textit{A. thaliana}) and how to organize them for the downstream GO term enrichment analysis. Alternatively, the gene-to-GO mappings can be obtained for many organisms from Bioconductor's  \Robject{*.db} genome annotation packages or GO annotation files provided by various genome databases. For each annotation this relatively slow preprocessing step needs to be performed only once. Subsequently, the preprocessed data can be loaded with the \Rfunction{loadData} function as shown in the next subsection. 
 <<eval=FALSE, keep.source=TRUE>>=
-library("biomaRt") 
-listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
-vb <- useMart("vb_mart_22"); listDatasets(vb) # Choose genome from VectorBase, here aaegypti_eg_gene
-vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
-listAttributes(vb) # Choose data types you want to download
-go <- getBM(attributes=c("ensembl_gene_id",  "go_accession", "go_name_1006", "go_namespace_1003"), mart=vb)
+library("biomaRt")
+listMarts() # To choose BioMart database
+m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
+m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+listAttributes(m) # Choose data types you want to download
+go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)
+go <- go[go[,3]!="",]; go[,3] <- as.character(go[,3])
+go[go[,3]=="molecular_function", 3] <- "F"; go[go[,3]=="biological_process", 3] <- "P"; go[go[,3]=="cellular_component", 3] <- "C"
 go[1:4,]
+dir.create("./data/GO")
+write.table(go, "data/GO/GOannotationsBiomart_mod.txt", quote=FALSE, row.names=FALSE, col.names=FALSE, sep="\t")
+readGOorg(myfile = "data/GO/GOannotationsBiomart_mod.txt", outdir="data/GO", org="", colno = c(1,2,3))
+gene2GOlist(outdir="data/GO", rootUK=FALSE)
 @
 
-Since VectorBase's online BioMart service contains a newer version (L3.1) of the \textit{Aedes aegypti} genome annotation, this version was used here rather than the one obtainable via the \Rpackage{biomaRt} package. For details see \href{run:systemPipeRNAseq_Fct.R}{\Robject{systemPipeRNAseq\_Fct.R}}.
+\subsubsection{Batch GO term enrichment analysis}
+Apply the enrichment analysis to the DEG sets obtained the above differential expression analysis. Note in the following example the \Rfunarg{FDR} filter is set here to an unreasonably high value, simply because of the small size of the toy data set used in this vignette. Batch enrichment analysis of many gene sets is performed with the \Rfunction{GOCluster\_Report} function. When \Rfunarg{method="all"}, it returns all GO terms passing the p-value cutoff specified under the \Rfunarg{cutoff} arguments. When \Rfunarg{method="slim"}, it returns only the GO terms specified under the \Rfunarg{myslimv} argument. The given example shows how a GO slim vector for a specific organism can be obtain from BioMart.  
 <<eval=FALSE, keep.source=TRUE>>=
-downloadGOdata(rerun=FALSE) # Do only once
-@
-
-The following GO term enrichment analysis uses the hypergeometric distribution. The results for the complete GO analysis are stored in \href{run:./results/GOBatchResultedgeR_allcomp.xls}{GOBatchResultedgeR\_allcomp.xls} (FDR 1\%) and \href{run:./results/GOBatchResultedgeR_allcomp_FDR5.xls}{GOBatchResultedgeR\_allcomp\_FDR5.xls} (FDR 5\%). The GO slim results are available in \href{run:./results/GOslimBatchResultedgeR_allcomp.xls}{GOslimBatchResultedgeR\_allcomp.xls}.
-<<eval=FALSE, keep.source=TRUE>>=
-edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
-DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
-up_down <- DEGlist$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")  
-up <- DEGlist$Up; names(up) <- paste(names(up), "_up", sep="")  
-down <- DEGlist$Down; names(down) <- paste(names(down), "_down", sep="")  
+loadData("data/GO")
+DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
+up_down <- DEG_list$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")
+up <- DEG_list$Up; names(up) <- paste(names(up), "_up", sep="")
+down <- DEG_list$Down; names(down) <- paste(names(down), "_down", sep="")
 DEGlist <- c(up_down, up, down)
 DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
-loadData("data/GO")
-BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
-write.table(BatchResult, "./results/GOBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
-library("biomaRt"); vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
-goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=vb)[,1])
+BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=2, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+library("biomaRt"); m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=m)[,1])
 BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
-write.table(BatchResultslim, "./results/GOslimBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
 @
 
-Sample plots of GO slim terms. The plots are available in the following PDF files: \href{run:./results/GOslimbarplotBP.pdf}{GOslimbarplotBP.pdf}, \href{run:./results/GOslimbarplotCC.pdf}{GOslimbarplotCC.pdf} and \href{run:./results/GOslimbarplotMF.pdf}{GOslimbarplotMF.pdf}.
+\subsubsection{Plot batch GO term results}
+The \Robject{data.frame} generated by \Rfunction{GOCluster\_Report} can be plotted with the \Rfunction{goBarplot} function. Because of the variable size of the sample sets, it may not always be desirable to show the results from different DEG sets in the same bar plot. Plotting single sample sets is achieved by subsetting the input data frame as shown in the first line of the following example. 
 <<eval=FALSE, keep.source=TRUE>>=
-gos <- read.delim("results/GOslimBatchResultedgeR_allcomp.xls", row.names=1, check.names=FALSE)
-gos <- gos[grep("^iEcRa24h-iLuc24h", gos$CLID), ] 
-pdf("./results/GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
-pdf("./results/GOslimbarplotBP.pdf", height=8, width=10); goBarplot(gos, gocat="BP"); dev.off()
-pdf("./results/GOslimbarplotCC.pdf", height=8, width=10); goBarplot(gos, gocat="CC"); dev.off()
+gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
+gos <- BatchResultslim
+pdf("GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
+goBarplot(gos, gocat="BP")
+goBarplot(gos, gocat="CC")
 @
+
 \begin{figure}[H]
   \centering
    \includegraphics[width=20cm]{GOslimbarplotMF.pdf}
    \caption{GO Slim Barplot for MF Ontology.}
    \label{fig:GOMF}
 \end{figure}
-
 
 \section{Version Information}
 <<sessionInfo, results=tex, print=TRUE>>=

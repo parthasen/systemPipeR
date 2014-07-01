@@ -231,8 +231,8 @@ cmp[[1]]
 ### code chunk number 30: systemPipeR.Rnw:286-299 (eval = FALSE)
 ###################################################
 ## library("biomaRt")
-## listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
-## m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) # Choose genome from VectorBase, here aaegypti_eg_gene
+## listMarts() # To choose BioMart database
+## m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
 ## m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
 ## listAttributes(m) # Choose data types you want to download
 ## go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)

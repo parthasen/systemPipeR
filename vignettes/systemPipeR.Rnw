@@ -285,8 +285,8 @@ DEG_list$Summary
 The following shows how to obtain gene-to-GO mappings from \Rpackage{biomaRt} (here for \textit{A. thaliana}) and how to organize them for the downstream GO term enrichment analysis. Alternatively, the gene-to-GO mappings can be obtained for many organisms from Bioconductor's  \Robject{*.db} genome annotation packages or GO annotation files provided by various genome databases. For each annotation this relatively slow preprocessing step needs to be performed only once. Subsequently, the preprocessed data can be loaded with the \Rfunction{loadData} function as shown in the next subsection. 
 <<eval=FALSE, keep.source=TRUE>>=
 library("biomaRt")
-listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
-m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) # Choose genome from VectorBase, here aaegypti_eg_gene
+listMarts() # To choose BioMart database
+m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
 m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
 listAttributes(m) # Choose data types you want to download
 go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)

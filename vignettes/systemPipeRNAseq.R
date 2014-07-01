@@ -161,54 +161,51 @@ targets
 
 
 ###################################################
-### code chunk number 20: systemPipeRNAseq.Rnw:232-239 (eval = FALSE)
+### code chunk number 20: systemPipeRNAseq.Rnw:233-246 (eval = FALSE)
 ###################################################
-## library("biomaRt") 
-## listMarts() # Choose BioMart databases, here vb_mart_22 (VectorBase)
-## vb <- useMart("vb_mart_22"); listDatasets(vb) # Choose genome from VectorBase, here aaegypti_eg_gene
-## vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
-## listAttributes(vb) # Choose data types you want to download
-## go <- getBM(attributes=c("ensembl_gene_id",  "go_accession", "go_name_1006", "go_namespace_1003"), mart=vb)
+## library("biomaRt")
+## listMarts() # To choose BioMart database
+## m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
+## m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+## listAttributes(m) # Choose data types you want to download
+## go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)
+## go <- go[go[,3]!="",]; go[,3] <- as.character(go[,3])
+## go[go[,3]=="molecular_function", 3] <- "F"; go[go[,3]=="biological_process", 3] <- "P"; go[go[,3]=="cellular_component", 3] <- "C"
 ## go[1:4,]
+## dir.create("./data/GO")
+## write.table(go, "data/GO/GOannotationsBiomart_mod.txt", quote=FALSE, row.names=FALSE, col.names=FALSE, sep="\t")
+## readGOorg(myfile = "data/GO/GOannotationsBiomart_mod.txt", outdir="data/GO", org="", colno = c(1,2,3))
+## gene2GOlist(outdir="data/GO", rootUK=FALSE)
 
 
 ###################################################
-### code chunk number 21: systemPipeRNAseq.Rnw:243-244 (eval = FALSE)
+### code chunk number 21: systemPipeRNAseq.Rnw:251-262 (eval = FALSE)
 ###################################################
-## downloadGOdata(rerun=FALSE) # Do only once
-
-
-###################################################
-### code chunk number 22: systemPipeRNAseq.Rnw:248-262 (eval = FALSE)
-###################################################
-## edgeDF <- read.delim("results/edgeRglm_allcomp.xls", row.names=1, check.names=FALSE) 
-## DEGlist <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=5))
-## up_down <- DEGlist$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")  
-## up <- DEGlist$Up; names(up) <- paste(names(up), "_up", sep="")  
-## down <- DEGlist$Down; names(down) <- paste(names(down), "_down", sep="")  
+## loadData("data/GO")
+## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
+## up_down <- DEG_list$UporDown; names(up_down) <- paste(names(up_down), "_up_down", sep="")
+## up <- DEG_list$Up; names(up) <- paste(names(up), "_up", sep="")
+## down <- DEG_list$Down; names(down) <- paste(names(down), "_down", sep="")
 ## DEGlist <- c(up_down, up, down)
 ## DEGlist <- DEGlist[sapply(DEGlist, length) > 0]
-## loadData("data/GO")
-## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
-## write.table(BatchResult, "./results/GOBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
-## library("biomaRt"); vb <- useMart("vb_mart_22", dataset="aaegypti_eg_gene")
-## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=vb)[,1])
+## BatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=2, cutoff=0.9, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+## library("biomaRt"); m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+## goslimvec <- as.character(getBM(attributes=c("goslim_goa_accession"), mart=m)[,1])
 ## BatchResultslim <- GOCluster_Report(setlist=DEGlist, method="slim", id_type="gene", myslimv=goslimvec, CLSZ=10, cutoff=0.01, gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
-## write.table(BatchResultslim, "./results/GOslimBatchResultedgeR_allcomp.xls", quote=FALSE, sep="\t", col.names = NA)
 
 
 ###################################################
-### code chunk number 23: systemPipeRNAseq.Rnw:266-271 (eval = FALSE)
+### code chunk number 22: systemPipeRNAseq.Rnw:267-272 (eval = FALSE)
 ###################################################
-## gos <- read.delim("results/GOslimBatchResultedgeR_allcomp.xls", row.names=1, check.names=FALSE)
-## gos <- gos[grep("^iEcRa24h-iLuc24h", gos$CLID), ] 
-## pdf("./results/GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
-## pdf("./results/GOslimbarplotBP.pdf", height=8, width=10); goBarplot(gos, gocat="BP"); dev.off()
-## pdf("./results/GOslimbarplotCC.pdf", height=8, width=10); goBarplot(gos, gocat="CC"); dev.off()
+## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
+## gos <- BatchResultslim
+## pdf("GOslimbarplotMF.pdf", height=8, width=10); goBarplot(gos, gocat="MF"); dev.off()
+## goBarplot(gos, gocat="BP")
+## goBarplot(gos, gocat="CC")
 
 
 ###################################################
-### code chunk number 24: sessionInfo
+### code chunk number 23: sessionInfo
 ###################################################
 toLatex(sessionInfo())
 
