@@ -1,5 +1,5 @@
 ## IMPORTS
-import(rjson, methods, Rsamtools, Biostrings, ShortRead, grid, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, BiocGenerics)
+import(rjson, Rsamtools, Biostrings, ShortRead, grid, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma)
 ## S4 Classes
 exportClasses(
     "SYSargs"
