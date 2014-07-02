@@ -302,7 +302,7 @@ gene2GOlist(outdir="data/GO", rootUK=FALSE)
 @
 
 \subsubsection{Batch GO term enrichment analysis}
-Apply the enrichment analysis to the DEG sets obtained the above differential expression analysis. Note in the following example the \Rfunarg{FDR} filter is set here to an unreasonably high value, simply because of the small size of the toy data set used in this vignette. Batch enrichment analysis of many gene sets is performed with the \Rfunction{GOCluster\_Report} function. When \Rfunarg{method="all"}, it returns all GO terms passing the p-value cutoff specified under the \Rfunarg{cutoff} arguments. When \Rfunarg{method="slim"}, it returns only the GO terms specified under the \Rfunarg{myslimv} argument. The given example shows how a GO slim vector for a specific organism can be obtain from BioMart.  
+Apply the enrichment analysis to the DEG sets obtained the above differential expression analysis. Note in the following example the \Rfunarg{FDR} filter is set here to an unreasonably high value, simply because of the small size of the toy data set used in this vignette. Batch enrichment analysis of many gene sets is performed with the \Rfunction{GOCluster\_Report} function. When \Rfunarg{method="all"}, it returns all GO terms passing the p-value cutoff specified under the \Rfunarg{cutoff} arguments. When \Rfunarg{method="slim"}, it returns only the GO terms specified under the \Rfunarg{myslimv} argument. The given example shows how a GO slim vector for a specific organism can be obtained from BioMart.  
 <<eval=FALSE, keep.source=TRUE>>=
 loadData("data/GO")
 DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
