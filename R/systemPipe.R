@@ -401,6 +401,7 @@ moduleload <- function(module) {
 #######################################################################
 ## If independent=TRUE then countDF will be subsetted for each comparison
 run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsplot="") {
+    if(class(cmp) != "matrix" & length(cmp)==2) cmp <- t(as.matrix(cmp)) # If cmp is vector of length 2, convert it to matrix.
     samples <- as.character(targets$Factor); names(samples) <- paste(as.character(targets$SampleName), "", sep="")
     countDF <- countDF[, names(samples)]
     countDF[is.na(countDF)] <- 0
@@ -417,6 +418,7 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 	if(independent == TRUE) {
 	    subset <- samples[samples %in% cmp[j,]]
 	    y <- y[, names(subset)]
+	    y$samples$group <- factor(as.character(y$samples$group))
         }
 	keep <- rowSums(cpm(y)>1) >= 2; y <- y[keep, ]
 	y <- calcNormFactors(y)
@@ -426,7 +428,7 @@ run_edgeR <- function(countDF, targets, cmp, independent=TRUE, paired=NULL, mdsp
 		colnames(design) <- levels(y$samples$group)
 	} else {
         	if(length(paired)>0 & independent==FALSE) stop("When providing values under 'paired' also set independent=TRUE")
-		Subject <- factor(samplepairs[samples %in% cmp[j,]])
+		Subject <- factor(paired[samples %in% cmp[j,]]) # corrected Jun 2014 (won't change results)
 		Treat <- y$samples$group
         	design <- model.matrix(~Subject+Treat)
 		levels(design) <- levels(y$samples$group)
