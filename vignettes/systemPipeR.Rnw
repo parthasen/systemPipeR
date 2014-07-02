@@ -264,6 +264,7 @@ cmp[[1]]
 @
 Run \Rpackage{edgeR}
 <<eval=FALSE, keep.source=TRUE>>=
+countDFeByg <- read.delim("./results/countDFeByg.xls", row.names=1)
 edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 @
 Filter and plot DEG results for up and down regulated genes. Because of the toy sample set used in this vignette, the \Rfunarg{FDR} value has been set to a relatively high threshold (here 10\%). More commonly used \Rfunarg{FDR} cutoffs are 1\% or 5\%.

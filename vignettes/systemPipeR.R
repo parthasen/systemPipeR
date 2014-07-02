@@ -209,26 +209,27 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:266-267 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:266-268 (eval = FALSE)
 ###################################################
+## countDFeByg <- read.delim("./results/countDFeByg.xls", row.names=1)
 ## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:270-271 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:271-272 (eval = FALSE)
 ###################################################
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 
 
 ###################################################
-### code chunk number 29: systemPipeR.Rnw:279-281 (eval = FALSE)
+### code chunk number 29: systemPipeR.Rnw:280-282 (eval = FALSE)
 ###################################################
 ## names(DEG_list)
 ## DEG_list$Summary
 
 
 ###################################################
-### code chunk number 30: systemPipeR.Rnw:287-300 (eval = FALSE)
+### code chunk number 30: systemPipeR.Rnw:288-301 (eval = FALSE)
 ###################################################
 ## library("biomaRt")
 ## listMarts() # To choose BioMart database
@@ -246,7 +247,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 31: systemPipeR.Rnw:305-316 (eval = FALSE)
+### code chunk number 31: systemPipeR.Rnw:306-317 (eval = FALSE)
 ###################################################
 ## loadData("data/GO")
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
@@ -262,7 +263,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 32: systemPipeR.Rnw:321-326 (eval = FALSE)
+### code chunk number 32: systemPipeR.Rnw:322-327 (eval = FALSE)
 ###################################################
 ## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
 ## gos <- BatchResultslim
@@ -272,7 +273,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 33: systemPipeR.Rnw:339-345 (eval = FALSE)
+### code chunk number 33: systemPipeR.Rnw:340-346 (eval = FALSE)
 ###################################################
 ## library(pheatmap)
 ## geneids <- as.character(unlist(DEGlist))
