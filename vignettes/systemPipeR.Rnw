@@ -49,7 +49,7 @@ unlink("test.db")
 
 \begin{document}
 \title{\Rpackage{systemPipeR}: NGS workflow and report generation environment}
-\author{Thomas Girke \\
+\author{Thomas Girke  \\
  Email contact: thomas.girke@ucr.edu}
 \maketitle
 
