@@ -60,4 +60,4 @@ read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 }
 }
-\keyword{ utilities }
+\keyword{utilities}
