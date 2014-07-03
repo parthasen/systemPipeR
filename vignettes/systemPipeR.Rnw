@@ -164,12 +164,12 @@ moduleload(modules(args)) # Skip if module system is not available
 system("bowtie2-build ./data/tair10.fasta ./data/tair10.fasta")
 @
 
-\noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster.
+\noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster. This way the alignments will be processed sequentially. If available, multiple CPU cores can be used for processing each FASTQ file. The number of CPU cores (here 4) is defined in the \Robject{*.param} file. The \Rfunction{cores(args)} returns this value.  
 <<eval=FALSE, keep.source=TRUE>>=
 bampaths <- runCommandline(args=args)
 @
 
-\noindent Submit to compute nodes.
+\noindent Submit to the scheduler/queuing system of a compute nodes to process several files in parallel. To avoid oversubscription of CPU cores on each compute node, \Rfunction{cores(args)} is passed on to the submission command, here \Rfunction{qsub}. The number or independent parallel \Rfunction{qsub} processes to use is defined under in the \Rfunarg{Nqsubs} argument. The following example will run 18 processes in parallel using for each 4 CPU cores. If all 18 processes run in parallel then the submissioin will occupy  in total 72 CPU cores.  
 <<eval=FALSE, keep.source=TRUE>>=0
 qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
