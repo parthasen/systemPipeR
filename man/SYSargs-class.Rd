@@ -2,7 +2,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SYSargs-class}
-\alias{[,SYSargs-method}
+\alias{[,SYSargs,ANY,ANY,ANY-method}
 \alias{coerce,list,SYSargs-method}
 \alias{cores,SYSargs-method}
 \alias{infile1,SYSargs-method}

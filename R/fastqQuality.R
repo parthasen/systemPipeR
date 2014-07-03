@@ -131,7 +131,7 @@ seeFastq <- function(fastq, batchsize, klength=8) {
 ## (B) Plot seeFastq results 
 seeFastqPlot <- function(fqlist, arrange=c(1,2,3,4,5,8,6,7), ...) {
 	## Create plotting instances from fqlist
-	.fastqPlot <- function(x=fqlist) {
+	fastqPlot <- function(x=fqlist) {
         	## (A) Per cycle quality box plot
 		astats <- x[[1]][["astats"]]
 		a <- ggplot(astats, aes(x=Cycle, ymin = min, lower = low, middle = mid, upper = top, ymax = max)) + 
@@ -207,8 +207,8 @@ seeFastqPlot <- function(fqlist, arrange=c(1,2,3,4,5,8,6,7), ...) {
 		## Assemble results in list
 		return(list(a=a, b=b, c=c, d=d, g=g, e=e, f=f, h=h))
 	}
-	## Loop to run .fastqPlot and store instances in list 
-	fqplot <- lapply(names(fqlist), function(z) .fastqPlot(x=fqlist[z]))
+	## Loop to run fastqPlot and store instances in list 
+	fqplot <- lapply(names(fqlist), function(z) fastqPlot(x=fqlist[z]))
 	names(fqplot) <- names(fqlist)
 	
 	## Final plot
