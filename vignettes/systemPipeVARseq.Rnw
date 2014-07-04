@@ -1,13 +1,12 @@
-% Manual compile
+%\VignetteIndexEntry{VAR-Seq Report Template}
+%\VignetteDepends{rjson, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma}
+%\VignetteKeywords{compute cluster, pipeline, reports}
+%\VignettePackage{systemPipeR}
+
+% Latex compile
 % Sweave("systemPipeR.Rnw"); system("pdflatex systemPipeR.tex; bibtex systemPipeR; pdflatex systemPipeR.tex; pdflatex systemPipeR.tex")
 % echo 'Sweave("systemPipeVARseq.Rnw")' | R --slave; echo 'Stangle("systemPipeVARseq.Rnw")' | R --slave; pdflatex systemPipeVARseq.tex;  bibtex systemPipeVARseq; pdflatex systemPipeVARseq.tex
-% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
-% likely to be overwritten.
-%
-% \VignetteIndexEntry{ChemmineR Tutorial}
-% \VignetteDepends{}
-% \VignetteKeywords{}
-% \VignettePackage{gpls}
+
 \documentclass{article}
 <<style, eval=TRUE, echo=FALSE, results=tex>>=
 BiocStyle::latex(use.unsrturl=FALSE)

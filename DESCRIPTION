@@ -8,6 +8,6 @@ Maintainer: Thomas Girke <thomas.girke@ucr.edu>
 Description: R package for building end-to-end analysis pipelines with automated report generation for next generation sequence (NGS) applications such as RNA-Seq, ChIP-Seq, BS-Seq, VAR-Seq and many others. An important feature is support for running command-line software, such as NGS aligners, on both single machines or compute clusters. This includes both interactive job submissions or batch submissions to queuing systems of clusters.
 Depends: Rsamtools, Biostrings, ShortRead
 Imports: rjson, methods, grid, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma, BiocGenerics
-Suggests: ape
+Suggests: ape, RUnit, BiocStyle
 License: Artistic-2.0
 Packaged: 2014-05-28 23:10:33 UTC; tgirke
