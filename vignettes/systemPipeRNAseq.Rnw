@@ -130,7 +130,7 @@ file.exists(outpaths(args))
 \subsection{Read and alignment stats}
 The following provides an overview of the number of reads in each sample and how many of them aligned to the reference.
 <<eval=FALSE, keep.source=TRUE>>=
-read_statsDF <- alignStats(args=args, fqgz=TRUE) 
+read_statsDF <- alignStats(args=args) 
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 <<eval=FALSE, keep.source=TRUE>>=

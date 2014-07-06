@@ -176,7 +176,7 @@ qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", tim
 
 \noindent Alignment Stats
 <<eval=FALSE, keep.source=TRUE>>=
-read_statsDF <- alignStats(args, fqgz=TRUE) 
+read_statsDF <- alignStats(args) 
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 @
 

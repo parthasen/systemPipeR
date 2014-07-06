@@ -4,19 +4,16 @@
 Alignment statistics 
 }
 \description{
-Generate data frame containg important read alignment statistics such as the
+Generate data frame containing important read alignment statistics such as the
 total number of reads in the FASTQ files, the number of total alignments, as
 well as the number of primary alignments in the corresponding BAM files. 
 }
 \usage{
-alignStats(args, fqgz = TRUE)
+alignStats(args)
 }
 \arguments{
   \item{args}{
 	Object of class \code{SYSargs}. 
-}
-  \item{fqgz}{
-	Defines whether FASTQ files are compressed (\code{TRUE} or \code{FALSE}).
 }
 }
 \details{
@@ -53,7 +50,7 @@ runCommandline(args=args)
 qsubargs <- getQsubargs(queue="batch", Nnodes="nodes=1", cores=cores(tophat), memory="mem=10gb", time="walltime=20:00:00")
 qsubRun(args=args, qsubargs=qsubargs, Nqsubs=1, package="systemPipeR")
 ## Alignment stats
-read_statsDF <- alignStats(args, fqgz=TRUE) 
+read_statsDF <- alignStats(args) 
 read_statsDF <- cbind(read_statsDF[targets$FileName,], targets)
 write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 }

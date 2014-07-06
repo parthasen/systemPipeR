@@ -21,19 +21,16 @@ symLink2bam <- function(sysargs, command="ln -s", htmldir, ext=c(".bam", ".bai")
 #####################
 ## Alignment Stats ##
 #####################
-alignStats <- function(args, fqgz=TRUE) {
+alignStats <- function(args) {
 	fqpaths <- infile1(args)
 	bampaths <- outpaths(args)
 	bamexists <- file.exists(bampaths)
 	fqpaths <- fqpaths[bamexists]
 	bampaths <- bampaths[bamexists]
 	## Obtain total read number from FASTQ files
-	if(fqgz==TRUE) {
-		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("zcat", x, "| wc -l | cut -d' ' -f1"), intern=TRUE))/4)
-	} else {
-		Nreads <- sapply(fqpaths, function(x) as.numeric(system(paste("wc -l", x, "| cut -d' ' -f1"), intern=TRUE))/4)
-	}
-	## If reads are PE multiply by 2
+	Nreads <- countLines(fqpaths)/4
+	names(Nreads) <- names(fqpaths)		
+	## If reads are PE multiply by 2 as a rough approximation
 	if(nchar(infile2(args))[1] > 0) Nreads <- Nreads * 2	
 	## Obtain total number of alignments from BAM files
 	bfl <- BamFileList(bampaths, yieldSize=50000, index=character())
@@ -52,7 +49,7 @@ alignStats <- function(args, fqgz=TRUE) {
 	return(statsDF)
 }
 ## Usage:
-#read_statsDF <- alignStats(fqpaths=tophatargs$infile1, bampaths=bampaths, fqgz=TRUE) 
+# read_statsDF <- alignStats(args=args)
 
 ########################
 ## RPKM Normalization ##
