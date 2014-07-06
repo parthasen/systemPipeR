@@ -163,12 +163,12 @@ moduleload(modules(args)) # Skip if module system is not available
 system("bowtie2-build ./data/tair10.fasta ./data/tair10.fasta")
 @
 
-\noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster. This way the input FASTQ files will be processed sequentially. If available, multiple CPU cores can be used for processing each file. The number of CPU cores (here 4) to use for each process is defined in the \Robject{*.param} file. With \Rfunction{cores(args)} one can return this value from the \Robject{SYSargs} object.  
+\noindent Execute \Robject{SYSargs} on a single machine without submitting to a queuing system of a compute cluster. This way the input FASTQ files will be processed sequentially. If available, multiple CPU cores can be used for processing each file. The number of CPU cores (here 4) to use for each process is defined in the \Robject{*.param} file. With \Rfunction{cores(args)} one can return this value from the \Robject{SYSargs} object. Note, if a module system is not installed or used, then the argument setting \Rfunarg{usemodule=FALSE} should be included in \Rfunction{runCommandline}.
 <<eval=FALSE, keep.source=TRUE>>=
 bampaths <- runCommandline(args=args)
 @
 
-\noindent Alternatively, the computation can be greatly acclerated by processing many files in parallel using several compute nodes of a cluster, where a scheduling/queuing system is used for load balancing. To avoid oversubscription of CPU cores on each compute node, the value from \Rfunction{cores(args)} is passed on to the submission command, here \Rfunarg{cores} under \Rfunction{getQsubargs}. The number or independent parallel \Rfunction{qsub} processes is defined under in the \Rfunarg{Nqsubs} argument. The following example will run 18 processes in parallel using for each 4 CPU cores. If the resources available on a cluster allow to run all 18 processes at the same time then the shown sample submission will utilize in total 72 CPU cores.  
+\noindent Alternatively, the computation can be greatly accelerated by processing many files in parallel using several compute nodes of a cluster, where a scheduling/queuing system is used for load balancing. To avoid over-subscription of CPU cores on the compute nodes, the value from \Rfunction{cores(args)} is passed on to the submission command, here \Rfunarg{cores} under \Rfunction{getQsubargs}. The number of independent parallel \Rfunction{qsub} processes is defined under the \Rfunarg{Nqsubs} argument. The following example will run 18 processes in parallel using for each 4 CPU cores. If the resources available on a cluster allow to run all 18 processes at the same time then the shown sample submission will utilize in total 72 CPU cores.  
 <<eval=FALSE, keep.source=TRUE>>=0
 qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
@@ -181,6 +181,7 @@ write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE
 @
 
 \subsection{Create symbolic links for viewing BAM files in IGV}
+The genome browser IGV supports reading indexed/sorted BAM via web URLs. This way no unnecessary copies of these large files need to be generated. To enable this approach, an HTML directory with http access needs to be available in the user account (\textit{e.g.} \Rfunarg{~/public\_html}) of a system. If this is not the case then the BAM files need to be moved or copied to the system where IGV runs. In the following, \Rfunarg{htmldir} defines the path to the HTML directory with http access where the symbolic links to the BAM files will be stored. The corresponding URLs will be written to a text file specified under the \Rfunarg{urlfile} argument. 
 <<eval=FALSE, keep.source=TRUE>>=
 symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
             urlbase="http://myserver.edu/~username/", 
@@ -194,14 +195,14 @@ args <- systemArgs(sysma="bowtieSE.param", mytargets="targets.txt")
 bampaths <- runCommandline(args=args)
 @
 
-\noindent Submit to compute nodes
+\noindent Alternatively, submit the job to compute nodes.
 <<eval=FALSE, keep.source=TRUE>>=
 qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 @
 
 \subsection{Read counting for mRNA profiling experiments}
-Create txdb (do only once)
+Create \Robject{txdb} (needs to be done only once)
 <<eval=FALSE, keep.source=TRUE>>=
 library(GenomicFeatures)
 txdb <- makeTranscriptDbFromGFF(file="data/tair10.gff", format="gff", dataSource="TAIR", species="A. thaliana")
@@ -238,7 +239,7 @@ write.table(rpkmDFmiR, "results/rpkmDFmiR.xls", col.names=NA, quote=FALSE, sep="
 @
 
 \subsection{Correlation analysis of samples}
-The following computes the sample-wise Spearman correlation coefficients from the RPKM normalized expresssion values. After transformation to a distance matrix, hierarchical clustring is performed with the \Rfunction{hclust} function and the result is plotted as a dendrogram (\href{run:./results/sample_tree.pdf}{sample\_tree.pdf}). 
+The following computes the sample-wise Spearman correlation coefficients from the RPKM normalized expression values. After transformation to a distance matrix, hierarchical clustering is performed with the \Rfunction{hclust} function and the result is plotted as a dendrogram (\href{run:./results/sample_tree.pdf}{sample\_tree.pdf}). 
 <<eval=FALSE, keep.source=TRUE>>=
 library(ape)
 rpkmDFeByg <- read.table("./results/rpkmDFeByg.xls", check.names=FALSE)
@@ -266,7 +267,7 @@ Run \Rpackage{edgeR}
 countDFeByg <- read.delim("./results/countDFeByg.xls", row.names=1)
 edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 @
-Filter and plot DEG results for up and down regulated genes. Because of the toy sample set used in this vignette, the \Rfunarg{FDR} value has been set to a relatively high threshold (here 10\%). More commonly used \Rfunarg{FDR} cutoffs are 1\% or 5\%.
+Filter and plot DEG results for up and down regulated genes. Because of the small size of the toy data set used by this vignette, the \Rfunarg{FDR} value has been set to a relatively high threshold (here 10\%). More commonly used \Rfunarg{FDR} cutoffs are 1\% or 5\%.
 <<eval=FALSE, keep.source=TRUE>>=
 DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 @
@@ -301,7 +302,7 @@ gene2GOlist(outdir="data/GO", rootUK=FALSE)
 @
 
 \subsubsection{Batch GO term enrichment analysis}
-Apply the enrichment analysis to the DEG sets obtained the above differential expression analysis. Note in the following example the \Rfunarg{FDR} filter is set here to an unreasonably high value, simply because of the small size of the toy data set used in this vignette. Batch enrichment analysis of many gene sets is performed with the \Rfunction{GOCluster\_Report} function. When \Rfunarg{method="all"}, it returns all GO terms passing the p-value cutoff specified under the \Rfunarg{cutoff} arguments. When \Rfunarg{method="slim"}, it returns only the GO terms specified under the \Rfunarg{myslimv} argument. The given example shows how a GO slim vector for a specific organism can be obtained from BioMart.  
+Apply the enrichment analysis to the DEG sets obtained in the above differential expression analysis. Note, in the following example the \Rfunarg{FDR} filter is set here to an unreasonably high value, simply because of the small size of the toy data set used in this vignette. Batch enrichment analysis of many gene sets is performed with the \Rfunction{GOCluster\_Report} function. When \Rfunarg{method="all"}, it returns all GO terms passing the p-value cutoff specified under the \Rfunarg{cutoff} arguments. When \Rfunarg{method="slim"}, it returns only the GO terms specified under the \Rfunarg{myslimv} argument. The given example shows how one can obtain such a GO slim vector from BioMart for a specific organism.  
 <<eval=FALSE, keep.source=TRUE>>=
 loadData("data/GO")
 DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)

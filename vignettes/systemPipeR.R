@@ -7,21 +7,21 @@ BiocStyle::latex(use.unsrturl=FALSE)
 
 
 ###################################################
-### code chunk number 2: systemPipeR.Rnw:43-45
+### code chunk number 2: systemPipeR.Rnw:42-44
 ###################################################
 options(width=95)
 unlink("test.db")
 
 
 ###################################################
-### code chunk number 3: systemPipeR.Rnw:68-70 (eval = FALSE)
+### code chunk number 3: systemPipeR.Rnw:67-69 (eval = FALSE)
 ###################################################
 ## system("R CMD build systemPipeR") # Builds package
 ## install.packages("systemPipeR.X.X.X.tar.gz", repos=NULL, type="source") # Installs the package
 
 
 ###################################################
-### code chunk number 4: systemPipeR.Rnw:75-78 (eval = FALSE)
+### code chunk number 4: systemPipeR.Rnw:74-77 (eval = FALSE)
 ###################################################
 ## library("systemPipeR") # Loads the package
 ## library(help="systemPipeR") # Lists all functions and classes 
@@ -29,7 +29,7 @@ unlink("test.db")
 
 
 ###################################################
-### code chunk number 5: systemPipeR.Rnw:86-89
+### code chunk number 5: systemPipeR.Rnw:85-88
 ###################################################
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
@@ -37,7 +37,7 @@ read.delim(targetspath, comment.char = "#")
 
 
 ###################################################
-### code chunk number 6: systemPipeR.Rnw:93-96
+### code chunk number 6: systemPipeR.Rnw:92-95
 ###################################################
 library(systemPipeR)
 targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
@@ -45,27 +45,27 @@ read.delim(targetspath, comment.char = "#")[1:2,1:6]
 
 
 ###################################################
-### code chunk number 7: systemPipeR.Rnw:101-102
+### code chunk number 7: systemPipeR.Rnw:100-101
 ###################################################
 readComp(file=targetspath, format="vector", delim="-")
 
 
 ###################################################
-### code chunk number 8: systemPipeR.Rnw:107-109
+### code chunk number 8: systemPipeR.Rnw:106-108
 ###################################################
 parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
 read.delim(parampath, comment.char = "#")
 
 
 ###################################################
-### code chunk number 9: systemPipeR.Rnw:112-114
+### code chunk number 9: systemPipeR.Rnw:111-113
 ###################################################
 args <- systemArgs(sysma=parampath, mytargets=targetspath)
 args
 
 
 ###################################################
-### code chunk number 10: systemPipeR.Rnw:117-122
+### code chunk number 10: systemPipeR.Rnw:116-121
 ###################################################
 names(args)
 modules(args)
@@ -75,25 +75,25 @@ sysargs(args)[1]
 
 
 ###################################################
-### code chunk number 11: systemPipeR.Rnw:125-126
+### code chunk number 11: systemPipeR.Rnw:124-125
 ###################################################
 systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 12: systemPipeR.Rnw:132-133 (eval = FALSE)
+### code chunk number 12: systemPipeR.Rnw:131-132 (eval = FALSE)
 ###################################################
 ## library(systemPipeR)
 
 
 ###################################################
-### code chunk number 13: systemPipeR.Rnw:137-138 (eval = FALSE)
+### code chunk number 13: systemPipeR.Rnw:136-137 (eval = FALSE)
 ###################################################
 ## args <- systemArgs(sysma="tophat.param", mytargets="targetsPE.txt")
 
 
 ###################################################
-### code chunk number 14: systemPipeR.Rnw:147-151 (eval = FALSE)
+### code chunk number 14: systemPipeR.Rnw:146-150 (eval = FALSE)
 ###################################################
 ## fqlist <- seeFastq(fastq=infile1(args), batchsize=10000, klength=8)
 ## pdf("./results/fastqReport.pdf", height=18, width=4*length(fqlist))
@@ -102,29 +102,29 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 15: systemPipeR.Rnw:162-164 (eval = FALSE)
+### code chunk number 15: systemPipeR.Rnw:161-163 (eval = FALSE)
 ###################################################
 ## moduleload(modules(args)) # Skip if module system is not available
 ## system("bowtie2-build ./data/tair10.fasta ./data/tair10.fasta")
 
 
 ###################################################
-### code chunk number 16: systemPipeR.Rnw:168-169 (eval = FALSE)
+### code chunk number 16: systemPipeR.Rnw:167-168 (eval = FALSE)
 ###################################################
 ## bampaths <- runCommandline(args=args)
 
 
 ###################################################
-### code chunk number 17: systemPipeR.Rnw:173-175 (eval = FALSE)
+### code chunk number 17: systemPipeR.Rnw:172-174 (eval = FALSE)
 ###################################################
 ## qsubargs <- getQsubargs(queue="batch", cores=cores(args), memory="mem=10gb", time="walltime=20:00:00")
 ## (joblist <- qsubRun(args=args, qsubargs=qsubargs, Nqsubs=18, package="systemPipeR"))
 
 
 ###################################################
-### code chunk number 18: systemPipeR.Rnw:179-181 (eval = FALSE)
+### code chunk number 18: systemPipeR.Rnw:178-180 (eval = FALSE)
 ###################################################
-## read_statsDF <- alignStats(args, fqgz=TRUE) 
+## read_statsDF <- alignStats(args) 
 ## write.table(read_statsDF, "results/alignStats.xls", row.names=FALSE, quote=FALSE, sep="\t")
 
 
