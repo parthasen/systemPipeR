@@ -10,4 +10,5 @@ Depends: Rsamtools, Biostrings, ShortRead
 Imports: rjson, methods, grid, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma, BiocGenerics
 Suggests: ape, RUnit, BiocStyle
 License: Artistic-2.0
+URL: https://github.com/tgirke/systemPipeR
 Packaged: 2014-05-28 23:10:33 UTC; tgirke
