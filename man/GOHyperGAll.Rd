@@ -174,7 +174,6 @@ catdb
 # catdb_conv <- makeCATdb(myfile="GOannotationsBiomart_mod.txt", lib=NULL, org="", colno=c(1,2,3), idconv=list(affy=affy2locusDF))
 # systemPipeR:::.AffyID2GeneID(catdb=catdb_conv, affyIDs=c("244901_at", "244902_at"))
 
-
 ## Next time catDB can be loaded from file
 save(catdb, file="catdb.RData") 
 load("catdb.RData")
@@ -187,16 +186,16 @@ GOHyperGAll(catdb=catdb, gocat="MF", sample=test_sample, Nannot=2)[1:20,]
 GOHyperGAll_result <- GOHyperGAll(catdb=catdb, gocat="MF", sample=test_sample, Nannot=2)
 GOHyperGAll_Subset(catdb, GOHyperGAll_result, sample=test_sample, type="goSlim") 
 
-## (C) Reduce GO term redundancy in 'GOHyperGAll_results'
+## Reduce GO term redundancy in 'GOHyperGAll_results'
 simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat="MF", cutoff=0.001, correct=T)
 # Returns the redundancy reduced data set. 
 data.frame(GOHyperGAll_result[GOHyperGAll_result[,1] %in% simplifyDF[,1], -8], GO_OL_Match=simplifyDF[,2])
 
-## (D) Batch Analysis of Gene Clusters
+## Batch Analysis of Gene Clusters
 testlist <- list(Set1=test_sample)
 GOBatchResult <- GOCluster_Report(catdb=catdb, setlist=testlist, method="all", id_type="gene", CLSZ=10, cutoff=0.001, gocats=c("MF", "BP", "CC"), recordSpecGO=c("GO:0003674", "GO:0008150", "GO:0005575"))
 
-## (E) Plot 'GOBatchResult' as bar plot
+## Plot 'GOBatchResult' as bar plot
 goBarplot(GOBatchResult, gocat="MF")
 
 }
