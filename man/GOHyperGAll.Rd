@@ -10,7 +10,7 @@
 }
 \description{
 To test a sample population of genes for over-representation of GO terms, the
-core function \code{GOHyperGAll} computes for all nodes in the the three GO networks
+core function \code{GOHyperGAll} computes for all nodes in the three GO networks
 (BP, CC and MF) an enrichment test based on the hypergeometric distribution and returns the corresponding raw and
 Bonferroni corrected p-values. Subsequently, a filter function supports GO Slim
 analyses using default or custom GO Slim categories. Several convenience functions
@@ -168,6 +168,12 @@ catdb
 
 ## Create catDB from Bioconductor annotation package
 # catdb <- makeCATdb(myfile=NULL, lib="ath1121501.db", org="", colno=c(1,2,3), idconv=NULL)
+
+## AffyID-to-GeneID mappings when working with AffyIDs 
+# affy2locusDF <- systemPipeR:::.AffyID2GeneID(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2010-12-20.txt", download=TRUE)
+# catdb_conv <- makeCATdb(myfile="GOannotationsBiomart_mod.txt", lib=NULL, org="", colno=c(1,2,3), idconv=list(affy=affy2locusDF))
+# systemPipeR:::.AffyID2GeneID(catdb=catdb_conv, affyIDs=c("244901_at", "244902_at"))
+
 
 ## Next time catDB can be loaded from file
 save(catdb, file="catdb.RData") 

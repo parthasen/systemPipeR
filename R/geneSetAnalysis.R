@@ -151,9 +151,9 @@ setMethod(f="names", signature="catDB",
 ## This function creates a AffyID-to-GeneID mapping data frame using by default the TAIR mappings for the Arabidopsis ATH1 chip. 
 ## Once the decoding data frame 'affy2locusDF' is created, the function returns for a query set of AffyIDs the corresponding GeneIDs.
 ## To use the function for the mappings of other chips, one needs to create the corresponding decoding data frame 'affy2locusDF'.
-.AffyID2GeneID <- function(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2008-5-29.txt", affyIDs, probe2gene=1) {
-        if(!exists("affy2locusDF")) {
-                cat("\n", "Downloading AffyID-to-GeneID mappings, creating object 'affy2locusDF' and saving it in your working directory", "\n")
+.AffyID2GeneID <- function(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2008-5-29.txt", download=FALSE, catdb=NULL, affyIDs, probe2gene=1) {
+        if(download==TRUE) {
+                cat("\n", "Downloading AffyID-to-GeneID mappings", "\n")
                 affy2locus <- read.delim(map, na.strings = "", fill=TRUE, header=T, sep="\t")[,-c(2:4,7:9)]
                 names(affy2locus) <- c("AffyID", "AGI", "Desc")
                 row.names(affy2locus) <- as.vector(affy2locus[,1])
@@ -163,10 +163,10 @@ setMethod(f="names", signature="catDB",
                 affy2locusDF <- data.frame(unlist(my_list))
                 affy2locusDF <- data.frame(rep(names(unlist(lapply(my_list, length))), as.vector(unlist(lapply(my_list, length)))), affy2locusDF)
                 names(affy2locusDF) <- c("AffyID", "GeneID")
-                # affy2locusDF <<- affy2locusDF
-        	write.table(affy2locusDF, file="affy2locusDF", quote=F, sep="\t")
+                return(affy2locusDF)
         }
         if(!missing(affyIDs)) {
+		affy2locusDF <- idconv(catdb)[[1]]
 		if(probe2gene==1) { # For probe sets that match several loci, only the first locus ID will be used
 			affy2locusDF <- affy2locusDF[!duplicated(affy2locusDF$AffyID),]
 		}	
@@ -175,8 +175,9 @@ setMethod(f="names", signature="catDB",
         }
 }
 ## Usage:
-# .AffyID2GeneID(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2010-12-20.txt")
-
+# affy2locusDF <- systemPipeR:::.AffyID2GeneID(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2010-12-20.txt", download=TRUE)
+# catdb_conv <- makeCATdb(myfile="data/GO/GOannotationsBiomart_mod.txt", lib=NULL, org="", colno=c(1,2,3), idconv=list(affy=affy2locusDF))
+# systemPipeR:::.AffyID2GeneID(catdb=catdb_conv, affyIDs=c("244901_at", "244902_at"))
 
 ## Constructor function to generate catDB object
 makeCATdb <- function(myfile, lib=NULL, org="", colno = c(1,2,3), idconv=NULL, rootUK=FALSE) {
@@ -378,7 +379,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 			cat("\n", "Processing cluster no", i, "with method: \"all\" (GOHyperGAll) \n")
 			if(id_type=="affy") {
 				affy_sample <- CL_DF[CL_DF[,2]==i, 1]
-				test_sample <- .AffyID2GeneID(affyIDs=affy_sample, probe2gene=1)
+				test_sample <- .AffyID2GeneID(catdb=catdb, affyIDs=affy_sample, probe2gene=1)
 			}
 			if(id_type=="gene") {
 				test_sample <- as.vector(CL_DF[CL_DF[,2]==i, 1])
@@ -411,7 +412,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 			cat("\n", "Processing cluster no", i, "with method: \"slim\" (GOHyperGAll_Subset) \n")
 			if(id_type=="affy") {
 				affy_sample <- CL_DF[CL_DF[,2]==i, 1]
-				test_sample <- .AffyID2GeneID(affyIDs=affy_sample, probe2gene=1)
+				test_sample <- .AffyID2GeneID(catdb=catdb, affyIDs=affy_sample, probe2gene=1)
 			}
 			if(id_type=="gene") {
 				test_sample <- as.vector(CL_DF[CL_DF[,2]==i, 1])
@@ -446,7 +447,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 			cat("\n", "Processing cluster no", i, "with method: \"simplify\" (GOHyperGAll_Simplify) \n")
 			if(id_type=="affy") {
 				affy_sample <- CL_DF[CL_DF[,2]==i, 1]
-				test_sample <- .AffyID2GeneID(affyIDs=affy_sample, probe2gene=1)
+				test_sample <- .AffyID2GeneID(catdb=catdb, affyIDs=affy_sample, probe2gene=1)
 			}
 			if(id_type=="gene") {
 				test_sample <- as.vector(CL_DF[CL_DF[,2]==i, 1])
