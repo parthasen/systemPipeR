@@ -179,7 +179,7 @@ setMethod(f="names", signature="catDB",
 
 
 ## Constructor function to generate catDB object
-makeCATdb <- function(myfile, lib=NULL, org="", colno = c(1,2,3), idconv=NULL) {
+makeCATdb <- function(myfile, lib=NULL, org="", colno = c(1,2,3), idconv=NULL, rootUK=FALSE) {
 	if(!is.null(lib) & !is.null(myfile)) stop("Arguments myfile and lib are exclusive. One of them needs to be assigned NULL.")
 	if(!is.null(lib)) {
 		catdf <- .sampleDFgene2GO(lib=lib)
@@ -187,7 +187,7 @@ makeCATdb <- function(myfile, lib=NULL, org="", colno = c(1,2,3), idconv=NULL) {
 	if(!is.null(myfile)) {
 		catdf <- .readGOorg(myfile=myfile, org=org, colno=colno)
 	}
-	catlist <- .gene2GOlist(catdf=catdf, rootUK=FALSE)
+	catlist <- .gene2GOlist(catdf=catdf, rootUK=rootUK)
 	catdblist <- c(catmap=list(catdf), catlist=list(catlist), idconv=list(idconv))
 	catdb <- as(catdblist, "catDB")
 	return(catdb)
@@ -396,7 +396,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 				if(length(recordSpecGO)>0) {
 					containerDF2 <- rbind(containerDF2, GOHyperGAll_result[GOHyperGAll_result[,1]==recordSpecGO[count],])
 				}
-				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("GO_", j, "_DF", sep="")))[,2]]
+				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("catmap(catdb)$D_", j, sep="")))[,2]]
 				no_annot <- no_annot[no_annot!="no_match"]
 				containerDF2 <- rbind(containerDF2, data.frame(GOID=paste("no_annot_", j, sep=""), NodeSize=NA, SampleMatch=length(no_annot), Phyper=NA, Padj=NA, Term=NA, Ont=j, SampleKeys=paste(no_annot, collapse=", ")))
 			}
@@ -426,12 +426,12 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
                                 } else { 
                                 	slimv <- myslimv 
 				} 
-				tempDF <- GOHyperGAll_Subset(GOHyperGAll_result, sample=test_sample, type="goSlim", myslimv=slimv)
+				tempDF <- GOHyperGAll_Subset(catdb, GOHyperGAll_result, sample=test_sample, type="goSlim", myslimv=slimv)
 				containerDF2 <- rbind(containerDF2, tempDF)
 				if(length(recordSpecGO)>0) {
 					containerDF2 <- rbind(containerDF2, GOHyperGAll_result[GOHyperGAll_result[,1]==recordSpecGO[count],])
 				}
-				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("GO_", j, "_DF", sep="")))[,2]]
+				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("catmap(catdb)$D_", j, sep="")))[,2]]
 				no_annot <- no_annot[no_annot!="no_match"]
 				containerDF2 <- rbind(containerDF2, data.frame(GOID=paste("no_annot_", j, sep=""), NodeSize=NA, SampleMatch=length(no_annot), Phyper=NA, Padj=NA, Term=NA, Ont=j, SampleKeys=paste(no_annot, collapse=", ")))
 			}
@@ -465,7 +465,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 				if(length(recordSpecGO)>0) {
 					containerDF2 <- rbind(containerDF2, data.frame(GOHyperGAll_result[GOHyperGAll_result[,1]==recordSpecGO[count],], GO_OL_Match=GOHyperGAll_result[GOHyperGAll_result[,1]==recordSpecGO[count],3]))
 				}
-				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("GO_", j, "_DF", sep="")))[,2]]
+				no_annot <- test_sample[!test_sample %in% eval(parse(text=paste("catmap(catdb)$D_", j, sep="")))[,2]]
 				no_annot <- no_annot[no_annot!="no_match"]
 				containerDF2 <- rbind(containerDF2, data.frame(GOID=paste("no_annot_", j, sep=""), NodeSize=NA, SampleMatch=length(no_annot), Phyper=NA, Padj=NA, Term=NA, Ont=j, SampleKeys=paste(no_annot, collapse=", "), GO_OL_Match=length(no_annot)))
 			}

@@ -24,7 +24,7 @@ as the usage of custom array-to-gene and gene-to-GO mappings.
 }
 \usage{
 ## Generate gene-to-GO mappings and store as catDB object 
-makeCATdb(myfile, lib = NULL, org = "", colno = c(1, 2, 3), idconv = NULL)
+makeCATdb(myfile, lib = NULL, org = "", colno = c(1, 2, 3), idconv = NULL, rootUK=FALSE)
 
 ## Enrichment function
 GOHyperGAll(catdb, gocat = "MF", sample, Nannot = 2)
@@ -55,7 +55,7 @@ goBarplot(GOBatchResult, gocat)
   \item{lib}{
 	If the gene-to-GO mappings are obtained from a \code{*.db} package from Bioconductor then the package name can be specified under the \code{lib} argument of the \code{sampleDFgene2GO} function. 
 }
-  \item{idcov}{
+  \item{idconv}{
 	Optional id conversion \code{data.frame}
 }
   \item{catdb}{
