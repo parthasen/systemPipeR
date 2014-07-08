@@ -2,14 +2,14 @@
 import(rjson, Rsamtools, Biostrings, ShortRead, grid, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma, methods)
 ## S4 Classes
 exportClasses(
-    "SYSargs"
+    "SYSargs", "catDB"
 )
 
 ## Methods
 exportMethods(
     "modules", "software", "cores", "other", "reference", "results",
     "infile1", "infile2", "outfile1", "SampleName", "sysargs",
-    "outpaths", "show", "names", "length", "[" 
+    "outpaths", "show", "names", "length", "[", "catmap", "catlist", "idconv"  
 )
 
 ## Functions
@@ -29,5 +29,5 @@ export(
     "runCommandline", "systemArgs", "symLink2bam", "moduleload", 
     "modulelist", "run_edgeR", "filterDEGs", "seeFastq", "seeFastqPlot",
     "GOHyperGAll", "GOHyperGAll_Subset", "GOHyperGAll_Simplify", "GOCluster_Report",
-    "readGOorg", "sampleDFgene2GO", "gene2GOlist", "loadData", "goBarplot"
+    "makeCATdb", "goBarplot"
 ) 

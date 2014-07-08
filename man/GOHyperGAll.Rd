@@ -3,10 +3,7 @@
 \alias{GOHyperGAll_Subset}
 \alias{GOHyperGAll_Simplify}
 \alias{GOCluster_Report}
-\alias{readGOorg}
-\alias{sampleDFgene2GO}
-\alias{gene2GOlist}
-\alias{loadData}
+\alias{makeCATdb}
 \alias{goBarplot}
 \title{
 	GO term enrichment analysis for large numbers of gene sets 
@@ -26,29 +23,20 @@ function in the \code{GOstats} package. The main difference is that
 as the usage of custom array-to-gene and gene-to-GO mappings.
 }
 \usage{
-## Generate gene-to-GO mappings from file
-readGOorg(myfile, outdir, colno, org)
-
-## Obtain gene-to-GO mappings from Bioconductor
-sampleDFgene2GO(lib, outdir)
-
-## Generate gene-to-GO-OFFSPRING associations
-gene2GOlist(outdir, rootUK = FALSE)
-
-## Load annotations
-loadData(outdir)
+## Generate gene-to-GO mappings and store as catDB object 
+makeCATdb(myfile, lib = NULL, org = "", colno = c(1, 2, 3), idconv = NULL)
 
 ## Enrichment function
-GOHyperGAll(gocat = "MF", sample, Nannot = 2)
+GOHyperGAll(catdb, gocat = "MF", sample, Nannot = 2)
 
 ## GO slim analysis
-GOHyperGAll_Subset(GOHyperGAll_result, sample = test_sample, type = "goSlim", myslimv)
+GOHyperGAll_Subset(catdb, GOHyperGAll_result, sample = test_sample, type = "goSlim", myslimv)
 
 ## Reduce GO term redundancy 
 GOHyperGAll_Simplify(GOHyperGAll_result, gocat = "MF", cutoff = 0.001, correct = TRUE)
 
 ## Batch analysis of many gene sets
-GOCluster_Report(setlist, id_type = "affy", method = "all", CLSZ = 10, cutoff = 0.001, gocats = c("MF", "BP", "CC"), myslimv = "default", correct = TRUE, recordSpecGO = NULL, ...)
+GOCluster_Report(catdb, setlist, id_type = "affy", method = "all", CLSZ = 10, cutoff = 0.001, gocats = c("MF", "BP", "CC"), myslimv = "default", correct = TRUE, recordSpecGO = NULL, ...)
 
 ## Bar plot of GOCluster_Report results
 goBarplot(GOBatchResult, gocat)
@@ -56,10 +44,7 @@ goBarplot(GOBatchResult, gocat)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{myfile}{
-	File with gene-to-GO mappings. Sample files can be downloaded from geneontology.org (http://geneontology.org/GO.downloads.annotations.shtml)
-}
-  \item{outdir}{
-	Path to output directory where preprocessed gene-to-GO mappings (data frames and lists will be saved.
+	File with gene-to-GO mappings. Sample files can be downloaded from geneontology.org (http://geneontology.org/GO.downloads.annotations.shtml) or from BioMart as shown in example below.
 }
   \item{colno}{
 	Column numbers referencing in \code{myfile} the three target columns containing GOID, GeneID and GOCAT, in that order.
@@ -69,6 +54,12 @@ goBarplot(GOBatchResult, gocat)
 }
   \item{lib}{
 	If the gene-to-GO mappings are obtained from a \code{*.db} package from Bioconductor then the package name can be specified under the \code{lib} argument of the \code{sampleDFgene2GO} function. 
+}
+  \item{idcov}{
+	Optional id conversion \code{data.frame}
+}
+  \item{catdb}{
+	\code{catdb} object storing mappings of genes to annotation categories. For details, see ?"SYSargs-class".
 }
   \item{rootUK}{
 	If the argument \code{rootUK} is set to \code{TRUE} then the root nodes are treated as terminal nodes to account for the new unknown terms.
@@ -98,8 +89,8 @@ goBarplot(GOBatchResult, gocat)
 	p-value cutoff for GO terms to show in result \code{data.frame}
 }
   \item{correct}{
-	If \code{TRUE} the function will favor the selection of terminal (information r
-	ich) GO terms that have at the same time a large number of sample matches. 
+	If \code{TRUE} the function will favor the selection of terminal (informationich) 
+        GO terms that have at the same time a large number of sample matches. 
 }
   \item{setlist}{
 	\code{list} of \code{character vectors} containing gene IDs (or array feature 
@@ -147,11 +138,7 @@ goBarplot(GOBatchResult, gocat)
         clusters) and returns the results conveniently organized in a single result data frame.
 }
 \value{
-	\code{readGOorg} and \code{sampleDFgene2GO} generate three data frames named \code{GO_MF_DF}, \code{GO_BP_DF} and \code{GO_CC_DF} containing the gene-to-GO mappings for each ontology type. In addition, a fourth data frame \code{go_df} is generated containing the relevant data components for all GO nodes. All four data frames are written to tab-delimited files with the path specified under \code{outdir}.
-	
-	\code{gene2GOlist} generates the corresponding gene-to-GO-OFFSPRING associations from the three gene-to-GO data frames. All three lists are written to \code{*.Rd} files with the path specified under \code{outdir}.
-
-	\code{GOHyperGAll} returns a \code{data.frame} storing the enrichment test results.
+	\code{makeCATdb} generates \code{catDB} object from file. 
 }
 \references{
 This workflow has been published in Plant Physiol (2008) 147, 41-57.
@@ -160,42 +147,39 @@ This workflow has been published in Plant Physiol (2008) 147, 41-57.
 Thomas Girke
 }
 \seealso{
-\code{sampleDFgene2GO}, \code{GOHyperGAll_Subset}, \code{GOHyperGAll_Simplify}, \code{GOCluster_Report}, \code{readGOorg}, \code{sampleDFgene2GO}, \code{gene2GOlist}, \code{loadData}, \code{goBarplot}
+\code{GOHyperGAll_Subset}, \code{GOHyperGAll_Simplify}, \code{GOCluster_Report}, \code{goBarplot}
 }
 \examples{
 \dontrun{
-## (A) Input annotations (perform only once for each annotation)
 
-## Generate the required gene-to-GO mappings data frames 'GO_MF_DF'
-## 'GO_BP_DF' and 'GO_CC_DF', as well as the lookup table 'go_df'. 
-## To work with the following example, download and unzip the data 
-## set 'gene_association.tair' from here: 
-## http://geneontology.org/GO.downloads.annotations.shtml
+## Obtain annotations from BioMart
+library("biomaRt")
+listMarts() # To choose BioMart database
+m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
+m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
+listAttributes(m) # Choose data types you want to download
+go <- getBM(attributes=c("go_accession", "tair_locus", "go_namespace_1003"), mart=m)
+go <- go[go[,3]!="",]; go[,3] <- as.character(go[,3])
+write.table(go, "GOannotationsBiomart_mod.txt", quote=FALSE, row.names=FALSE, col.names=FALSE, sep="\t")
 
-readGOorg(myfile="gene_association.tair", outdir="GO", colno = c(5,11,9), org="Arabidopsis")
+## Create catDB instance (takes a while but needs to be done only once)
+catdb <- makeCATdb(myfile="GOannotationsBiomart_mod.txt", lib=NULL, org="", colno=c(1,2,3), idconv=NULL)
+catdb
 
-## Alternatively, the gene-to-GO annotations can be obtained from 
-## Bioconductor and then processed as follows:
+## Create catDB from Bioconductor annotation package
+# catdb <- makeCATdb(myfile=NULL, lib="ath1121501.db", org="", colno=c(1,2,3), idconv=NULL)
 
-sampleDFgene2GO(lib="org.At.tair.db", outdir="GO")
-
-## Create corresponding gene-to-GO-OFFSPRING associations and store them
-## as lists:
-
-gene2GOlist(outdir="GO", rootUK=TRUE)
-
-## (B) GO term enrichment analysis
-
-## Load go data
-loadData(outdir="GO")
+## Next time catDB can be loaded from file
+save(catdb, file="catdb.RData") 
+load("catdb.RData")
 
 ## Perform enrichment test on single gene set
-test_sample <- unique(as.vector(GO_MF_DF[1:40,2]))
-GOHyperGAll(gocat="MF", sample=test_sample, Nannot=2)[1:20,]
+test_sample <- unique(as.character(catmap(catdb)$D_MF[1:100,"GeneID"]))
+GOHyperGAll(catdb=catdb, gocat="MF", sample=test_sample, Nannot=2)[1:20,]
 
 ## GO Slim analysis by subsetting results accordingly
-subset <- GOHyperGAll_Subset(GOHyperGAll_result, sample=test_sample, type="goSlim")
-subset[,-8] 
+GOHyperGAll_result <- GOHyperGAll(catdb=catdb, gocat="MF", sample=test_sample, Nannot=2)
+GOHyperGAll_Subset(catdb, GOHyperGAll_result, sample=test_sample, type="goSlim") 
 
 ## (C) Reduce GO term redundancy in 'GOHyperGAll_results'
 simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat="MF", cutoff=0.001, correct=T)
@@ -203,8 +187,8 @@ simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat="MF", cutoff=0.001,
 data.frame(GOHyperGAll_result[GOHyperGAll_result[,1] %in% simplifyDF[,1], -8], GO_OL_Match=simplifyDF[,2])
 
 ## (D) Batch Analysis of Gene Clusters
-GOBatchResult <- GOCluster_Report(setlist=DEGlist, method="all", id_type="gene", CLSZ=10, cutoff=0.001, gocats=c("MF", "BP", "CC"), recordSpecGO=c("GO:0003674", "GO:0008150", "GO:0005575"))
-GOBatchResult[1:4, -10]
+testlist <- list(Set1=test_sample)
+GOBatchResult <- GOCluster_Report(catdb=catdb, setlist=testlist, method="all", id_type="gene", CLSZ=10, cutoff=0.001, gocats=c("MF", "BP", "CC"), recordSpecGO=c("GO:0003674", "GO:0008150", "GO:0005575"))
 
 ## (E) Plot 'GOBatchResult' as bar plot
 goBarplot(GOBatchResult, gocat="MF")
