@@ -278,7 +278,7 @@ goBarplot(gos, gocat="CC")
    \label{fig:GOMF}
 \end{figure}
 
-\subsection{Clustering and heat maps}
+\section{Clustering and heat maps}
 The following example performs hierarchical clustering on the RPKM normalized expression matrix subsetted by the DEGs identified in the 
 above differential expression analysis. It uses a Pearson correlation-based distance measure and complete linkage for cluster joining.
 <<eval=FALSE, keep.source=TRUE>>=
