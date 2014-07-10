@@ -208,7 +208,7 @@ targets
 ### code chunk number 23: systemPipeRNAseq.Rnw:284-290 (eval = FALSE)
 ###################################################
 ## library(pheatmap)
-## geneids <- as.character(unlist(DEGlist))
+## geneids <- unique(as.character(unlist(DEG_list[[1]])))
 ## y <- rpkmDFeByg[geneids, ]
 ## pdf("heatmap1.pdf")
 ## pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_distance_cols="correlation")

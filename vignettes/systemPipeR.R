@@ -274,7 +274,7 @@ cmp[[1]]
 ### code chunk number 33: systemPipeR.Rnw:338-344 (eval = FALSE)
 ###################################################
 ## library(pheatmap)
-## geneids <- as.character(unlist(DEGlist))
+## geneids <- unique(as.character(unlist(DEG_list[[1]])))
 ## y <- rpkmDFeByg[geneids, ]
 ## pdf("heatmap1.pdf")
 ## pheatmap(y, scale="row", clustering_distance_rows="correlation", clustering_distance_cols="correlation")
