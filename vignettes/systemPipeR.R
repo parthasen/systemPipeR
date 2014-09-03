@@ -16,8 +16,8 @@ unlink("test.db")
 ###################################################
 ### code chunk number 3: systemPipeR.Rnw:67-69 (eval = FALSE)
 ###################################################
-## system("R CMD build systemPipeR") # Builds package
-## install.packages("systemPipeR.X.X.X.tar.gz", repos=NULL, type="source") # Installs the package
+## source("http://bioconductor.org/biocLite.R") # Sources the biocLite.R installation script 
+## biocLite("systemPipeR") # Installs the package
 
 
 ###################################################
@@ -32,7 +32,7 @@ unlink("test.db")
 ### code chunk number 5: systemPipeR.Rnw:85-88
 ###################################################
 library(systemPipeR)
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")
 
 
@@ -40,7 +40,7 @@ read.delim(targetspath, comment.char = "#")
 ### code chunk number 6: systemPipeR.Rnw:92-95
 ###################################################
 library(systemPipeR)
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")[1:2,1:6]
 
 
@@ -53,7 +53,7 @@ readComp(file=targetspath, format="vector", delim="-")
 ###################################################
 ### code chunk number 8: systemPipeR.Rnw:106-108
 ###################################################
-parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
+parampath <- system.file("extdata", "tophat.param", package="systemPipeR")
 read.delim(parampath, comment.char = "#")
 
 
@@ -200,36 +200,35 @@ systemArgs(sysma=parampath, mytargets=targetspath, type="json")
 
 
 ###################################################
-### code chunk number 26: systemPipeR.Rnw:259-263
+### code chunk number 26: systemPipeR.Rnw:259-262
 ###################################################
-library(edgeR)
 targets <- read.delim(targetspath, comment="#")
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
 cmp[[1]]
 
 
 ###################################################
-### code chunk number 27: systemPipeR.Rnw:266-268 (eval = FALSE)
+### code chunk number 27: systemPipeR.Rnw:265-267 (eval = FALSE)
 ###################################################
 ## countDFeByg <- read.delim("./results/countDFeByg.xls", row.names=1)
 ## edgeDF <- run_edgeR(countDF=countDFeByg, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 
 
 ###################################################
-### code chunk number 28: systemPipeR.Rnw:271-272 (eval = FALSE)
+### code chunk number 28: systemPipeR.Rnw:270-271 (eval = FALSE)
 ###################################################
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 
 
 ###################################################
-### code chunk number 29: systemPipeR.Rnw:280-282 (eval = FALSE)
+### code chunk number 29: systemPipeR.Rnw:279-281 (eval = FALSE)
 ###################################################
 ## names(DEG_list)
 ## DEG_list$Summary
 
 
 ###################################################
-### code chunk number 30: systemPipeR.Rnw:288-299 (eval = FALSE)
+### code chunk number 30: systemPipeR.Rnw:287-298 (eval = FALSE)
 ###################################################
 ## library("biomaRt")
 ## listMarts() # To choose BioMart database
@@ -245,7 +244,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 31: systemPipeR.Rnw:304-315 (eval = FALSE)
+### code chunk number 31: systemPipeR.Rnw:303-314 (eval = FALSE)
 ###################################################
 ## load("data/GO/catdb.RData")
 ## DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=50), plot=FALSE)
@@ -261,7 +260,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 32: systemPipeR.Rnw:320-325 (eval = FALSE)
+### code chunk number 32: systemPipeR.Rnw:319-324 (eval = FALSE)
 ###################################################
 ## gos <- BatchResultslim[grep("M6-V6_up_down", BatchResultslim$CLID), ]
 ## gos <- BatchResultslim
@@ -271,7 +270,7 @@ cmp[[1]]
 
 
 ###################################################
-### code chunk number 33: systemPipeR.Rnw:338-344 (eval = FALSE)
+### code chunk number 33: systemPipeR.Rnw:337-343 (eval = FALSE)
 ###################################################
 ## library(pheatmap)
 ## geneids <- unique(as.character(unlist(DEG_list[[1]])))

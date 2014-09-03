@@ -63,10 +63,10 @@ Templates for setting up custom project reports are provided as \Robject{*.Rnw} 
 \section{Getting Started}
 
 \subsection{Installation}
-The R software can be downloaded from CRAN (\url{http://cran.at.r-project.org/}) and the \Rpackage{systemPipeR} package from GitHub (\url{https://github.com/tgirke/systemPipeR}). The \Rpackage{systemPipeR} package can be installed from R using the \Rfunction{install.packages} command after downloading and uncompressing the package directory. 
+The R software for running \Rpackage{systemPipeR} can be downloaded from CRAN (\url{http://cran.at.r-project.org/}). The \Rpackage{systemPipeR} package can be installed from R using the \Rfunction{biocLite} install command. 
 <<eval=FALSE>>=
-system("R CMD build systemPipeR") # Builds package
-install.packages("systemPipeR.X.X.X.tar.gz", repos=NULL, type="source") # Installs the package
+source("http://bioconductor.org/biocLite.R") # Sources the biocLite.R installation script 
+biocLite("systemPipeR") # Installs the package
 @
 
 \subsection{Loading the Package and Documentation}
@@ -84,14 +84,14 @@ The mini sample FASTQ files used by this overview vignette as well as the associ
 The \Robject{targets} file defines all FASTQ files and sample comparisons of an analysis workflow. The following shows the format of a sample \Robject{targets} file provided by this package. 
 <<eval=TRUE, keep.source=TRUE>>=
 library(systemPipeR)
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")
 @
 
 \noindent Structure of \Robject{targets} file for paired end (PE) samples.
 <<eval=TRUE, keep.source=TRUE>>=
 library(systemPipeR)
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targetsPE.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")[1:2,1:6]
 @
 
@@ -104,7 +104,7 @@ readComp(file=targetspath, format="vector", delim="-")
 \section{Structure of \Robject{param} file and \Robject{SYSargs} container}
 \noindent The \Robject{param} file defines the parameters of the command-line software. The following shows the format of a sample \Robject{param} file provided by this package. 
 <<eval=TRUE, keep.source=TRUE>>=
-parampath <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
+parampath <- system.file("extdata", "tophat.param", package="systemPipeR")
 read.delim(parampath, comment.char = "#")
 @
 \noindent The \Rfunction{systemArgs} function imports the definitions of both the \Robject{param} file and the \Robject{targets} file, and stores all relevant information as \Robject{SYSargs} object.
@@ -257,7 +257,6 @@ plot.phylo(as.phylo(hc), type="p", edge.col="blue", edge.width=2, show.node.labe
 
 \subsection{DEG analysis with \Rpackage{edgeR}} 
 <<eval=TRUE, keep.source=TRUE>>=
-library(edgeR)
 targets <- read.delim(targetspath, comment="#")
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
 cmp[[1]]

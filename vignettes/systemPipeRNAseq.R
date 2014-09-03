@@ -28,7 +28,7 @@ library(systemPipeR)
 ###################################################
 ### code chunk number 5: systemPipeRNAseq.Rnw:82-85
 ###################################################
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 targets <- read.delim(targetspath, comment.char = "#")[,1:4]
 targets
 

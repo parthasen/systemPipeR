@@ -39,7 +39,7 @@ Thomas Girke
 }
 \examples{
 library(systemPipeR)
-targetspath <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")
 readComp(file=targetspath, format="vector", delim="-")
 }

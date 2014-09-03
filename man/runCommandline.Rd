@@ -39,8 +39,8 @@ Thomas Girke
 }
 \examples{
 ## Construct SYSargs object from param and targets files 
-param <- paste0(system.file("extdata", package="systemPipeR"), "/tophat.param")
-targets <- paste0(system.file("extdata", package="systemPipeR"), "/targets.txt")
+param <- system.file("extdata", "tophat.param", package="systemPipeR")
+targets <- system.file("extdata", "targets.txt", package="systemPipeR")
 args <- systemArgs(sysma=param, mytargets=targets)
 args
 names(args); modules(args); cores(args); outpaths(args); sysargs(args)
