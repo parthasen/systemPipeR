@@ -459,7 +459,7 @@ GOCluster_Report <- function(catdb, setlist, id_type="affy", method="all", CLSZ=
 				GOHyperGAll_result <- GOHyperGAll(catdb, gocat=j, sample=test_sample, ...)
 				simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat=j, cutoff=cutoff, correct=correct)
 				if(length(simplifyDF)==0) { # If simplifyDF() returns empty data frame, then include at least the first two best scoring GO entries 
-					simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result[1:2,], gocat=j, cutoff=1, correct=T) 
+					simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result[1:2,], gocat=j, cutoff=1, correct=TRUE) 
 				}
 				tempDF <- data.frame(GOHyperGAll_result[GOHyperGAll_result[,1] %in% simplifyDF[,1], ], GO_OL_Match=simplifyDF[,2])
 				containerDF2 <- rbind(containerDF2, tempDF)
