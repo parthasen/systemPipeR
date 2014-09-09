@@ -53,9 +53,9 @@ setMethod(f="names", signature="catDB",
         go_org <- go_org[ , colno]
         names(go_org) <- c("GOID", "GeneID", "GOCAT")
 	if(org == "Arabidopsis") {
-		go_org[,"GeneID"] <- gsub(".*(AT.G\\d\\d\\d\\d\\d).*", "\\1", as.character(go_org[,2]), perl=T)
-        	go_org <- go_org[grep("^AT.G\\d\\d\\d\\d\\d", as.character(go_org$GeneID), perl=T),]
-        	go_org <- go_org[!duplicated(paste(go_org[,"GOID"], gsub("\\.\\d{1,}", "", as.character(go_org[,"GeneID"]), perl=T), sep="_")),]
+		go_org[,"GeneID"] <- gsub(".*(AT.G\\d\\d\\d\\d\\d).*", "\\1", as.character(go_org[,2]), perl=TRUE)
+        	go_org <- go_org[grep("^AT.G\\d\\d\\d\\d\\d", as.character(go_org$GeneID), perl=TRUE),]
+        	go_org <- go_org[!duplicated(paste(go_org[,"GOID"], gsub("\\.\\d{1,}", "", as.character(go_org[,"GeneID"]), perl=TRUE), sep="_")),]
         }
         go_org <- na.omit(go_org)
 	## Make GO cat labels consistent, e.g. from BioMart
@@ -154,7 +154,7 @@ setMethod(f="names", signature="catDB",
 .AffyID2GeneID <- function(map = "ftp://ftp.arabidopsis.org/home/tair/Microarrays/Affymetrix/affy_ATH1_array_elements-2008-5-29.txt", download=FALSE, catdb=NULL, affyIDs, probe2gene=1) {
         if(download==TRUE) {
                 cat("\n", "Downloading AffyID-to-GeneID mappings", "\n")
-                affy2locus <- read.delim(map, na.strings = "", fill=TRUE, header=T, sep="\t")[,-c(2:4,7:9)]
+                affy2locus <- read.delim(map, na.strings = "", fill=TRUE, header=TRUE, sep="\t")[,-c(2:4,7:9)]
                 names(affy2locus) <- c("AffyID", "AGI", "Desc")
                 row.names(affy2locus) <- as.vector(affy2locus[,1])
                 my_list <- apply(affy2locus[,-c(3)], 1, list); my_list <- lapply(my_list, unlist)
@@ -269,7 +269,7 @@ GOHyperGAll <- function(catdb, gocat="MF", sample, Nannot=2) {
 	
 	## Generate output data format
 	result_df <- data.frame(node_stats_df, SampleMatch=x, Phyper=phyp_v, Padj=adj_phyp_v, SampleKeys=key)
-        result_df <- merge(result_df, go_df, x.by="GOID", y.by="GOID", all.x=T)
+        result_df <- merge(result_df, go_df, x.by="GOID", y.by="GOID", all.x=TRUE)
         result_df <- result_df[order(result_df$Phyper), ]
 	result_df <- result_df[,c(1:5,7:8,6)]
         return(result_df)
@@ -341,7 +341,7 @@ GOHyperGAll_Simplify <- function(GOHyperGAll_result, gocat="MF", cutoff=0.001, c
 		}
 		clusterv[clusterv==0] <- NA
 		testDF <- data.frame(testDF[,-9], test=clusterv)
-		if(correct==T) { 
+		if(correct==TRUE) { 
 			testDF <- data.frame(testDF, decide=testDF$Padj * (testDF$test/testDF$SampleMatch)) 
 			} else {
 			testDF <- data.frame(testDF, decide=testDF$Padj) }
@@ -357,7 +357,7 @@ GOHyperGAll_Simplify <- function(GOHyperGAll_result, gocat="MF", cutoff=0.001, c
 }
 
 ## Apply GOHyperGAll_Simplify
-## simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat="MF", cutoff=0.001, correct=T)
+## simplifyDF <- GOHyperGAll_Simplify(GOHyperGAll_result, gocat="MF", cutoff=0.001, correct=TRUE)
 ## data.frame(GOHyperGAll_result[GOHyperGAll_result[,1] %in% simplifyDF[,1], -8], GO_OL_Match=simplifyDF[,2])
 
 ########################################
