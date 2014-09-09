@@ -20,23 +20,8 @@ modulelist()
 	Name of software to load character vector. 
 }
 }
-\details{
-...
-}
-\value{
-...
-}
-\references{
-...
-}
 \author{
 Tyler Backman and Thomas Girke
-}
-\note{
-...
-}
-\seealso{
-...
 }
 \examples{
 \dontrun{

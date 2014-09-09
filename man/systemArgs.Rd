@@ -24,14 +24,8 @@ systemArgs(sysma, mytargets, type = "SYSargs")
 		content in JSON format (requires \code{rjson} library)
 }
 }
-\details{
-...
-}
 \value{
 \code{SYSargs} object or \code{character} string in JSON format
-}
-\references{
-...
 }
 \author{
 Thomas Girke

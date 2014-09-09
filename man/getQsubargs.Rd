@@ -30,20 +30,11 @@ getQsubargs(software = "qsub", queue = "batch", Nnodes = "nodes=1", cores = as.n
 	Walltime limit each job is allowed to run per node.
 }
 }
-\details{
-...
-}
 \value{
 	\code{list}
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

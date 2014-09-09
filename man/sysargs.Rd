@@ -37,20 +37,11 @@
 	object of class \code{SYSargs}
 }
 }
-\details{
-...
-}
 \value{
 	various outputs
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

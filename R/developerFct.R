@@ -14,7 +14,6 @@
 	mydir <- getwd()
 	setwd("./data/SRP010938_sub") # outdir
 	for(i in seq(along=outpaths(args))) {
-		# library(Rsamtools); library(ShortRead)
 		fl <- outpaths(args)[i]
 		si <- seqinfo(BamFile(fl))                                                                                                                                                                                                                 
 		gr <- GRanges(seqnames(si), IRanges(100, seqlengths(si)-100))                                                                                                                                                                                

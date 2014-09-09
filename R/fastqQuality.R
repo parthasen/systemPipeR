@@ -230,7 +230,6 @@ seeFastqPlot <- function(fqlist, arrange=c(1,2,3,4,5,8,6,7), ...) {
 
 ## Generate FASTQ quality plots
 # source("http://faculty.ucr.edu/~tgirke/Documents/R_BioCond/My_R_Scripts/fastqQuality.R")
-# library(ggplot2)
 # fastq <- list.files("data", "*.fastq$"); fastq <- paste("data/", fastq, sep="")
 # names(fastq) <- paste("flowcell_6_lane", 1:4, sep="_")
 # fqlist <- seeFastq(fastq=fastq, batchsize=100000, klength=8)

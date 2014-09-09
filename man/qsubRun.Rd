@@ -32,14 +32,8 @@ qsubRun(appfct="runCommandline(args=args, runid='01')", args, qsubargs, Nqsubs =
 \value{
 Returns list where list components contain FASTQ file names and their names are the qsub process IDs assiged by the queuing system. In addition, three files will be generated for each qsub submission process: \code{submitargs0X} (R object containing appargs), \code{submitargs0X.R} (R script using appargs) and \code{submitargs0X.sh} (shell submission script). In addition, the chosen \code{runX} function will output a \code{submitargs0X_log} file for each qsub process containing the executable commands processed by each qsub instance.
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

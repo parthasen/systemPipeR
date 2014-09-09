@@ -16,23 +16,11 @@ alignStats(args)
 	Object of class \code{SYSargs}. 
 }
 }
-\details{
-...
-}
 \value{
 	\code{data.frame} with alignment statistics.
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\note{
-...
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

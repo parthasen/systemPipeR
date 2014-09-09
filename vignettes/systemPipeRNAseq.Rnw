@@ -1,5 +1,5 @@
 %\VignetteIndexEntry{RNA-Seq Report Template}
-%\VignetteDepends{rjson, ggplot2, edgeR, GOstats, GO.db, annotate, pheatmap, limma}
+%\VignetteDepends{rjson, ggplot2, limma, edgeR, GOstats, GO.db, annotate, pheatmap}
 %\VignetteKeywords{compute cluster, pipeline, reports}
 %\VignettePackage{systemPipeR}
 

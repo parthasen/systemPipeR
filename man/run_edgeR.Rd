@@ -33,14 +33,8 @@ run_edgeR(countDF, targets, cmp, independent = TRUE, paired = NULL, mdsplot = ""
 	Directory where \code{plotMDS} should be written to. Default setting \code{mdsplot=""} will omit the plotting step.
 }
 }
-\details{
-...
-}
 \value{
 \code{data.frame} containing \code{edgeR} results from all comparisons. Comparison labels are appended to column titles for tracking.
-}
-\references{
-...
 }
 \author{
 Thomas Girke
@@ -49,14 +43,16 @@ Thomas Girke
 \code{edgeR} vignette and \code{readComp}
 }
 \examples{
-\dontrun{
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
+targets <- read.delim(targetspath, comment="#")
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
+countfile <- system.file("extdata", "countDFeByg.xls", package="systemPipeR")
+countDF <- read.delim(countfile, row.names=1)
 edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
 pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
 fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
-DEG_list <- filterDEGs(pval=pval, log2FC=fold, filter=c(Fold=2, FDR=1), plot=TRUE)
+DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 names(DEG_list)
 DEG_list$Summary
-}
 }
 \keyword{ utilities }

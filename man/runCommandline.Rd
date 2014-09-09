@@ -21,21 +21,12 @@ runCommandline(args, runid = "01", usemodule=TRUE)
 	Determines whether the external executable software should be loaded from a module system. If set to \code{TRUE} then the software version specified in the \code{*.param} file will be used. The function \code{modules} returns this parameter from a \code{SYSargs} instance. On systems where a module system is not available, \code{usemodule} should be set to \code{FALSE}.
 }
 }
-\details{
-...
-}
 \value{
 	Output files, their paths can be obtained with \code{outpaths()} from \code{SYSargs} container. 
 	In addition, a \code{character vector} is returned containing the same paths.
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

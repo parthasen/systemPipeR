@@ -20,17 +20,11 @@ filterDEGs(degDF, filter, plot = TRUE)
 	Allows to turn plotting behavior on and off with default set to \code{TRUE}. 
 }
 }
-\details{
-...
-}
 \value{
 Returns \code{list} with four components
   \item{UporDown}{List of up or down regulated gene/transcript indentifiers meeting the chosen filter settings for all comparisons defined in data frames \code{pval} and \code{log2FC}.}
   \item{Up}{Same as above but only for up regulated genes/transcript.}
   \item{Down}{Same as above but only for down regulated genes/transcript.}
-}
-\references{
-...
 }
 \author{
 Thomas Girke
@@ -39,12 +33,16 @@ Thomas Girke
 \code{run_edgeR}
 }
 \examples{
-\dontrun{
+targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
+targets <- read.delim(targetspath, comment="#")
 cmp <- readComp(file=targetspath, format="matrix", delim="-")
+countfile <- system.file("extdata", "countDFeByg.xls", package="systemPipeR")
+countDF <- read.delim(countfile, row.names=1)
 edgeDF <- run_edgeR(countDF=countDF, targets=targets, cmp=cmp[[1]], independent=FALSE, mdsplot="")
-DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=1))
+pval <- edgeDF[, grep("_FDR$", colnames(edgeDF)), drop=FALSE]
+fold <- edgeDF[, grep("_logFC$", colnames(edgeDF)), drop=FALSE]
+DEG_list <- filterDEGs(degDF=edgeDF, filter=c(Fold=2, FDR=10))
 names(DEG_list)
 DEG_list$Summary
-}
 }
 \keyword{utilities}

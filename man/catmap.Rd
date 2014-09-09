@@ -19,26 +19,15 @@
 	object of class \code{catDB}
 }
 }
-\details{
-...
-}
 \value{
 	various outputs
-}
-\references{
-...
 }
 \author{
 Thomas Girke
 }
-\seealso{
-...
-}
 \examples{
 \dontrun{
 ## Obtain annotations from BioMart
-library("biomaRt")
-listMarts() # To choose BioMart database
 m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
 m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
 listAttributes(m) # Choose data types you want to download

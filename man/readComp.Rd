@@ -22,23 +22,13 @@ readComp(file, format = "vector", delim = "-")
 	Delimiter to use when sample comparisons are returned as \code{vector}.
 }
 }
-\details{
-...
-}
 \value{
 	\code{list} where each component is named according to the name(s) used in the \code{<CMP>} line(s) of the targets file. The list will contain as many sample comparisons sets (list components) as there are sample comparisons lines in the corresponding targets file.
-}
-\references{
-...
 }
 \author{
 Thomas Girke
 }
-\seealso{
-...
-}
 \examples{
-library(systemPipeR)
 targetspath <- system.file("extdata", "targets.txt", package="systemPipeR")
 read.delim(targetspath, comment.char = "#")
 readComp(file=targetspath, format="vector", delim="-")

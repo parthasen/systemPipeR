@@ -40,9 +40,6 @@ Objects can be created by calls of the form \code{new("catDB", ...)}.
     \item{show}{\code{signature(object = "catDB")}: summary view of \code{catDB} objects }
 	 }
 }
-\references{
-...
-}
 \author{
 Thomas Girke
 }
@@ -53,7 +50,6 @@ Thomas Girke
 showClass("catDB")
 \dontrun{
 ## Obtain annotations from BioMart
-library("biomaRt")
 listMarts() # To choose BioMart database
 m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
 m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")

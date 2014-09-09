@@ -65,9 +65,6 @@ Objects can be created by calls of the form \code{new("SYSargs", ...)}.
     \item{software}{\code{signature(x = "SYSargs")}: extracts data from \code{software} slot }
 	 }
 }
-\references{
-...
-}
 \author{
 Thomas Girke
 }

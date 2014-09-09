@@ -29,20 +29,11 @@ symLink2bam(sysargs, command="ln -s", htmldir, ext = c(".bam", ".bai"), urlbase,
 	Name and path of URL file.
 }
 }
-\details{
-...
-}
 \value{
 	symbolic links and url file
 }
-\references{
-...
-}
 \author{
 Thomas Girke
-}
-\seealso{
-...
 }
 \examples{
 ## Construct SYSargs object from param and targets files 

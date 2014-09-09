@@ -153,7 +153,6 @@ Thomas Girke
 \dontrun{
 
 ## Obtain annotations from BioMart
-library("biomaRt")
 listMarts() # To choose BioMart database
 m <- useMart("ENSEMBL_MART_PLANT"); listDatasets(m) 
 m <- useMart("ENSEMBL_MART_PLANT", dataset="athaliana_eg_gene")
