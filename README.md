@@ -1,6 +1,6 @@
 ### systemPipeR: NGS workflow and report generation environment 
 
-_systemPipeR_ is an R package for building *end-to-end* analysis pipelines with
+_systemPipeR_ is an R/Bioconductor package for building *end-to-end* analysis pipelines with
 automated report generation for next generation sequence (NGS) applications
 such as RNA-Seq, ChIP-Seq, BS-Seq, VAR-Seq and many others. An important feature is
 support for running command-line software, such as NGS aligners, on both single
