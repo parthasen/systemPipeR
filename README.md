@@ -33,3 +33,7 @@ corresponding PDFs of these report templates are linked here:
 [systemPipeChIPseq](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeChIPseq.pdf?raw=true)
 and
 [systemPipeVARseq](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeVARseq.pdf?raw=true).
+
+#### Install from Bioconductor
+To install the package, please follow the instructions on its 
+[_Bioconductor site_](http://www.bioconductor.org/packages/devel/bioc/html/systemPipeR.html).
