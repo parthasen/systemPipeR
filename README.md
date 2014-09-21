@@ -13,7 +13,7 @@ reproducibility and user-friendliness of many typical analysis workflows in the
 NGS area.
 
 #### Installation 
-To install the package, please use _biocLite()_ as instructed 
+To install the package, please use the _biocLite_ method as instructed 
 [_here_](http://www.bioconductor.org/packages/devel/bioc/html/systemPipeR.html).
 
 
