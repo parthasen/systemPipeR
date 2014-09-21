@@ -11,6 +11,10 @@ facilitated by a well-defined sample annotation infrastructure which improves
 reproducibility and user-friendliness of many typical analysis workflows in the
 NGS area.
 
+#### Install from Bioconductor
+To install the package, please follow the instructions on
+[_Bioconductor_](http://www.bioconductor.org/packages/devel/bioc/html/systemPipeR.html).
+
 
 #### Usage
 Instructions for running _systemPipeR_ are given in its
@@ -34,6 +38,3 @@ corresponding PDFs of these report templates are linked here:
 and
 [systemPipeVARseq](https://github.com/tgirke/systemPipeR/blob/master/vignettes/systemPipeVARseq.pdf?raw=true).
 
-#### Install from Bioconductor
-To install the package, please follow the instructions on its 
-[_Bioconductor site_](http://www.bioconductor.org/packages/devel/bioc/html/systemPipeR.html).
