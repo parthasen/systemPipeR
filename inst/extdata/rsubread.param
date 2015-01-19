@@ -1,4 +1,6 @@
 ## Parameter file for Rsubread
+## This is dummy file for supporting R-based functions within systemPipeR 
+## that read from input files and write to output files 
 ## Values in <...> reference column titles in targets file
 PairSet	Name	Value
 modules		
